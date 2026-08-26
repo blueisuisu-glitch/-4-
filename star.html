@@ -29,6 +29,53 @@
     border-radius:0 16px 16px 0;padding:20px 24px;margin-bottom:22px;font-size:24px;line-height:1.6;color:var(--ink)}
   .story b{color:var(--warn)}
 
+  /* ---- 탭 ---- */
+  .tabnav{display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid var(--line);flex-wrap:wrap}
+  .tabbtn{flex:1;min-width:150px;padding:16px 14px;border:none;background:transparent;cursor:pointer;
+    font-family:inherit;font-size:19px;font-weight:700;color:var(--faint);border-bottom:4px solid transparent;
+    margin-bottom:-2px;transition:.15s;text-align:center}
+  .tabbtn:hover{color:var(--dim)}
+  .tabbtn.on{color:var(--warn);border-bottom-color:var(--warn)}
+  .tabpanel{display:none}
+  .tabpanel.show{display:block}
+
+  /* ---- 탭1: 호기심 유발 ---- */
+  .flamebox{background:var(--space-panel);border:1px solid var(--space-line);border-radius:20px;
+    padding:32px 20px;margin-bottom:20px;display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
+  .flame-unit{text-align:center}
+  .flame-unit svg{width:110px;height:150px}
+  .flame-label{color:#eaeef7;font-size:19px;font-weight:700;margin-top:10px}
+  .hookq{margin-top:4px}
+  .hookq select{width:100%;background:#fff;border:2px solid var(--line);color:var(--ink);
+    border-radius:12px;padding:14px 16px;font-family:inherit;font-size:20px;cursor:pointer}
+  select.ph-selected{color:#999}
+  select option[value=""]{color:#999}
+  select option:not([value=""]){color:var(--ink)}
+  .qnum{color:var(--warn);font-weight:800;margin-right:6px}
+  .hook-reveal{display:none;margin-top:18px;padding:20px 22px;background:#f8fafc;
+    border-left:4px solid var(--warn);border-radius:0 12px 12px 0;font-size:21px;line-height:1.65}
+  .hook-reveal.show{display:block}
+  .hook-reveal b{color:var(--warn)}
+  .hook-verdict{font-weight:800;margin-bottom:8px;font-size:21px}
+  .hook-verdict.correct{color:var(--accent)}
+  .hook-verdict.wrong{color:var(--bad)}
+  .tab-next{display:inline-block;margin-top:18px;padding:14px 22px;border-radius:12px;border:none;
+    background:var(--warn);color:#fff;font-weight:800;font-size:19px;cursor:pointer;font-family:inherit}
+
+  /* ---- 탭3: 설명 글 ---- */
+  .explain-section{margin-bottom:30px}
+  .explain-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+    border-radius:50%;background:var(--warn);color:#fff;font-weight:800;font-size:18px;margin-right:10px}
+  .explain-title{font-size:24px;font-weight:800;display:inline-flex;align-items:center;margin-bottom:14px}
+  .explain-body{font-size:21px;line-height:1.75;color:var(--ink)}
+  .explain-body b{color:var(--warn)}
+  .diagram{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:20px;margin:16px 0;
+    display:flex;justify-content:center}
+  .diagram svg{width:100%;max-width:640px;height:auto}
+  .explain-summary{margin-top:8px;padding:22px 24px;background:var(--accent-bg);border:1px solid var(--accent-line);
+    border-radius:14px;font-size:21px;line-height:1.7}
+  .explain-summary b{color:var(--accent)}
+
   /* ---- 별 시각화(우주 배경 유지) ---- */
   .starbox{background:var(--space-panel);border:1px solid var(--space-line);border-radius:20px;
     padding:34px 20px 28px;margin-bottom:20px;text-align:center;position:relative;overflow:hidden;
@@ -48,6 +95,7 @@
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px 28px;margin-bottom:20px;
     box-shadow:0 1px 3px rgba(20,30,50,.05)}
   h2{font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:18px}
+  h2.big{font-size:23px;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:800}
 
   .ctrl-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
   .ctrl-name{font-size:22px;font-weight:700}
@@ -69,15 +117,24 @@
     font-size:19px;font-weight:700}
   .scale-labels .cool{color:#d9670f} .scale-labels .hot{color:#2563c9}
 
-  .stars-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:4px}
-  .starbtn{display:flex;align-items:center;gap:14px;padding:18px 17px;background:#f8fafc;
-    border:2px solid var(--line);border-radius:16px;cursor:pointer;transition:.14s;text-align:left}
-  .starbtn:hover{border-color:var(--faint)}
-  .starbtn.on{border-color:var(--warn);background:var(--warn-bg)}
-  .starbtn .dot{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(0,0,0,.15)}
-  .starbtn .info{line-height:1.3}
-  .starbtn .nm{font-size:20px;font-weight:700}
-  .starbtn .tp{font-size:17px;color:var(--dim);font-variant-numeric:tabular-nums}
+  .stars-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:4px}
+  .starcard{padding:20px 20px 22px;background:#f8fafc;border:2px solid var(--line);border-radius:16px}
+  .starcard .nm{font-size:21px;font-weight:700;margin-bottom:4px}
+  .starcard .tp{font-size:18px;color:var(--dim);font-variant-numeric:tabular-nums;margin-bottom:14px}
+  .starcard select{width:100%;background:#fff;border:2px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:12px 13px;font-family:inherit;font-size:19px;cursor:pointer}
+  .starcard select:disabled{opacity:.75;cursor:default}
+  .starcard-reveal{display:none;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line2)}
+  .starcard-reveal.show{display:block}
+  .starcard-feedback{font-size:19px;font-weight:800;margin-bottom:12px}
+  .starcard-feedback.correct{color:var(--accent)}
+  .starcard-feedback.wrong{color:var(--bad)}
+  .starcard-photo{width:100%;border-radius:12px;display:block;background:#e2e8f0;object-fit:cover;max-height:220px}
+  .starcard-swatchrow{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .starcard-swatch{width:24px;height:24px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(0,0,0,.15)}
+  .starcard-colorname{font-size:18px;font-weight:700}
+  .starcard-note{font-size:15px;color:var(--dim);line-height:1.5;margin-top:10px}
+  .starcard-credit{font-size:13px;color:var(--faint);margin-top:8px}
 
   .note{margin-top:16px;padding:19px 21px;background:#f8fafc;
     border-left:4px solid var(--warn);border-radius:0 12px 12px 0;
@@ -99,11 +156,16 @@
 
   .q{margin-bottom:22px}
   .q label{display:block;font-size:23px;font-weight:700;margin-bottom:13px;line-height:1.5}
-  .q textarea,.q input[type=text]{
+  .q textarea,.q input[type=text],.q select{
     width:100%;background:#f8fafc;border:2px solid var(--line);color:var(--ink);border-radius:12px;
     padding:16px;font-family:inherit;font-size:22px;line-height:1.55;outline:none}
   .q textarea{resize:vertical;min-height:100px}
-  .q textarea:focus,.q input[type=text]:focus{outline:none;border-color:var(--warn);background:#fff}
+  .q select{cursor:pointer}
+  .q textarea:focus,.q input[type=text]:focus,.q select:focus{outline:none;border-color:var(--warn);background:#fff}
+  .q-split{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+  .q-split .q-text{flex:1 1 320px;min-width:260px}
+  .q-split .q-img{flex:0 1 260px;min-width:180px}
+  .q-split .q-img img{width:100%;border-radius:12px;display:block}
 
   .done-btn{width:100%;margin-top:4px;padding:22px;border-radius:16px;border:none;background:var(--accent);color:#fff;
     font-weight:800;font-size:25px;cursor:pointer;font-family:inherit;box-shadow:0 2px 5px rgba(21,163,74,.22)}
@@ -150,11 +212,72 @@
   </header>
 
   <div class="story">
-    화성까지의 거리는 <b>빛의 속력</b>으로, 별까지의 거리는 <b>연주시차</b>로 구했다.
-    그렇게 찾아낸 프록시마 센타우리·시리우스·트라피스트-1 — 이 별들은 색깔도 저마다 다르다.
-    온도계를 꽂을 수 없는 별의 <b>색</b>은 무엇을 알려줄까?
+    연주시차로 거리를 재고, 등급으로 밝기를 나타내는 법까지 익힌 워트니에게 낯선 자료 하나가 도착했다.
+    지금은 노랗게 빛나는 태양이, 수십억 년 뒤에는 크게 부풀어 오르며 <b>붉게</b> 변할 거라는 예측이었다.
+    같은 별인데, 시간이 흐르면 색깔까지 달라진다니 — 그렇다면 별의 <b>색</b>은 대체 무엇이 정하는 걸까?
   </div>
 
+  <div class="tabnav">
+    <button class="tabbtn on" data-tab="tab1" type="button">1. 불꽃은 왜 색이 다를까?</button>
+    <button class="tabbtn" data-tab="tab2" type="button">2. 별의 색과 온도</button>
+    <button class="tabbtn" data-tab="tab3" type="button">3. 색깔, 어떻게 알아냈을까?</button>
+  </div>
+
+  <!-- ===== 탭 1: 호기심 유발 ===== -->
+  <div class="tabpanel show" id="tab1">
+    <div class="story" style="border-left-color:var(--info)">
+      가스레인지를 켜면 불꽃이 보인다. 가만히 보면 <b>안쪽은 파란빛</b>, <b>바깥쪽 끝은 주황빛</b>이 도는 걸 볼 수 있다.
+      같은 불꽃인데 왜 부분마다 색이 다를까? <b>어느 쪽이 더 뜨거울까?</b>
+    </div>
+
+    <div class="flamebox">
+      <div class="flame-unit" style="max-width:520px">
+        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAEZAfQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD4yooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKdSAZoAMUYqTy+KaUxRcrkYyinU2gkKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigA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" alt="가스레인지 불꽃 사진 — 안쪽은 파란색, 바깥쪽 끝은 주황색"
+          style="width:100%;border-radius:14px;display:block">
+      </div>
+    </div>
+
+    <div class="panel hookq">
+      <h2 class="big"><span class="qnum">1.</span> 불꽃 안쪽과 바깥쪽의 색깔이 다른 이유는 무엇일까요?</h2>
+      <select id="hookQ1">
+        <option value="">선택하세요</option>
+        <option value="oxygen">산소 공급량(연소되는 정도)이 달라서</option>
+        <option value="gas">사용하는 가스의 종류가 달라서</option>
+        <option value="pos">불꽃 위치에 따라 원래 그렇게 보일 뿐, 특별한 이유는 없다</option>
+      </select>
+      <div class="hook-reveal" id="hookReveal1">
+        <div class="hook-verdict" id="hookVerdict1"></div>
+        <div id="hookHint1" style="display:none">불꽃 안쪽과 바깥쪽 중 어디에 산소가 더 잘 공급될지 생각해보세요.</div>
+        <div id="hookAnswer1" style="display:none">
+          <b>정답: 산소 공급량 차이</b>예요. 불꽃 안쪽은 산소가 충분히 공급되어 완전 연소가 일어나고,
+          바깥쪽 끝은 산소가 상대적으로 부족해 불완전 연소가 일어나요. 그래서 같은 불꽃인데도 부분마다 색이 달라요.
+        </div>
+      </div>
+
+      <div id="hookQ2Box" style="display:none;margin-top:24px">
+        <h2 class="big"><span class="qnum">2.</span> 그렇다면 안쪽(파란색)과 바깥쪽(주황색) 중, 어느 쪽 온도가 더 높을까요?</h2>
+        <select id="hookQ2">
+          <option value="">선택하세요</option>
+          <option value="inner">안쪽(파란색)이 더 높다</option>
+          <option value="outer">바깥쪽(주황색)이 더 높다</option>
+          <option value="same">온도는 같고 색만 다르다</option>
+        </select>
+        <div class="hook-reveal" id="hookReveal2">
+          <div class="hook-verdict" id="hookVerdict2"></div>
+          <div id="hookHint2" style="display:none">완전 연소와 불완전 연소 중 어느 쪽이 더 활발하게 타오르는지 떠올려보세요.</div>
+          <div id="hookAnswer2" style="display:none">
+            <b>정답: 안쪽(파란색)</b>이 더 뜨거워요. 완전 연소가 일어나는 안쪽이 불완전 연소가 일어나는 바깥쪽보다 온도가 높아요.<br><br>
+            그렇다면 <b>별</b>은 어떤 원리를 따를까요? 별의 색깔을 보고 표면 온도를 짐작할 수 있을까요?
+            다음 탭에서 직접 온도를 움직여보며 확인해볼까요?
+            <div><button class="tab-next" data-goto="tab2" type="button">다음 탭으로 →</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 탭 2: 별의 색과 온도 ===== -->
+  <div class="tabpanel" id="tab2">
   <div class="starbox">
     <canvas class="starfield" id="starfield"></canvas>
     <div class="star-wrap">
@@ -174,17 +297,13 @@
     <div class="slider-track">
       <input type="range" id="temp" min="2500" max="30000" value="5800" step="100">
     </div>
-    <div class="scale-labels">
-      <span class="cool">◀ 온도 낮음</span>
-      <span class="hot">온도 높음 ▶</span>
-    </div>
   </div>
 
   <div class="panel">
     <h2>실제 별로 맞춰보기</h2>
     <div class="stars-list" id="starsList"></div>
     <div class="note" id="starNote">
-      버튼을 누르면 그 별의 온도로 이동해요.
+      별 이름과 표면 온도만 보고, 어떤 색으로 보일지 먼저 골라보세요. 고르면 실제 사진과 정답이 함께 나와요.
     </div>
   </div>
 
@@ -211,18 +330,124 @@
     <div class="privacy-note">※ 제출한 내용은 선생님이 확인할 수 있어요. 이름 대신 번호만 입력해주세요.</div>
 
     <div class="q">
-      <label for="answer">질문 1. 별의 표면 온도와 별빛의 색 사이에는 어떤 관계가 있는지 서술하시오.</label>
+      <label for="answer"><span class="qnum">질문 1.</span> 별의 표면 온도와 별빛의 색 사이에는 어떤 관계가 있는지 서술하시오.</label>
       <textarea id="answer" placeholder="관찰한 별들을 근거로 써 보세요."></textarea>
     </div>
 
     <div class="q">
-      <label for="trappistColor">질문 2. 트라피스트-1은 지구 크기 암석 행성 7개를 거느린 '제2의 태양계' 후보다. 만약 우리가 정말 이 별로 이주한다면, 하늘에 뜬 '태양'은 지금 우리가 보는 태양과는 다른 색으로 빛날 것이다 — 트라피스트-1의 표면 온도는 약 2600K로, 우리 태양(5800K)보다 훨씬 낮기 때문이다. 이 별은 어떤 색으로 보일까?</label>
+      <label for="trappistColor"><span class="qnum">질문 2.</span> 트라피스트-1은 지구 크기 암석 행성 7개를 거느린 '제2의 태양계' 후보다. 만약 우리가 정말 이 별로 이주한다면, 하늘에 뜬 '태양'은 지금 우리가 보는 태양과는 다른 색으로 빛날 것이다 — 트라피스트-1의 표면 온도는 약 2600K로, 우리 태양(5800K)보다 훨씬 낮기 때문이다. 이 별은 어떤 색으로 보일까?</label>
       <input type="text" id="trappistColor" placeholder="예: ○○색" autocomplete="off">
+    </div>
+
+    <div class="q">
+      <div class="q-split">
+        <div class="q-text">
+          <label for="betelgeuseTemp"><span class="qnum">질문 3.</span> 오른쪽 사진은 오리온자리예요. 왼쪽 위의 붉게 빛나는 별이 <b>베텔게우스</b>예요. 베텔게우스의 표면 온도는 몇 K 정도일까요?</label>
+          <select id="betelgeuseTemp">
+            <option value="">선택하세요</option>
+            <option value="3500">약 3,500 K</option>
+            <option value="5800">약 5,800 K</option>
+            <option value="10000">약 10,000 K</option>
+            <option value="20000">약 20,000 K</option>
+          </select>
+        </div>
+        <div class="q-img">
+          <img src="https://assets.science.nasa.gov/content/dam/science/missions/hubble/releases/2006/01/STScI-01EVT7TPK68JNDV935N42F4N2K.jpg"
+            alt="오리온자리 사진 — 왼쪽 위 붉은 별이 베텔게우스, 오른쪽 아래 파란 별이 리겔">
+        </div>
+      </div>
     </div>
 
     <button class="done-btn" id="submitBtn">제출하기</button>
     <div class="tstatus" id="submitStatus" style="font-size:21px"></div>
   </div>
+  </div>
+  <!-- ===== /탭 2 ===== -->
+
+  <!-- ===== 탭 3: 설명 글 ===== -->
+  <div class="tabpanel" id="tab3">
+    <div class="explain-section">
+      <div class="explain-title"><span class="explain-num">1</span>눈에 보이는 색이 첫 번째 단서예요</div>
+      <div class="explain-body">
+        망원경으로 밤하늘을 보면 별마다 색이 조금씩 달라요. 오리온자리의 베텔게우스는 붉고, 리겔은 푸르스름하죠.
+        이건 쇠막대기를 불에 달굴 때와 같은 원리예요. 쇠막대기는 온도가 오를수록
+        <b>어두운 색 → 붉은색 → 주황색 → 노란색 → 흰색 → 푸른빛이 도는 흰색</b> 순서로 색이 바뀌어요.
+        별도 마찬가지로, <b>표면 온도가 낮을수록 붉은빛</b>, <b>높을수록 푸른빛</b>을 내요.
+      </div>
+      <div class="diagram">
+        <svg viewBox="0 0 640 160">
+          <rect x="20" y="60" width="600" height="34" rx="17"
+            fill="url(#rodGrad)"/>
+          <defs>
+            <linearGradient id="rodGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#3a3f4a"/>
+              <stop offset="22%" stop-color="#c9432f"/>
+              <stop offset="42%" stop-color="#e8823a"/>
+              <stop offset="62%" stop-color="#f4d773"/>
+              <stop offset="82%" stop-color="#f5f6f0"/>
+              <stop offset="100%" stop-color="#bcd4ff"/>
+            </linearGradient>
+          </defs>
+          <text x="40" y="130" font-size="16" fill="#5a6478">어두움</text>
+          <text x="175" y="130" font-size="16" fill="#5a6478">붉은색</text>
+          <text x="305" y="130" font-size="16" fill="#5a6478">주황색</text>
+          <text x="425" y="130" font-size="16" fill="#5a6478">노란색</text>
+          <text x="545" y="130" font-size="16" fill="#5a6478">흰색·푸른빛</text>
+          <text x="320" y="30" font-size="18" fill="#16202f" text-anchor="middle" font-weight="700">쇠막대기를 계속 가열하면...</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="explain-section">
+      <div class="explain-title"><span class="explain-num">2</span>하지만 눈이나 사진만으로는 정확하지 않아요</div>
+      <div class="explain-body">
+        사람 눈과 카메라는 밝기에 예민해서, 아주 밝은 별은 실제 색과 상관없이 하얗게만 보이기 쉬워요
+        (탭2의 시리우스 사진을 떠올려보세요). 그래서 과학자들은 색을 "느낌"이 아니라 <b>숫자로 정확히 재는 방법</b>을 씁니다.
+      </div>
+    </div>
+
+    <div class="explain-section">
+      <div class="explain-title"><span class="explain-num">3</span>별빛을 '분광기'로 쪼개서 분석해요</div>
+      <div class="explain-body">
+        프리즘이 햇빛을 무지개색으로 쪼개듯, 과학자들은 <b>분광기</b>라는 장비로 별빛을 쪼개서
+        어떤 색이 얼마나 섞여 있는지 정밀하게 측정해요. 이렇게 얻은 빛의 파장별 밝기 그래프를 보면
+        별이 가장 강하게 내뿜는 빛의 색(파장)을 알 수 있고, 이 값을 물리 법칙에 대입하면
+        <b>표면 온도를 거꾸로 계산</b>할 수 있어요. 즉 "색을 재서 온도를 구한다"기보다,
+        <b>빛을 정밀하게 분석해 온도를 먼저 구하고, 그 온도로 색을 설명</b>하는 것에 가까워요.
+      </div>
+      <div class="diagram">
+        <svg viewBox="0 0 640 200">
+          <line x1="20" y1="100" x2="130" y2="100" stroke="#f5f6f0" stroke-width="4"/>
+          <polygon points="130,60 175,100 130,140" fill="#dfe6f0" stroke="#94a0b4" stroke-width="2"/>
+          <line x1="175" y1="100" x2="230" y2="60" stroke="#d63c33" stroke-width="3"/>
+          <line x1="175" y1="100" x2="230" y2="76" stroke="#e8823a" stroke-width="3"/>
+          <line x1="175" y1="100" x2="230" y2="92" stroke="#e8d23a" stroke-width="3"/>
+          <line x1="175" y1="100" x2="230" y2="108" stroke="#3aa15a" stroke-width="3"/>
+          <line x1="175" y1="100" x2="230" y2="124" stroke="#2563c9" stroke-width="3"/>
+          <line x1="175" y1="100" x2="230" y2="140" stroke="#7a3ae8" stroke-width="3"/>
+          <text x="55" y="90" font-size="16" fill="#5a6478" text-anchor="middle">별빛</text>
+          <text x="150" y="35" font-size="16" fill="#5a6478" text-anchor="middle">분광기</text>
+
+          <g transform="translate(260,20)">
+            <line x1="0" y1="150" x2="360" y2="150" stroke="#94a0b4" stroke-width="2"/>
+            <line x1="0" y1="150" x2="0" y2="10" stroke="#94a0b4" stroke-width="2"/>
+            <path d="M0,140 C60,135 90,20 150,20 C210,20 260,140 360,145"
+              fill="none" stroke="#d9670f" stroke-width="4"/>
+            <text x="180" y="180" font-size="16" fill="#5a6478" text-anchor="middle">파장(색)</text>
+            <text x="-14" y="80" font-size="16" fill="#5a6478" text-anchor="middle" transform="rotate(-90 -14 80)">밝기</text>
+            <text x="150" y="10" font-size="15" fill="#d9670f" text-anchor="middle" font-weight="700">가장 강한 파장 = 표면 온도</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="explain-summary">
+      <b>정리.</b> 별빛을 분광기로 정밀하게 분석하면, 별이 가장 강하게 내는 빛의 색을 알 수 있어요.
+      이 색은 표면 온도에 따라 정해지기 때문에(마치 달궈지는 쇠막대기처럼), 과학자들은 빛을 분석해서
+      별의 정확한 표면 온도와 색을 알아냅니다.
+    </div>
+  </div>
+  <!-- ===== /탭 3 ===== -->
 
   <div class="teacher-link">
     <button id="teacherToggle" type="button">교사용 보기</button>
@@ -253,7 +478,7 @@
     <div class="tstatus" id="copyStatus"></div>
     <div class="ttable-wrap">
       <table class="ttable" id="ttable">
-        <thead><tr><th>반</th><th>번호</th><th>질문1 답안</th><th>질문2(트라피스트 색)</th><th>제출 시각</th></tr></thead>
+        <thead><tr><th>반</th><th>번호</th><th>질문1 답안</th><th>질문2(트라피스트 색)</th><th>질문3(베텔게우스 온도)</th><th>제출 시각</th></tr></thead>
         <tbody id="ttableBody"></tbody>
       </table>
       <div class="tempty" id="ttableEmpty" style="display:none">아직 제출된 응답이 없어요.</div>
@@ -299,8 +524,63 @@
 (function(){
   "use strict";
 
+  // ---- 탭 전환 ----
+  var tabBtns = [].slice.call(document.querySelectorAll('.tabbtn'));
+  var tabPanels = [].slice.call(document.querySelectorAll('.tabpanel'));
+  function showTab(id){
+    tabBtns.forEach(function(b){ b.classList.toggle('on', b.dataset.tab===id); });
+    tabPanels.forEach(function(p){ p.classList.toggle('show', p.id===id); });
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(id === 'tab2' && typeof drawField === 'function') setTimeout(drawField, 30);
+  }
+  tabBtns.forEach(function(b){
+    b.addEventListener('click', function(){ showTab(b.dataset.tab); });
+  });
+  [].slice.call(document.querySelectorAll('.tab-next')).forEach(function(b){
+    b.addEventListener('click', function(){ showTab(b.dataset.goto); });
+  });
+
+  // ---- 탭1: 불꽃 호기심 질문 (1번→2번 순차 공개) ----
+  var hookQ1 = document.getElementById('hookQ1');
+  var hookReveal1 = document.getElementById('hookReveal1');
+  var hookVerdict1 = document.getElementById('hookVerdict1');
+  var hookHint1 = document.getElementById('hookHint1');
+  var hookAnswer1 = document.getElementById('hookAnswer1');
+  var hookQ2Box = document.getElementById('hookQ2Box');
+  var hookQ2 = document.getElementById('hookQ2');
+  var hookReveal2 = document.getElementById('hookReveal2');
+  var hookVerdict2 = document.getElementById('hookVerdict2');
+  var hookHint2 = document.getElementById('hookHint2');
+  var hookAnswer2 = document.getElementById('hookAnswer2');
+
+  if(hookQ1){
+    hookQ1.addEventListener('change', function(){
+      var v = hookQ1.value;
+      if(!v){ hookReveal1.classList.remove('show'); hookQ2Box.style.display='none'; return; }
+      var correct = (v === 'oxygen');
+      hookVerdict1.textContent = correct ? '정답이에요!' : '아쉬워요.';
+      hookVerdict1.className = 'hook-verdict ' + (correct ? 'correct' : 'wrong');
+      hookHint1.style.display = correct ? 'none' : 'block';
+      hookAnswer1.style.display = correct ? 'block' : 'none';
+      hookReveal1.classList.add('show');
+      hookQ2Box.style.display = 'block';
+    });
+  }
+  if(hookQ2){
+    hookQ2.addEventListener('change', function(){
+      var v = hookQ2.value;
+      if(!v){ hookReveal2.classList.remove('show'); return; }
+      var correct = (v === 'inner');
+      hookVerdict2.textContent = correct ? '정답이에요!' : '아쉬워요.';
+      hookVerdict2.className = 'hook-verdict ' + (correct ? 'correct' : 'wrong');
+      hookHint2.style.display = correct ? 'none' : 'block';
+      hookAnswer2.style.display = correct ? 'block' : 'none';
+      hookReveal2.classList.add('show');
+    });
+  }
+
   // 온도(K) → RGB. 실제 흑체색은 저온에서도 채도가 낮아 학생들이 색을 구분하기 어려움 →
-  // 프록시마(빨강)·아크투루스(주황)·태양(노랑)·시리우스(흰색)·리겔(청백색)·스피카(파랑)가
+  // 프록시마(빨강)·아크투루스(주황)·태양(노랑)·시리우스(흰색)·리겔·스피카(청백색)가
   // 뚜렷이 구분되도록 만든 교육용 색상 기준점(키프레임) 사이를 보간한다.
   var TEMP_KEYFRAMES = [
     {t:2500,  c:[255, 60, 40]},
@@ -336,22 +616,34 @@
   }
 
   function colorName(k){
-    if(k<3600) return '붉은색';
-    if(k<4700) return '주황색';
-    if(k<6300) return '노란색';
-    if(k<9000) return '흰빛 노란색';
-    if(k<11000) return '흰색';
-    if(k<20000) return '청백색';
+    if(k<3900) return '붉은색';
+    if(k<5300) return '주황색';
+    if(k<6000) return '노란색';
+    if(k<7500) return '흰빛 노란색';
+    if(k<10000) return '흰색';
+    if(k<30000) return '청백색';
     return '파란색';
   }
 
+  var COLOR_OPTIONS = ['붉은색','주황색','노란색','흰빛 노란색','흰색','청백색','파란색'];
+
   var STARS = [
-    {nm:'프록시마 센타우리', t:3042, note:'태양에서 가장 가까운 별. 표면 온도가 낮은 편이라 붉게 보여요.'},
-    {nm:'아크투루스', t:4286, note:'목동자리의 별. 봄철 북반구에서 가장 밝게 보이는 별 중 하나로, 주황색으로 빛나요.'},
-    {nm:'태양', t:5778, note:'우리 별. 노란색으로 보이며 표면 온도는 약 5,800 K예요. 딱 중간이에요.'},
-    {nm:'시리우스', t:9940, note:'밤하늘에서 가장 밝은 별. 흰색으로 태양보다 훨씬 뜨거워요.'},
-    {nm:'리겔', t:12100, note:'오리온자리의 별. 표면 온도가 매우 높아 청백색으로 빛나요.'},
-    {nm:'스피카', t:22400, note:'처녀자리의 별. 매우 뜨거운 표면 온도를 가져 파랗게 빛나요.'}
+    {nm:'프록시마 센타우리', t:3000, color:'붉은색',
+      photo:'https://apod.nasa.gov/apod/image/0512/proximacen1_aao.jpg',
+      credit:'David Malin, UK Schmidt Telescope, DSS, AAO (NASA APOD)', note:'태양에서 가장 가까운 별이에요.'},
+    {nm:'아크투루스', t:4300, color:'주황색',
+      note:'너무 멀어 망원경으로도 점처럼만 보여서, 실제 사진 대신 정확한 색으로 대신 보여드려요.'},
+    {nm:'태양', t:5800, color:'노란색',
+      photo:'data:image/jpeg;base64,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',
+      credit:'NASA', note:'백색광으로 찍은 실제 태양 표면 사진이에요. 검게 보이는 점들은 흑점이에요.'},
+    {nm:'시리우스', t:9900, color:'흰색',
+      photo:'https://apod.nasa.gov/apod/image/0006/siriushb_jcc.jpg',
+      credit:'Juan Carlos Casado (NASA APOD)', note:'밤하늘에서 가장 밝게 보이는 별이에요. 사진 왼쪽의 밝은 점이 시리우스예요.'},
+    {nm:'리겔', t:12000, color:'청백색',
+      photo:'https://assets.science.nasa.gov/content/dam/science/missions/hubble/releases/2006/01/STScI-01EVT7TPK68JNDV935N42F4N2K.jpg',
+      credit:'A. Fujii (NASA/Hubble)', note:'오른쪽 아래 파랗게 빛나는 별이 리겔, 왼쪽 위 붉은 별은 베텔게우스예요.'},
+    {nm:'스피카', t:22000, color:'청백색',
+      note:'너무 멀어 망원경으로도 점처럼만 보여서, 실제 사진 대신 정확한 색으로 대신 보여드려요.'}
   ];
 
   var el = {
@@ -374,26 +666,57 @@
     el.tempSlideVal.textContent = k;
     el.colorName.textContent = colorName(k);
     el.colorName.style.color = css;
-    // 실제 별 버튼 활성화
-    [].forEach.call(el.starsList.children,function(btn){
-      btn.classList.toggle('on', +btn.dataset.t===k);
-    });
   }
 
   el.temp.addEventListener('input',function(){ update(+this.value); });
 
-  STARS.forEach(function(s){
-    var rgb=tempToRGB(s.t);
-    var css='rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
-    var btn=document.createElement('div');
-    btn.className='starbtn'; btn.dataset.t=s.t;
-    btn.innerHTML='<span class="dot" style="background:'+css+';box-shadow:0 0 10px '+css+'"></span>'+
-      '<span class="info"><span class="nm">'+s.nm+'</span><br><span class="tp">'+s.t.toLocaleString()+' K</span></span>';
-    btn.addEventListener('click',function(){
-      el.temp.value=s.t; update(s.t);
-      el.starNote.innerHTML='<b>'+s.nm+'</b> · '+s.note;
+  var colorOptionsHTML = '<option value="">선택하세요</option>' +
+    COLOR_OPTIONS.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
+
+  STARS.forEach(function(s, idx){
+    var rgb = tempToRGB(s.t);
+    var css = 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
+
+    var card = document.createElement('div');
+    card.className = 'starcard';
+
+    var selectId = 'starGuess'+idx;
+    var photoHTML = s.photo
+      ? '<img class="starcard-photo" alt="'+s.nm+' 실제 사진" src="'+s.photo+'">'
+      : '';
+    var creditHTML = s.credit
+      ? '<div class="starcard-credit">사진 출처: '+s.credit+'</div>'
+      : '';
+    card.innerHTML =
+      '<div class="nm">'+s.nm+'</div>' +
+      '<div class="tp">표면 온도 '+s.t.toLocaleString()+' K</div>' +
+      '<select id="'+selectId+'">'+colorOptionsHTML+'</select>' +
+      '<div class="starcard-reveal" id="'+selectId+'-reveal">' +
+        '<div class="starcard-feedback" id="'+selectId+'-fb"></div>' +
+        photoHTML +
+        '<div class="starcard-swatchrow">' +
+          '<span class="starcard-swatch" style="background:'+css+';box-shadow:0 0 8px '+css+'"></span>' +
+          '<span class="starcard-colorname">실제 색: '+s.color+'</span>' +
+        '</div>' +
+        '<div class="starcard-note">'+s.note+'</div>' +
+        creditHTML +
+      '</div>';
+
+    el.starsList.appendChild(card);
+
+    var selectEl = card.querySelector('#'+selectId);
+    var revealEl = card.querySelector('#'+selectId+'-reveal');
+    var fbEl = card.querySelector('#'+selectId+'-fb');
+
+    selectEl.addEventListener('change', function(){
+      var guess = selectEl.value;
+      if(!guess) { revealEl.classList.remove('show'); return; }
+      var correct = (guess === s.color);
+      fbEl.textContent = correct ? '정답이에요!' : ('오답이에요. 정답은 '+s.color+'이에요.');
+      fbEl.className = 'starcard-feedback ' + (correct ? 'correct' : 'wrong');
+      revealEl.classList.add('show');
+      selectEl.disabled = true;
     });
-    el.starsList.appendChild(btn);
   });
 
   // 배경 별 뿌리기
@@ -424,6 +747,7 @@
     sid: document.getElementById('sid'),
     answer: document.getElementById('answer'),
     trappistColor: document.getElementById('trappistColor'),
+    betelgeuseTemp: document.getElementById('betelgeuseTemp'),
     submitBtn: document.getElementById('submitBtn'),
     status: document.getElementById('submitStatus')
   };
@@ -442,11 +766,13 @@
     var sid = sanitizeId(elS.sid.value);
     var answer = elS.answer.value.trim();
     var trappistColor = elS.trappistColor.value.trim();
+    var betelgeuseTemp = elS.betelgeuseTemp.value;
 
     if(!classNum){ showStatus('반을 선택해주세요.', false); return; }
     if(!sid){ showStatus('번호를 입력해주세요.', false); return; }
     if(answer.length < 8){ showStatus('온도와 색의 관계를 조금 더 자세히 서술해주세요.', false); return; }
     if(!trappistColor){ showStatus('질문 2에 트라피스트-1의 색을 답해주세요.', false); return; }
+    if(!betelgeuseTemp){ showStatus('질문 3에 베텔게우스의 표면 온도를 골라주세요.', false); return; }
 
     elS.submitBtn.disabled = true;
     elS.submitBtn.textContent = '제출 중...';
@@ -456,6 +782,7 @@
       studentId: sid,
       answer: answer,
       trappistColor: trappistColor,
+      betelgeuseTemp: betelgeuseTemp,
       ts: new Date().toISOString()
     };
 
@@ -522,7 +849,7 @@
     elT.body.innerHTML = rows.map(function(r){
       var time = new Date(r.ts).toLocaleString('ko-KR');
       var cls = r.classNum ? r.classNum+'반' : '-';
-      return '<tr><td>'+esc(cls)+'</td><td>'+esc(r.studentId)+'</td><td>'+esc(r.answer)+'</td><td>'+esc(r.trappistColor||'')+'</td><td>'+time+'</td></tr>';
+      return '<tr><td>'+esc(cls)+'</td><td>'+esc(r.studentId)+'</td><td>'+esc(r.answer)+'</td><td>'+esc(r.trappistColor||'')+'</td><td>'+esc(r.betelgeuseTemp?(r.betelgeuseTemp+' K'):'')+'</td><td>'+time+'</td></tr>';
     }).join('');
   }
 
@@ -538,11 +865,11 @@
   });
 
   function loadSubmissions(){
-    elT.body.innerHTML = '<tr><td colspan="5" style="color:var(--faint)">불러오는 중...</td></tr>';
+    elT.body.innerHTML = '<tr><td colspan="6" style="color:var(--faint)">불러오는 중...</td></tr>';
     elT.empty.style.display = 'none';
 
     if(!window.storage || typeof window.storage.list !== 'function'){
-      elT.body.innerHTML = '<tr><td colspan="5" style="color:var(--warn, #f0883e)">저장 기능을 쓸 수 없는 화면이에요. Claude가 안내한 링크로 열어주세요.</td></tr>';
+      elT.body.innerHTML = '<tr><td colspan="6" style="color:var(--warn, #f0883e)">저장 기능을 쓸 수 없는 화면이에요. Claude가 안내한 링크로 열어주세요.</td></tr>';
       return;
     }
 
@@ -550,7 +877,7 @@
     var timer = setTimeout(function(){
       if(done) return;
       done = true;
-      elT.body.innerHTML = '<tr><td colspan="5" style="color:var(--warn, #f0883e)">응답이 없어요. 인터넷 연결을 확인하고 새로고침을 눌러보세요.</td></tr>';
+      elT.body.innerHTML = '<tr><td colspan="6" style="color:var(--warn, #f0883e)">응답이 없어요. 인터넷 연결을 확인하고 새로고침을 눌러보세요.</td></tr>';
     }, 8000);
 
     Promise.resolve().then(function(){
@@ -583,7 +910,7 @@
     }).catch(function(){
       if(done) return;
       done = true; clearTimeout(timer);
-      elT.body.innerHTML = '<tr><td colspan="5" style="color:var(--warn, #f0883e)">불러오기에 실패했어요. 새로고침을 눌러보세요.</td></tr>';
+      elT.body.innerHTML = '<tr><td colspan="6" style="color:var(--warn, #f0883e)">불러오기에 실패했어요. 새로고침을 눌러보세요.</td></tr>';
     });
   }
 
@@ -664,9 +991,9 @@
 
   elT.copy.addEventListener('click', function(){
     if(lastRows.length === 0){ showCopyStatus('복사할 데이터가 없어요.', false); return; }
-    var tsv = '반\t번호\t질문1 답안\t질문2(트라피스트 색)\t제출 시각\n' + lastRows.map(function(r){
+    var tsv = '반\t번호\t질문1 답안\t질문2(트라피스트 색)\t질문3(베텔게우스 온도)\t제출 시각\n' + lastRows.map(function(r){
       var cls = r.classNum ? r.classNum+'반' : '-';
-      return [cls, r.studentId, r.answer.replace(/\t/g,' '), (r.trappistColor||''), new Date(r.ts).toLocaleString('ko-KR')].join('\t');
+      return [cls, r.studentId, r.answer.replace(/\t/g,' '), (r.trappistColor||''), (r.betelgeuseTemp?(r.betelgeuseTemp+' K'):''), new Date(r.ts).toLocaleString('ko-KR')].join('\t');
     }).join('\n');
 
     // 1) 동기 execCommand 먼저 시도(클릭 이벤트 안에서 바로 실행되어 가장 안정적)
