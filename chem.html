@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>화학 반응식과 질량 보존 법칙 — 아레스 4 프로젝트</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --panel:#ffffff; --line:#d3dbe6; --line2:#e2e8f0;
+    --ink:#16202f; --dim:#5a6478; --faint:#94a0b4;
+    --accent:#15a34a; --accent-bg:#e7f7ee; --accent-line:#a7e0be;
+    --warn:#d9670f; --warn-bg:#fdf0e4; --warn-line:#f2c79a;
+    --bad:#d63c33; --bad-bg:#fdeceb; --bad-line:#f2b3ae;
+    /* 원자별 고유 색상 명확화 (CPK 색상표 참고) */
+    --H:#f8fafc; /* 수소: 흰색/매우 밝은 회색 */
+    --O:#ef4444; /* 산소: 빨강 */
+    --C:#334155; /* 탄소: 어두운 회색 */
+    --N:#3b82f6; /* 질소: 파랑 */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:'Segoe UI','Malgun Gothic',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 20px 70px}
+
+  header{margin-bottom:22px}
+  .eyebrow{font-size:20px;letter-spacing:.2em;color:var(--warn);
+    text-transform:uppercase;font-weight:800;margin-bottom:10px}
+  h1{font-size:46px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+
+  .missions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .mtab{flex:1;min-width:180px;padding:20px 18px;background:var(--panel);
+    border:2px solid var(--line);border-radius:16px;cursor:pointer;transition:.14s;text-align:left;
+    box-shadow:0 1px 2px rgba(20,30,50,.04)}
+  .mtab:hover{border-color:var(--faint)}
+  .mtab.on{border-color:var(--accent);background:var(--accent-bg)}
+  .mtab.advanced{border-left:4px solid var(--warn)}
+  .mtab.advanced.on{border-color:var(--warn);background:var(--warn-bg)}
+  .mtab .mt-n{font-size:14px;letter-spacing:.08em;color:var(--faint);font-weight:700;text-transform:uppercase}
+  .mtab.on .mt-n{color:var(--accent)}
+  .mtab.advanced.on .mt-n{color:var(--warn)}
+  .mtab .mt-t{font-size:22px;font-weight:700;margin-top:6px;line-height:1.3}
+  .mtab .mt-d{font-size:17px;color:var(--dim);margin-top:6px}
+  .mtab .mt-check{display:inline-block;margin-left:6px;color:var(--accent);font-weight:800}
+
+  /* ---- 학생 신원 바 ---- */
+  .idbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+  .idbar label{font-size:20px;font-weight:700;color:var(--dim);white-space:nowrap}
+  .idbar select, .idbar input[type=text]{
+    background:#f8fafc;border:1px solid var(--line);border-radius:10px;color:var(--ink);
+    font-family:inherit;font-size:22px;padding:11px 14px;outline:none}
+  .idbar select{width:120px}
+  .idbar input[type=text]{width:110px}
+  .idbar .savenote{margin-left:auto;font-size:17px;color:var(--faint)}
+  .idbar .savenote.active{color:var(--accent)}
+
+  .story{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--warn);
+    border-radius:0 16px 16px 0;padding:20px 24px;margin-bottom:22px;font-size:24px;line-height:1.6;color:var(--ink)}
+  .story b{color:var(--warn)}
+  .story.advanced-story{border-left-color:var(--accent)}
+  .story.advanced-story b{color:var(--accent)}
+  .story code{background:#eef2f7;padding:3px 8px;border-radius:6px;color:var(--dim);font-family:monospace;font-size:20px}
+
+  /* ---- 반응식·입자 시각화 (밝은 테마) ---- */
+  .eqbox{background:var(--panel);border:1px solid var(--line);border-radius:20px;
+    padding:32px 24px;margin-bottom:16px;color:var(--ink);box-shadow:0 1px 3px rgba(20,30,50,.06)}
+  .equation{display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;
+    gap:12px 10px;font-size:0; margin-bottom:20px}
+  .term{display:inline-flex;align-items:center;gap:6px}
+  .coef{width:56px;height:56px;border:2px solid var(--warn-line);background:#fff;
+    color:var(--warn);font-size:26px;font-weight:800;text-align:center;border-radius:12px;
+    font-family:inherit;transition:.14s;-moz-appearance:textfield}
+  .coef:focus{outline:none;border-color:var(--warn);background:var(--warn-bg)}
+
+  .formgrp{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
+  .formula-input{width:100px;height:56px;border:2px solid var(--warn-line);background:#fff;
+    color:var(--ink);font-size:24px;font-weight:700;text-align:center;border-radius:12px;
+    font-family:inherit;transition:.14s;text-transform:uppercase;}
+  .formula-input:focus{outline:none;border-color:var(--warn);background:var(--warn-bg)}
+  .formula-input::placeholder{color:#c3cad6;font-size:15px;font-weight:400;text-transform:none}
+  .formpreview{min-width:56px;min-height:22px;font-size:20px;font-weight:800;color:var(--warn);
+    background:var(--warn-bg);border:1.5px solid var(--warn-line);border-radius:8px;padding:4px 10px;line-height:1.25}
+  .formpreview.empty{display:none}
+
+  .coef::-webkit-outer-spin-button,.coef::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .molecule{font-size:32px;font-weight:700;letter-spacing:.03em;padding:0 6px;color:var(--ink)}
+  .molecule sub{font-size:18px;font-weight:600;vertical-align:-4px}
+  .op{font-size:30px;font-weight:600;color:var(--faint);padding:0 8px}
+  .arrow{font-size:36px;color:var(--accent);padding:0 12px;font-weight:400}
+
+  /* 입자 모형 영역 */
+  .particle-box{display:flex;align-items:center;justify-content:center;gap:20px;
+    background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:24px;
+    min-height:120px; flex-wrap:wrap;}
+  .p-side{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;flex:1}
+  .p-arrow{font-size:32px;color:var(--faint);font-weight:300}
+  .p-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap; justify-content:center;
+    padding:12px; background:#fff; border-radius:16px; border:1px dashed var(--line);}
+  .p-plus{font-size:24px;color:var(--faint);font-weight:600;margin:0 4px}
+  
+  .p-molecule{display:flex;align-items:center;justify-content:center;position:relative;
+    padding:6px;background:rgba(20,30,50,0.04);border-radius:20px; box-shadow:0 2px 6px rgba(20,30,50,0.08);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+    
+  /* 실제 구조를 가진 분자의 스타일 */
+  .p-molecule.structured {
+    display: block; padding: 0; background: none; box-shadow: none; border-radius: 0;
+  }
+  .p-molecule.structured .p-atom {
+    position: absolute; margin: 0; 
+    transform: translate(-50%, -50%); /* 중심점 기준으로 배치되도록 수정 */
+  }
+
+  /* 기본 원자 스타일 (C, O, N 등) */
+  .p-atom{width:28px;height:28px;border-radius:50%;border:1px solid rgba(0,0,0,0.6);
+    display:flex;justify-content:center;align-items:center;font-size:13px;font-weight:800;
+    color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,0.6);
+    box-shadow:1px 2px 4px rgba(0,0,0,0.5), inset -3px -3px 8px rgba(0,0,0,0.3), inset 2px 2px 4px rgba(255,255,255,0.3);
+    position:relative; z-index:1;}
+  
+  /* 탄소(C)는 어두우므로 테두리를 약간 밝게 처리 */
+  .p-atom.atom-C { border: 1px solid rgba(255,255,255,0.1); }
+  
+  /* 수소(H) 원자 스타일 (크기를 작게, 글자색 어둡게) */
+  .p-atom.atom-H {
+    width:20px; height:20px; font-size:11px;
+    color:rgba(0,0,0,0.8); text-shadow:none;
+    box-shadow:1px 2px 3px rgba(0,0,0,0.4), inset -2px -2px 6px rgba(0,0,0,0.15), inset 2px 2px 4px rgba(255,255,255,0.8);
+  }
+  
+  /* 비구조화(랜덤) 분자일 때만 겹치기 적용 */
+  .p-molecule:not(.structured) .p-atom + .p-atom { margin-left:-8px; }
+  .p-molecule:not(.structured) .p-atom.atom-H + .p-atom.atom-H { margin-left:-5px; } /* 수소끼리는 조금 덜 겹치게 */
+  
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .counts{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;}
+  .side{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:20px}
+  .side h3{font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;margin-bottom:16px;text-align:center}
+  .atomrow{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 0;border-bottom:1px solid var(--line2)}
+  .atomrow:last-child{border-bottom:none}
+  .atomname{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:600}
+  .dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;box-shadow:inset -2px -2px 4px rgba(0,0,0,0.2)}
+  .atomcount{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+  .balance-mid{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}
+  .scale{font-size:36px;transition:.2s}
+  .verdict{font-size:15px;font-weight:700;text-align:center;line-height:1.4;padding:0 4px}
+
+  .status{margin-top:24px;padding:20px 24px;border-radius:16px;font-size:17px;
+    font-weight:600;text-align:center;transition:.18s;line-height:1.6}
+  .status.wait{background:#f8fafc;color:var(--dim)}
+  .status.ok{background:var(--accent-bg);color:#0f5c30;border:1px solid var(--accent-line)}
+  .status.bad{background:var(--bad-bg);color:#a12a22;border:1px solid var(--bad-line)}
+
+  .tools{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .btn{flex:1;min-width:140px;padding:16px;border-radius:12px;border:1px solid var(--line);
+    background:#fff;color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;
+    font-family:inherit;transition:.14s}
+  .btn:hover{border-color:var(--faint);background:#f8fafc}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.08)}
+
+  .hint{margin-top:16px;padding:18px 24px;background:#f8fafc;border-radius:12px;
+    font-size:16px;line-height:1.6;color:var(--dim);display:none;border-left:4px solid var(--faint)}
+  .hint.show{display:block}
+  .hint b{color:var(--ink)}
+  .law{margin-top:24px;font-size:15px;color:var(--faint);text-align:center;line-height:1.5;letter-spacing:0.5px}
+
+  /* ---- 3단계(우리말→화학식→계수) 진행용 ---- */
+  .stepblock{margin-bottom:22px}
+  .stepblock:last-child{margin-bottom:0}
+  .stepblock label{display:block;font-size:20px;font-weight:700;margin-bottom:14px;color:var(--ink)}
+  .stepline{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:10px 6px}
+  .wordinput{width:auto;min-width:96px;max-width:150px;text-transform:none;font-size:19px}
+  .stepnote{margin-top:12px;padding:14px 16px;background:#f8fafc;border-left:4px solid var(--warn);
+    border-radius:0 10px 10px 0;font-size:15px;color:var(--dim);line-height:1.5;text-align:center}
+  .stepnote.ok{border-left-color:var(--accent);background:var(--accent-bg);color:#0f5c30}
+  .stepnote b{color:var(--ink)}
+  .stepcheck{display:block;margin:14px auto 0;padding:13px 28px;border-radius:12px;border:2px solid var(--warn);
+    background:#fff;color:var(--warn);font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;transition:.14s}
+  .stepcheck:hover{background:var(--warn-bg)}
+  .step3-label{display:block;font-size:20px;font-weight:700;margin-bottom:14px;color:var(--ink)}
+  .mainbox-divided{border-top:1px solid var(--line2);padding-top:22px;margin-top:6px}
+
+  /* ---- 교사용 (일정성분비 법칙 형식) ---- */
+  .teacher-link{text-align:center;margin-top:26px}
+  .teacher-link button{background:none;border:none;color:var(--faint);font-size:16px;
+    cursor:pointer;font-family:inherit;padding:6px;text-decoration:underline;text-underline-offset:2px}
+  .teacher-link button:hover{color:var(--dim)}
+  .tgate{display:none;margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .tgate.show{display:block}
+  .tgate input{background:#f8fafc;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 13px;font-family:inherit;font-size:16px}
+  .tgate button{padding:11px 17px;border-radius:10px;border:none;background:var(--warn);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;margin-left:8px}
+  .tpanel{display:none;margin-top:16px}
+  .tpanel.show{display:block}
+  .tbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+  .tbar h2{font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700}
+  .tbtns{display:flex;gap:9px;flex-wrap:wrap}
+  .tbtns select, .tbtns button{background:#f8fafc;border:1px solid var(--line);color:var(--ink);
+    font-size:14px;font-weight:700;padding:9px 13px;border-radius:9px;cursor:pointer;
+    font-family:inherit;transition:.14s}
+  .tbtns button:hover{border-color:var(--faint)}
+  .ttable-wrap{overflow-x:auto}
+  table.ttable{width:100%;border-collapse:collapse;font-size:14px}
+  table.ttable th{text-align:center;color:var(--dim);font-weight:700;font-size:12px;
+    letter-spacing:.03em;text-transform:uppercase;padding:10px 9px;border-bottom:1px solid var(--line);background:#f8fafc;white-space:nowrap}
+  table.ttable th:first-child,table.ttable th:nth-child(2){text-align:left}
+  table.ttable td{padding:10px 9px;border-bottom:1px solid var(--line2);vertical-align:middle;color:var(--ink);
+    text-align:center;white-space:nowrap}
+  table.ttable td:first-child,table.ttable td:nth-child(2){text-align:left}
+  table.ttable tr:last-child td{border-bottom:none}
+  .mchk{color:var(--accent);font-weight:800}
+  .mdash{color:var(--faint)}
+  .tempty{font-size:16px;color:var(--faint);padding:18px 4px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">아레스 4 프로젝트</div>
+    <h1>화학 반응식과 질량 보존 법칙</h1>
+  </header>
+
+  <div class="story" style="margin-bottom:14px">
+    영화 〈마션〉에서 워트니는 화성에서 살아남기 위해 <b>화학 반응</b>으로 물과 산소를 직접 만들었다.
+    화성까지는 빛의 속력으로, 새 보금자리 후보까지는 연주시차로 거리를 쟀던 아레스 4 대원인 여러분도,
+    이제 <b>화학 반응</b>으로 생존에 필요한 것들을 직접 만들어야 한다.
+    <b style="color:var(--bad)">원자 개수를 정확히 맞추지 못하면 필요한 만큼 얻을 수 없다.</b>
+  </div>
+
+  <div class="idbar">
+    <label for="classNum">반</label>
+    <select id="classNum">
+      <option value="">선택</option>
+      <option value="1">1반</option>
+      <option value="2">2반</option>
+      <option value="3">3반</option>
+      <option value="4">4반</option>
+    </select>
+    <label for="sid">번호</label>
+    <input type="text" id="sid" placeholder="예: 15" inputmode="numeric" autocomplete="off">
+    <span class="savenote" id="saveNote">반과 번호를 입력하면 진행 상황이 자동 저장돼요</span>
+  </div>
+
+  <div class="missions" id="missions"></div>
+  <div class="story" id="story"></div>
+
+  <div class="eqbox" id="stageBox">
+    <div id="preStepBox" style="display:none"></div>
+
+    <div id="mainBox">
+      <label class="step3-label" id="step3Label" style="display:none">3단계. 계수를 맞춰 반응식을 완성해보세요.</label>
+      <div class="equation" id="equation"></div>
+
+      <div class="particle-box" id="particleBox">
+        <div class="p-side" id="pLeft"></div>
+        <div class="p-arrow">→</div>
+        <div class="p-side" id="pRight"></div>
+      </div>
+
+      <div class="counts">
+        <div class="side">
+          <h3>반응 전 (왼쪽)</h3>
+          <div id="leftCounts"></div>
+        </div>
+        <div class="balance-mid">
+          <div class="scale" id="scale">⚖️</div>
+          <div class="verdict" id="verdict" style="color:var(--dim)">입력<br>대기중</div>
+        </div>
+        <div class="side">
+          <h3>반응 후 (오른쪽)</h3>
+          <div id="rightCounts"></div>
+        </div>
+      </div>
+
+      <div class="status wait" id="status">지시에 따라 알맞은 값을 입력하세요.</div>
+
+      <div class="tools">
+        <button class="btn" id="resetBtn">초기화</button>
+        <button class="btn" id="hintBtn">힌트 보기</button>
+      </div>
+      <div class="hint" id="hint"></div>
+      <div class="law">질량 보존 법칙 · 반응 전후 원자의 종류와 개수는 변하지 않는다</div>
+    </div>
+  </div>
+
+  <div class="teacher-link">
+    <button id="teacherToggle" type="button">교사용 보기</button>
+  </div>
+
+  <div class="tgate" id="teacherGate">
+    <input type="password" id="tcode" placeholder="교사 확인 코드" autocomplete="off">
+    <button id="tcodeBtn">확인</button>
+    <div class="tstatus" id="tcodeStatus"></div>
+  </div>
+
+  <div class="tpanel" id="teacherPanel">
+    <div class="tbar">
+      <h2>진행 현황</h2>
+      <div class="tbtns">
+        <select id="classFilter">
+          <option value="all">전체 반</option>
+          <option value="1">1반</option>
+          <option value="2">2반</option>
+          <option value="3">3반</option>
+          <option value="4">4반</option>
+        </select>
+        <button id="refreshBtn" type="button">새로고침</button>
+        <button id="copyBtn" type="button">표 복사</button>
+        <button id="teacherResetBtn" type="button" style="border-color:#f2b3ae;color:#a12a22">초기화</button>
+      </div>
+    </div>
+    <div class="tstatus" id="copyStatus"></div>
+    <div class="ttable-wrap">
+      <table class="ttable" id="ttable">
+        <thead><tr>
+          <th>반</th><th>번호</th>
+          <th>기본1</th><th>기본2</th><th>기본3</th><th>기본4</th>
+          <th>심화1</th><th>심화2</th><th>심화3</th>
+          <th>힌트</th><th>마지막 저장</th>
+        </tr></thead>
+        <tbody id="ttableBody"></tbody>
+      </table>
+      <div class="tempty" id="ttableEmpty" style="display:none">아직 저장된 진행 기록이 없어요.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbzdapQzEDTejuSgrpX39izgCwxvljDXmRUeaXmB9tmqHU6OMQYsE0veCUhX02SVmHE/exec';
+  function submitToSheet(sim, record, onDone){
+    var done = false;
+    var timer = setTimeout(function(){
+      if(done) return;
+      done = true;
+      onDone(false, true);
+    }, 8000);
+    try{
+      var payload = Object.assign({sim: sim}, record);
+      fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify(payload)
+      }).then(function(){
+        if(done) return;
+        done = true;
+        clearTimeout(timer);
+        onDone(true, false);
+      }).catch(function(){
+        if(done) return;
+        done = true;
+        clearTimeout(timer);
+        onDone(false, false);
+      });
+    } catch(e){
+      if(!done){
+        done = true;
+        clearTimeout(timer);
+        onDone(false, false);
+      }
+    }
+  }
+(function(){
+  "use strict";
+
+  // 명확한 CPK 색상표 기반 매핑 (H:흰색/밝은회색, C:어두운회색, O:빨강, N:파랑)
+  var ATOM_COLOR = {H:'#f8fafc',O:'#ef4444',C:'#334155',N:'#3b82f6'};
+  var ATOM_NAME  = {H:'수소 H',O:'산소 O',C:'탄소 C',N:'질소 N'};
+
+  var MISSIONS = [
+    {
+      type:'basic', n:'기본 1', t:'수소 확보', d:'하이드라진 분해 반응',
+      story:'수소는 어디서 얻지? 워트니는 로켓 연료인 <b>하이드라진(N₂H₄)</b>을 분해해 수소를 얻었다. 하이드라진 한 분자가 <b>질소(N₂)</b> 분자와 <b>수소(H₂)</b> 분자로 분해된다. 반응 전후 원자 수가 달라지지 않도록 계수를 맞춰라.',
+      left:[{f:'N',sub:'2',mid:'H',sub2:'4',atoms:{N:2,H:4}}],
+      right:[{f:'N',sub:'2',atoms:{N:2}},{f:'H',sub:'2',atoms:{H:2}}],
+      answer:[1,1,2],
+      hint:'하이드라진 1개에는 수소가 4개 있어요. 수소 분자(H₂)는 2개씩 묶여 있으니, H₂가 몇 개 나와야 할까요?'
+    },
+    {
+      type:'basic', n:'기본 2', t:'산소 생산', d:'이산화탄소 분해 반응',
+      story:'화성 대기의 95%는 <b>이산화탄소(CO₂)</b>다. 이 기체를 분해하면 <b>일산화탄소(CO)</b>와 숨 쉴 수 있는 <b>산소(O₂)</b>로 바뀐다. 계수를 맞춰라.',
+      left:[{f:'C',mid:'O',sub2:'2',atoms:{C:1,O:2}}],
+      right:[{f:'C',mid:'O',atoms:{C:1,O:1}},{f:'O',sub:'2',atoms:{O:2}}],
+      answer:[2,2,1],
+      hint:'오른쪽에 산소 분자(O₂)가 있어요. 산소 원자가 짝수여야 맞아떨어져요. 이산화탄소(CO₂)를 2개부터 시작해보면 어떨까요?'
+    },
+    {
+      type:'basic', n:'기본 3', t:'물 만들기', d:'수소 + 산소 화합 반응',
+      story:'워트니는 물이 필요했다. 기체 상태의 <b>수소(H₂)</b>와 <b>산소(O₂)</b>가 반응하면 액체인 <b>물(H₂O)</b>로 바뀐다. 반응 전과 후에 원자가 사라지거나 새로 생기지 않도록 계수를 맞춰라.',
+      left:[{f:'H',sub:'2',atoms:{H:2}},{f:'O',sub:'2',atoms:{O:2}}],
+      right:[{f:'H',sub:'2',mid:'O',atoms:{H:2,O:1}}],
+      answer:[2,1,2],
+      hint:'물(H₂O)은 산소 1개당 수소 2개예요. 산소 분자(O₂)에는 산소가 2개 들어 있으니, 오른쪽 물을 몇 개 만들어야 산소 개수가 맞을까요?'
+    },
+    {
+      type:'basic', n:'기본 4', t:'감자밭 광합성', d:'광합성 (화합 반응)',
+      story:'식물은 <b>이산화탄소(CO₂)</b>와 <b>물(H₂O)</b>로 광합성을 해서 <b>포도당(C₆H₁₂O₆)</b>이라는 영양분과 <b>산소(O₂)</b>를 만든다. 화성에서 감자를 키우려면 이 반응이 반드시 필요하다 — 포도당이 곧 식량이기 때문이다. 지금까지 중 가장 복잡한 반응이니 침착하게 원자를 세어라.',
+      left:[{f:'C',mid:'O',sub2:'2',atoms:{C:1,O:2}},{f:'H',sub:'2',mid:'O',atoms:{H:2,O:1}}],
+      right:[{f:'C',sub:'6',mid:'H',sub2:'12',mid2:'O',sub3:'6',atoms:{C:6,H:12,O:6}},{f:'O',sub:'2',atoms:{O:2}}],
+      answer:[6,6,1,6],
+      hint:'포도당(C₆H₁₂O₆)에는 탄소가 6개예요. 그럼 왼쪽 CO₂도 6개 필요하겠죠? 수소 12개를 맞추려면 물은 몇 개일까요?'
+    },
+    {
+      type:'advanced', n:'심화 1', t:'메테인 연소', d:'연소 반응',
+      story:'[심화] 화성 기지의 온도를 유지하기 위해 <b>메테인</b> 가스를 태우려 한다. 메테인이 <b>산소</b>와 반응해 연소하면 <b>이산화탄소</b>와 <b>물</b>로 바뀌면서 <b style="color:var(--bad)">열이 발생한다</b> — 이 열로 기지를 데울 수 있다. 3단계를 거쳐 반응식을 완성하라.',
+      leftSlots: 2, rightSlots: 2,
+      leftAns: ['CH4', 'O2'], rightAns: ['CO2', 'H2O'],
+      threeStep: true,
+      korAns: ['메테인','산소','이산화탄소','물'],
+      answer: [1,2,1,2], 
+      hint:'메테인의 화학식은 CH4, 산소 기체는 O2입니다. 생성물인 이산화탄소와 물의 화학식을 떠올려 먼저 입력하세요.'
+    },
+    {
+      type:'advanced', n:'심화 2', t:'암모니아 합성', d:'합성 반응',
+      story:'[심화] 감자밭에 줄 비료를 만들어야 한다. 그 비료의 정체가 바로 암모니아다. 질소 기체와 수소 기체가 반응하여 암모니아가 생성된다. 3단계를 거쳐 반응식을 완성하라.',
+      leftSlots: 2, rightSlots: 1,
+      leftAns: ['N2', 'H2'], rightAns: ['NH3'],
+      threeStep: true,
+      korAns: ['질소','수소','암모니아'],
+      answer: [1,3,2], 
+      hint:'질소와 수소는 자연 상태에서 이원자 분자(원자 2개가 결합한 형태)로 존재합니다. 암모니아는 질소 원자 1개와 수소 원자 3개로 이루어진 분자입니다.'
+    },
+    {
+      type:'advanced', n:'심화 3', t:'과산화수소 분해', d:'분해 반응',
+      story:'[심화] 물을 만들다가 사고로 화상을 입은 워트니는 상처를 소독해야 했다. 소독약으로 쓴 과산화수소수는 시간이 지나면 저절로 물과 산소 기체로 분해된다. 3단계를 거쳐 반응식을 완성하라.',
+      leftSlots: 1, rightSlots: 2,
+      leftAns: ['H2O2'], rightAns: ['H2O', 'O2'],
+      threeStep: true,
+      korAns: ['과산화수소','물','산소'],
+      answer: [2,2,1], 
+      hint:'과산화수소는 물 분자에 산소 원자가 하나 더 붙어있는 형태입니다. 분해되어 나오는 산소 기체 역시 이원자 분자 형태임을 기억하세요.'
+    }
+  ];
+
+  var state = { mi:0, coefs:[], formulas:[] };
+  var progress = { completed:{}, hints:{} }; // key: mission n (예: '기본 1') -> true / 힌트 조회 횟수
+
+  var el = {
+    missions: document.getElementById('missions'),
+    story: document.getElementById('story'),
+    preStepBox: document.getElementById('preStepBox'),
+    mainBox: document.getElementById('mainBox'),
+    step3Label: document.getElementById('step3Label'),
+    equation: document.getElementById('equation'),
+    pLeft: document.getElementById('pLeft'),
+    pRight: document.getElementById('pRight'),
+    leftCounts: document.getElementById('leftCounts'),
+    rightCounts: document.getElementById('rightCounts'),
+    scale: document.getElementById('scale'),
+    verdict: document.getElementById('verdict'),
+    status: document.getElementById('status'),
+    resetBtn: document.getElementById('resetBtn'),
+    hintBtn: document.getElementById('hintBtn'),
+    hint: document.getElementById('hint'),
+    classNum: document.getElementById('classNum'),
+    sid: document.getElementById('sid'),
+    saveNote: document.getElementById('saveNote')
+  };
+
+  function parseFormula(str){
+    var counts = {};
+    if(!str) return counts;
+    var f = str.replace(/[^A-Za-z0-9]/g, '');
+    var re = /([A-Z][a-z]*)(\d*)/g;
+    var match;
+    while(match = re.exec(f)){
+      var atom = match[1];
+      var num = match[2] ? parseInt(match[2], 10) : 1;
+      counts[atom] = (counts[atom]||0) + num;
+    }
+    return counts;
+  }
+
+  // 화학식 문자열(예: "CH4")을 화학식 기재 요령에 맞는 아래첨자 HTML로 변환 (예: "CH<sub>4</sub>")
+  function formulaSubHTML(str){
+    var s = String(str||'').replace(/[^A-Za-z0-9]/g, '');
+    if(!s) return '';
+    var re = /([A-Z][a-z]*)(\d*)/g;
+    var out = '', match;
+    while(match = re.exec(s)){
+      if(!match[1]) continue;
+      out += match[1];
+      if(match[2] && match[2] !== '1') out += '<sub>'+match[2]+'</sub>';
+    }
+    return out;
+  }
+
+  function molHTML(m){
+    var s = m.f;
+    if(m.sub) s += '<sub>'+m.sub+'</sub>';
+    if(m.mid) s += m.mid;
+    if(m.sub2) s += '<sub>'+m.sub2+'</sub>';
+    if(m.mid2) s += m.mid2;
+    if(m.sub3) s += '<sub>'+m.sub3+'</sub>';
+    return s;
+  }
+
+  // 실제 분자들의 중심(cx, cy) 구조 좌표. translate(-50%, -50%)로 배치됨.
+  function getKnownStructure(atomsObj) {
+    var keys = Object.keys(atomsObj).sort();
+    var sig = keys.map(function(k){ return k+atomsObj[k] }).join(',');
+
+    var libsCenter = {
+      'H2': { w:40, h:24, atoms: [{a:'H', cx:10, cy:12}, {a:'H', cx:30, cy:12}] },
+      'O2': { w:56, h:32, atoms: [{a:'O', cx:16, cy:16}, {a:'O', cx:40, cy:16}] },
+      'N2': { w:56, h:32, atoms: [{a:'N', cx:16, cy:16}, {a:'N', cx:40, cy:16}] },
+      'C1,O1': { w:56, h:32, atoms: [{a:'C', cx:16, cy:16}, {a:'O', cx:40, cy:16}] },
+      'C1,O2': { w:80, h:32, atoms: [{a:'O', cx:16, cy:16}, {a:'C', cx:40, cy:16}, {a:'O', cx:64, cy:16}] },
+      'H2,O1': { w:56, h:42, atoms: [{a:'H', cx:12, cy:30}, {a:'O', cx:28, cy:16}, {a:'H', cx:44, cy:30}] },
+      'C1,H4': { w:60, h:60, atoms: [{a:'H', cx:30, cy:12}, {a:'H', cx:12, cy:30}, {a:'C', cx:30, cy:30}, {a:'H', cx:48, cy:30}, {a:'H', cx:30, cy:48}] },
+      'H3,N1': { w:60, h:50, atoms: [{a:'N', cx:30, cy:18}, {a:'H', cx:14, cy:36}, {a:'H', cx:30, cy:40}, {a:'H', cx:46, cy:36}] },
+      'H2,O2': { w:80, h:46, atoms: [{a:'H', cx:14, cy:32}, {a:'O', cx:28, cy:18}, {a:'O', cx:52, cy:18}, {a:'H', cx:66, cy:32}] },
+      'H4,N2': { w:80, h:56, atoms: [{a:'H', cx:16, cy:14}, {a:'H', cx:16, cy:42}, {a:'N', cx:28, cy:28}, {a:'N', cx:52, cy:28}, {a:'H', cx:64, cy:14}, {a:'H', cx:64, cy:42}] },
+      'C6,H12,O6': { w:140, h:130, atoms: [
+          // Pyranose ring skeleton (C:어두운회색, O:빨강, H:흰색)
+          {a:'O', cx:90, cy:45}, {a:'C', cx:90, cy:75}, {a:'C', cx:64, cy:90}, {a:'C', cx:38, cy:75}, {a:'C', cx:38, cy:45}, {a:'C', cx:64, cy:30},
+          {a:'C', cx:64, cy:10},
+          // Attached Oxygens
+          {a:'O', cx:114, cy:85}, {a:'O', cx:64, cy:114}, {a:'O', cx:14, cy:85}, {a:'O', cx:14, cy:35}, {a:'O', cx:88, cy:0},
+          // Attached Hydrogens
+          {a:'H', cx:104, cy:65}, {a:'H', cx:124, cy:98}, {a:'H', cx:48, cy:102}, {a:'H', cx:80, cy:120}, {a:'H', cx:28, cy:92}, {a:'H', cx:5, cy:102},
+          {a:'H', cx:28, cy:35}, {a:'H', cx:5, cy:20}, {a:'H', cx:64, cy:48}, {a:'H', cx:44, cy:10}, {a:'H', cx:94, cy:14}, {a:'H', cx:106, cy:30}
+      ]}
+    };
+
+    if (libsCenter[sig]) {
+        return {
+            w: libsCenter[sig].w, 
+            h: libsCenter[sig].h,
+            atoms: libsCenter[sig].atoms
+        };
+    }
+    return null;
+  }
+
+  function buildMissions(){
+    el.missions.innerHTML='';
+    MISSIONS.forEach(function(m,i){
+      var d=document.createElement('div');
+      var classes = 'mtab';
+      if(m.type==='advanced') classes += ' advanced';
+      if(i===state.mi) classes += ' on';
+      d.className = classes;
+      var check = progress.completed[m.n] ? '<span class="mt-check">✓</span>' : '';
+      d.innerHTML='<div class="mt-n">'+m.n+check+'</div><div class="mt-t">'+m.t+'</div><div class="mt-d">'+m.d+'</div>';
+      d.addEventListener('click',function(){ state.mi=i; loadMission(); });
+      el.missions.appendChild(d);
+    });
+  }
+
+  function loadMission(){
+    var m=MISSIONS[state.mi];
+    state.coefs=[];
+    state.formulas=[];
+    
+    var total = m.type==='advanced' ? (m.leftSlots + m.rightSlots) : (m.left.length + m.right.length);
+    for(var i=0;i<total;i++){
+      state.coefs.push(1);
+      state.formulas.push('');
+    }
+    
+    buildMissions();
+    
+    if(m.type==='advanced'){
+      el.story.className = 'story advanced-story';
+    }else{
+      el.story.className = 'story';
+    }
+    el.story.innerHTML=m.story;
+    el.hint.classList.remove('show');
+    el.hint.innerHTML='<b>💡 힌트.</b> '+m.hint;
+
+    if(m.threeStep){
+      var ps = getPreStep(m);
+      if(ps.phase < 3){
+        el.mainBox.style.display = 'none';
+        el.mainBox.classList.remove('mainbox-divided');
+        el.step3Label.style.display = 'none';
+        el.preStepBox.style.display = 'block';
+        renderPreStep(m);
+        return;
+      } else {
+        el.preStepBox.style.display = 'block';
+        el.mainBox.style.display = 'block';
+        el.mainBox.classList.add('mainbox-divided');
+        el.step3Label.style.display = 'block';
+        renderPreStep(m);
+        for(var k=0;k<total;k++){
+          state.formulas[k] = k < m.leftAns.length ? m.leftAns[k] : m.rightAns[k-m.leftAns.length];
+        }
+      }
+    } else {
+      el.preStepBox.style.display = 'none';
+      el.preStepBox.innerHTML = '';
+      el.mainBox.classList.remove('mainbox-divided');
+      el.step3Label.style.display = 'none';
+      el.mainBox.style.display = 'block';
+    }
+
+    renderEquation();
+    recount();
+  }
+
+  // ================= 3단계(우리말 → 화학식 → 계수) 진행 =================
+  var preStepData = {}; // key: mission n -> { phase, kor:[], formula:[] }
+  function getPreStep(m){
+    if(!preStepData[m.n]){
+      var total = m.leftAns.length + m.rightAns.length;
+      var kor = [], formula = [];
+      for(var i=0;i<total;i++){ kor.push(''); formula.push(''); }
+      preStepData[m.n] = { phase:1, kor:kor, formula:formula };
+    }
+    return preStepData[m.n];
+  }
+
+  function escHtml(s){ var d=document.createElement('div'); d.textContent=String(s==null?'':s); return d.innerHTML; }
+
+  function targetAt(m, i){
+    return i < m.leftAns.length ? m.leftAns[i] : m.rightAns[i - m.leftAns.length];
+  }
+  function normFormLocal(raw){
+    return String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
+  }
+
+  function renderPreStep(m){
+    var ps = getPreStep(m);
+    var total = m.leftAns.length + m.rightAns.length;
+    var korOk = ps.kor.every(function(v,i){ return String(v||'').trim() === m.korAns[i]; });
+    var formOk = korOk && ps.formula.every(function(v,i){ return normFormLocal(v) === normFormLocal(targetAt(m,i)); });
+
+    function wordLine(getVal, phSuffix, cls){
+      var html = '<div class="stepline">';
+      for(var i=0;i<m.leftAns.length;i++){
+        if(i>0) html += '<span class="op">+</span>';
+        html += '<input type="text" class="formula-input '+cls+'" id="'+phSuffix+i+'" placeholder="반응물'+(i+1)+'" value="'+escHtml(getVal(i))+'">';
+      }
+      html += '<span class="arrow" style="font-size:26px">→</span>';
+      for(var j=0;j<m.rightAns.length;j++){
+        if(j>0) html += '<span class="op">+</span>';
+        var idx = m.leftAns.length+j;
+        var ph = m.rightAns.length>1 ? ('생성물'+(j+1)) : '생성물';
+        html += '<input type="text" class="formula-input '+cls+'" id="'+phSuffix+idx+'" placeholder="'+ph+'" value="'+escHtml(getVal(idx))+'">';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    var html = '<div class="stepblock"><label>1단계. 우리말로 화학 반응식을 만들어보세요.</label>';
+    html += wordLine(function(i){ return ps.kor[i]; }, 'pk_', 'wordinput');
+    html += '<div class="stepnote'+(korOk?' ok':'')+'">'+(korOk?'<b>정확해요!</b>':'반응물과 생성물을 우리말로 써보세요.')+'</div>';
+    if(!korOk){
+      html += '<button type="button" class="stepcheck" id="checkKor">확인</button>';
+    }
+    html += '</div>';
+
+    if(korOk){
+      html += '<div class="stepblock"><label>2단계. 우리말을 화학식으로 바꿔보세요.</label>';
+      html += '<div class="stepline">';
+      for(var i=0;i<total;i++){
+        if(i>0 && i!==m.leftAns.length) html += '<span class="op">+</span>';
+        if(i===m.leftAns.length) html += '<span class="arrow" style="font-size:26px">→</span>';
+        var pv = formulaSubHTML(ps.formula[i]);
+        html += '<span class="formgrp">' +
+          '<input type="text" class="formula-input" id="pf_'+i+'" placeholder="화학식" value="'+escHtml(ps.formula[i])+'">' +
+          '<span class="formpreview'+(pv?'':' empty')+'" id="pfprev_'+i+'">'+(pv || '')+'</span>' +
+        '</span>';
+      }
+      html += '</div>';
+      html += '<div class="stepnote'+(formOk?' ok':'')+'">'+(formOk?'<b>정확해요!</b> 이제 아래에서 계수를 맞춰보세요.':'영문과 숫자로 화학식을 입력해보세요. (예: CH<sub>4</sub>, O<sub>2</sub>)')+'</div>';
+      if(ps.phase < 3){
+        html += '<button type="button" class="stepcheck" id="checkForm">확인</button>';
+      }
+      html += '</div>';
+    }
+
+    el.preStepBox.innerHTML = html;
+
+    // step1 입력 바인딩 (렌더링 중 상태만 갱신, DOM은 확인 버튼 클릭 시에만 갱신 — 한글 조합 도중 리렌더로 자모가 씹히는 문제 방지)
+    for(var i=0;i<total;i++){
+      (function(i){
+        var pk = document.getElementById('pk_'+i);
+        if(pk) pk.addEventListener('input', function(){ ps.kor[i] = pk.value; });
+      })(i);
+    }
+    var checkKorBtn = document.getElementById('checkKor');
+    if(checkKorBtn) checkKorBtn.addEventListener('click', function(){ renderPreStep(m); });
+
+    if(korOk){
+      for(var j=0;j<total;j++){
+        (function(j){
+          var pf = document.getElementById('pf_'+j);
+          if(pf) pf.addEventListener('input', function(){
+            ps.formula[j] = pf.value;
+            var prev = document.getElementById('pfprev_'+j);
+            if(prev){
+              var pv = formulaSubHTML(pf.value);
+              prev.innerHTML = pv || '';
+              prev.classList.toggle('empty', !pv);
+            }
+          });
+        })(j);
+      }
+      var checkFormBtn = document.getElementById('checkForm');
+      if(checkFormBtn) checkFormBtn.addEventListener('click', function(){
+        // 다시 계산해서 정답이면 버튼 클릭 한 번으로 바로 3단계까지 자연스럽게 이어지도록 함
+        var nowOk = ps.formula.every(function(v,i){ return normFormLocal(v) === normFormLocal(targetAt(m,i)); });
+        if(nowOk){ switchToMainStage(m); } else { renderPreStep(m); }
+      });
+    }
+  }
+
+  function switchToMainStage(m){
+    var ps = getPreStep(m);
+    ps.phase = 3;
+    var total = m.leftAns.length + m.rightAns.length;
+    state.coefs = [];
+    state.formulas = [];
+    for(var k=0;k<total;k++){
+      state.coefs.push(1);
+      state.formulas.push(targetAt(m,k));
+    }
+    renderPreStep(m); // 1·2단계는 완료 상태로 같은 박스 안에 계속 보여줌(버튼만 사라짐)
+    el.mainBox.classList.add('mainbox-divided');
+    el.step3Label.style.display = 'block';
+    el.mainBox.style.display = 'block';
+    renderEquation();
+    recount();
+  }
+
+  function renderEquation(){
+    var m=MISSIONS[state.mi];
+    el.equation.innerHTML='';
+    var idx=0;
+
+    function addTerm(molOrEmpty, isFirst){
+      if(!isFirst){
+        var op=document.createElement('span'); op.className='op'; op.textContent='+';
+        el.equation.appendChild(op);
+      }
+      var term=document.createElement('span'); term.className='term';
+      
+      var inp=document.createElement('input');
+      inp.type='number'; inp.className='coef'; inp.min='1'; inp.max='20';
+      inp.value=state.coefs[idx]; inp.setAttribute('data-i',idx);
+      inp.setAttribute('inputmode','numeric');
+      inp.addEventListener('input',onCoef);
+      term.appendChild(inp);
+
+      var locked = m.threeStep && getPreStep(m).phase === 3;
+      if(m.type==='advanced' && !locked){
+        var fgrp=document.createElement('span'); fgrp.className='formgrp';
+        var finp=document.createElement('input');
+        finp.type='text'; finp.className='formula-input'; 
+        finp.placeholder='화학식';
+        finp.value=state.formulas[idx]; finp.setAttribute('data-f',idx);
+        finp.addEventListener('input',onFormula);
+        fgrp.appendChild(finp);
+        var fprev=document.createElement('span'); fprev.className='formpreview'; fprev.id='fprev_'+idx;
+        var pv0 = formulaSubHTML(state.formulas[idx]);
+        fprev.innerHTML = pv0 || '';
+        if(!pv0) fprev.classList.add('empty');
+        fgrp.appendChild(fprev);
+        term.appendChild(fgrp);
+      }else if(m.type==='advanced'){
+        var mo=document.createElement('span'); mo.className='molecule';
+        mo.innerHTML = formulaSubHTML(state.formulas[idx]);
+        term.appendChild(mo);
+      }else{
+        var mo=document.createElement('span'); mo.className='molecule'; mo.innerHTML=molHTML(molOrEmpty);
+        term.appendChild(mo);
+      }
+      
+      el.equation.appendChild(term);
+      idx++;
+    }
+
+    if(m.type==='advanced'){
+      for(var i=0;i<m.leftSlots;i++) addTerm(null, i===0);
+      var ar=document.createElement('span'); ar.className='arrow'; ar.textContent='→';
+      el.equation.appendChild(ar);
+      for(var i=0;i<m.rightSlots;i++) addTerm(null, i===0);
+    }else{
+      m.left.forEach(function(mol,i){ addTerm(mol,i===0); });
+      var ar=document.createElement('span'); ar.className='arrow'; ar.textContent='→';
+      el.equation.appendChild(ar);
+      m.right.forEach(function(mol,i){ addTerm(mol,i===0); });
+    }
+  }
+
+  function onCoef(e){
+    var i=+e.target.getAttribute('data-i');
+    var v=parseInt(e.target.value,10);
+    if(isNaN(v)||v<1) v=1;
+    if(v>20) v=20;
+    state.coefs[i]=v;
+    recount();
+  }
+
+  function onFormula(e){
+    var i=+e.target.getAttribute('data-f');
+    state.formulas[i]=e.target.value.trim().toUpperCase();
+    var prev = document.getElementById('fprev_'+i);
+    if(prev){
+      var pv = formulaSubHTML(state.formulas[i]);
+      prev.innerHTML = pv || '';
+      prev.classList.toggle('empty', !pv);
+    }
+    recount();
+  }
+
+  function sumSideBasic(mols, offset){
+    var totals={};
+    mols.forEach(function(mol,j){
+      var c=state.coefs[offset+j];
+      for(var a in mol.atoms){
+        totals[a]=(totals[a]||0)+mol.atoms[a]*c;
+      }
+    });
+    return totals;
+  }
+
+  function sumSideAdvanced(startIdx, count){
+    var totals={};
+    for(var j=0; j<count; j++){
+      var c=state.coefs[startIdx+j];
+      var atoms = parseFormula(state.formulas[startIdx+j]);
+      for(var a in atoms){
+        totals[a]=(totals[a]||0)+atoms[a]*c;
+      }
+    }
+    return totals;
+  }
+
+  function renderCounts(container, totals){
+    container.innerHTML='';
+    var order=['C','H','O','N'];
+    order.forEach(function(a){
+      if(!totals[a]) return;
+      var row=document.createElement('div'); row.className='atomrow';
+      var color = ATOM_COLOR[a] || '#888';
+      row.innerHTML='<span class="atomname"><span class="dot" style="background:'+color+'"></span>'+(ATOM_NAME[a]||a)+'</span>'+
+                    '<span class="atomcount" data-a="'+a+'">'+totals[a]+'</span>';
+      container.appendChild(row);
+    });
+    if(container.innerHTML==='') {
+       container.innerHTML='<div style="text-align:center;color:var(--faint);font-size:14px;padding:14px 0;">화학식을 입력하세요</div>';
+    }
+  }
+
+  function renderParticles(){
+    var m = MISSIONS[state.mi];
+    el.pLeft.innerHTML = '';
+    el.pRight.innerHTML = '';
+
+    function buildSideParticles(container, startIdx, count, isAdvanced, basicMols) {
+      var addedGroups = 0;
+      for(var i=0; i<count; i++){
+        var coef = state.coefs[startIdx + i];
+        var atomsObj = null;
+
+        if (isAdvanced) {
+          var f = state.formulas[startIdx + i];
+          if(f) atomsObj = parseFormula(f);
+        } else {
+          atomsObj = basicMols[i].atoms;
+        }
+
+        if (atomsObj && Object.keys(atomsObj).length > 0) {
+          if (addedGroups > 0) {
+            var plus = document.createElement('div');
+            plus.className = 'p-plus';
+            plus.textContent = '+';
+            container.appendChild(plus);
+          }
+          
+          var group = document.createElement('div');
+          group.className = 'p-group';
+          
+          for(var c=0; c<coef; c++){
+            var mol = document.createElement('div');
+            var structure = getKnownStructure(atomsObj);
+            
+            if (structure) {
+                // 알려진 분자 구조 렌더링
+                mol.className = 'p-molecule structured';
+                mol.style.width = structure.w + 'px';
+                mol.style.height = structure.h + 'px';
+                structure.atoms.forEach(function(pos){
+                    var at = document.createElement('div');
+                    at.className = 'p-atom atom-' + pos.a; // 원자 종류에 따른 클래스 추가 (크기/색상 제어용)
+                    at.style.backgroundColor = ATOM_COLOR[pos.a] || '#bbb';
+                    at.textContent = pos.a;
+                    at.style.left = pos.cx + 'px';
+                    at.style.top = pos.cy + 'px';
+                    mol.appendChild(at);
+                });
+            } else {
+                // 모르는 분자일 경우 랜덤하게 뭉쳐서 렌더링 (Fallback)
+                mol.className = 'p-molecule';
+                for(var a in atomsObj) {
+                  for(var k=0; k<atomsObj[a]; k++){
+                    var at = document.createElement('div');
+                    at.className = 'p-atom atom-' + a;
+                    at.style.backgroundColor = ATOM_COLOR[a] || '#bbb';
+                    at.textContent = a;
+                    mol.appendChild(at);
+                  }
+                }
+            }
+            group.appendChild(mol);
+          }
+          container.appendChild(group);
+          addedGroups++;
+        }
+      }
+    }
+
+    if (m.type === 'advanced') {
+      buildSideParticles(el.pLeft, 0, m.leftSlots, true, null);
+      buildSideParticles(el.pRight, m.leftSlots, m.rightSlots, true, null);
+    } else {
+      buildSideParticles(el.pLeft, 0, m.left.length, false, m.left);
+      buildSideParticles(el.pRight, m.left.length, m.right.length, false, m.right);
+    }
+  }
+
+  function checkFormulasMatch(inputs, answers){
+    var iUpper = inputs.map(function(s){return s.toUpperCase();});
+    var aUpper = answers.map(function(s){return s.toUpperCase();});
+    if(iUpper.length !== aUpper.length) return false;
+    for(var i=0;i<aUpper.length;i++){
+      var idx = iUpper.indexOf(aUpper[i]);
+      if(idx===-1) return false;
+      iUpper.splice(idx,1);
+    }
+    return true;
+  }
+
+  function recount(){
+    var m=MISSIONS[state.mi];
+    var L, R;
+    var formulaValid = true;
+
+    if(m.type==='advanced'){
+      L = sumSideAdvanced(0, m.leftSlots);
+      R = sumSideAdvanced(m.leftSlots, m.rightSlots);
+      
+      var leftInputs = state.formulas.slice(0, m.leftSlots);
+      var rightInputs = state.formulas.slice(m.leftSlots, m.leftSlots + m.rightSlots);
+      
+      if(leftInputs.join('')==='' && rightInputs.join('')===''){
+        formulaValid = false;
+      } else {
+        var lMatch = checkFormulasMatch(leftInputs, m.leftAns);
+        var rMatch = checkFormulasMatch(rightInputs, m.rightAns);
+        formulaValid = (lMatch && rMatch);
+      }
+    }else{
+      L = sumSideBasic(m.left, 0);
+      R = sumSideBasic(m.right, m.left.length);
+    }
+
+    renderCounts(el.leftCounts,L);
+    renderCounts(el.rightCounts,R);
+    renderParticles();
+
+    if(m.type==='advanced' && !formulaValid){
+      el.scale.textContent='🤔';
+      el.scale.style.transform='rotate(0deg)';
+      el.verdict.innerHTML='화학식<br>확인';
+      el.verdict.style.color='var(--warn)';
+      
+      var emptyExist = state.formulas.some(function(f){return f==='';});
+      if(emptyExist){
+        el.status.className='status wait';
+        el.status.innerHTML='먼저 빈칸에 알맞은 <b>화학식</b>을 영문과 숫자로 입력해주세요. (예: CH<sub>4</sub>, O<sub>2</sub>)';
+      }else{
+        el.status.className='status bad';
+        el.status.innerHTML='입력한 화학식이 문장의 반응과 맞지 않습니다. 반응물과 생성물의 화학식을 다시 확인해보세요.';
+      }
+      return; 
+    }
+
+    var allAtoms={}; 
+    Object.keys(L).forEach(function(a){allAtoms[a]=1});
+    Object.keys(R).forEach(function(a){allAtoms[a]=1});
+    var balanced=true;
+    var emptyCount=true; 
+    for(var a in allAtoms){
+      emptyCount=false;
+      var lv=L[a]||0, rv=R[a]||0;
+      if(lv!==rv || lv===0){ balanced=false; }
+    }
+    if(emptyCount) balanced=false;
+
+    [el.leftCounts,el.rightCounts].forEach(function(cont){
+      [].forEach.call(cont.querySelectorAll('.atomcount'),function(sp){
+        var a=sp.getAttribute('data-a');
+        var lv=L[a]||0, rv=R[a]||0;
+        sp.style.color = (lv===rv && lv>0)?'var(--accent)':'var(--warn)';
+      });
+    });
+
+    var allOne = state.coefs.every(function(c){return c===1;});
+    
+    if(balanced){
+      el.scale.textContent='⚖️';
+      el.scale.style.transform='rotate(0deg)';
+      el.verdict.innerHTML='균형!';
+      el.verdict.style.color='var(--accent)';
+      markComplete();
+
+      var g = gcdArr(state.coefs);
+      if(g===1){
+        el.status.className='status ok';
+        el.status.innerHTML='✓ 완벽해요! 올바른 화학식과 함께 반응 전후 원자 수가 정확히 맞았습니다.';
+      }else{
+        el.status.className='status ok';
+        el.status.innerHTML='✓ 원자 수는 맞았어요! 하지만 계수를 <b>더 작은 정수비</b>로 줄일 수 있어요.';
+      }
+    }else{
+      el.scale.textContent='⚖️';
+      var diff = tiltDir(L,R);
+      el.scale.style.transform='rotate('+diff+'deg)';
+      el.verdict.innerHTML='아직<br>안 맞아요';
+      el.verdict.style.color='var(--warn)';
+      
+      if(allOne && m.type==='basic'){
+        el.status.className='status wait';
+        el.status.innerHTML='계수 칸에 숫자를 넣어 양쪽 원자 수를 같게 만드세요. 빨간 숫자가 안 맞는 원자예요.';
+      }else{
+        el.status.className='status bad';
+        el.status.innerHTML='<b>빨간 숫자</b>인 원자가 양쪽에서 달라요. 그 원자의 개수가 같아지도록 계수를 조절하세요.';
+      }
+    }
+  }
+
+  function tiltDir(L,R){
+    var lt=0,rt=0;
+    for(var a in L) lt+=L[a];
+    for(var a in R) rt+=R[a];
+    var d=(rt-lt); 
+    return Math.max(-12,Math.min(12,d*2));
+  }
+
+  function gcdArr(arr){
+    function gcd(a,b){return b?gcd(b,a%b):a;}
+    return arr.reduce(function(g,n){return gcd(g,n);});
+  }
+
+  el.resetBtn.addEventListener('click',function(){
+    var m = MISSIONS[state.mi];
+    for(var i=0;i<state.coefs.length;i++) state.coefs[i]=1;
+    if(m.type==='advanced' && !(m.threeStep && getPreStep(m).phase===3)){
+      for(var i=0;i<state.formulas.length;i++) state.formulas[i]='';
+    }
+    renderEquation(); recount();
+  });
+  el.hintBtn.addEventListener('click',function(){
+    el.hint.classList.toggle('show');
+    if(el.hint.classList.contains('show')){
+      var m = MISSIONS[state.mi];
+      progress.hints[m.n] = (progress.hints[m.n]||0) + 1;
+      saveProgress();
+    }
+  });
+
+  // ================= 진행 상황 자동 저장 =================
+  function markComplete(){
+    var m = MISSIONS[state.mi];
+    var wasNew = !progress.completed[m.n];
+    progress.completed[m.n] = true;
+    if(wasNew) buildMissions();
+    saveProgress();
+  }
+
+  function sanitizeId(raw){
+    return String(raw||'').trim().replace(/[\s\/\\'"]/g,'');
+  }
+
+  function currentIdentity(){
+    return { classNum: el.classNum.value, sid: sanitizeId(el.sid.value) };
+  }
+
+  var saveTimer = null;
+  function saveProgress(){
+    var id = currentIdentity();
+    if(!id.classNum || !id.sid){
+      el.saveNote.textContent = '반과 번호를 입력하면 진행 상황이 자동 저장돼요';
+      el.saveNote.className = 'savenote';
+      return;
+    }
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      var record = {
+        classNum: id.classNum,
+        studentId: id.sid,
+        completed: progress.completed,
+        hints: progress.hints,
+        updated: new Date().toISOString()
+      };
+      submitToSheet('chem', record, function(ok, timedOut){
+        if(ok){
+          el.saveNote.textContent = '저장됨 · ' + new Date().toLocaleTimeString('ko-KR');
+          el.saveNote.className = 'savenote active';
+        } else if(timedOut){
+          el.saveNote.textContent = '응답이 없어요 - 인터넷을 확인해주세요';
+          el.saveNote.className = 'savenote';
+        } else {
+          el.saveNote.textContent = '저장 실패 - 인터넷을 확인해주세요';
+          el.saveNote.className = 'savenote';
+        }
+      });
+    }, 400);
+  }
+
+  el.classNum.addEventListener('change', saveProgress);
+  el.sid.addEventListener('change', saveProgress);
+  el.sid.addEventListener('blur', saveProgress);
+
+  // ================= 교사용 대시보드 =================
+  var MISSION_KEYS = MISSIONS.map(function(m){ return m.n; });
+  var TEACHER_CODE = 'dltndltn';
+  var TCOLSPAN = 2 + MISSION_KEYS.length + 2;
+
+  var elT = {
+    toggle: document.getElementById('teacherToggle'),
+    gate: document.getElementById('teacherGate'),
+    tcode: document.getElementById('tcode'),
+    tcodeBtn: document.getElementById('tcodeBtn'),
+    tcodeStatus: document.getElementById('tcodeStatus'),
+    panel: document.getElementById('teacherPanel'),
+    classFilter: document.getElementById('classFilter'),
+    refresh: document.getElementById('refreshBtn'),
+    copy: document.getElementById('copyBtn'),
+    copyStatus: document.getElementById('copyStatus'),
+    reset: document.getElementById('teacherResetBtn'),
+    body: document.getElementById('ttableBody'),
+    empty: document.getElementById('ttableEmpty')
+  };
+  var teacherOpen = false;
+  var allRows = [];
+  var lastRows = [];
+
+  function esc2(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+  function sortRows2(rows){
+    return rows.slice().sort(function(a,b){
+      var c = (+a.classNum||0) - (+b.classNum||0);
+      if(c !== 0) return c;
+      return String(a.studentId).localeCompare(String(b.studentId), 'ko', {numeric:true});
+    });
+  }
+
+  function hintTotal(r){
+    var h = r.hints || {};
+    var sum = 0;
+    for(var k in h) sum += (h[k]||0);
+    return sum;
+  }
+
+  function renderRows2(){
+    var filter = elT.classFilter.value;
+    var rows = filter==='all' ? allRows : allRows.filter(function(r){ return String(r.classNum)===filter; });
+    rows = sortRows2(rows);
+    lastRows = rows;
+    if(rows.length === 0){
+      elT.body.innerHTML = '';
+      elT.empty.style.display = 'block';
+      return;
+    }
+    elT.empty.style.display = 'none';
+    elT.body.innerHTML = rows.map(function(r){
+      var completed = r.completed || {};
+      var cells = MISSION_KEYS.map(function(k){
+        return completed[k] ? '<td><span class="mchk">✓</span></td>' : '<td><span class="mdash">–</span></td>';
+      }).join('');
+      var time = r.updated ? new Date(r.updated).toLocaleString('ko-KR') : '-';
+      return '<tr><td>'+esc2(r.classNum)+'반</td><td>'+esc2(r.studentId)+'</td>'+cells+
+        '<td>'+hintTotal(r)+'</td><td>'+time+'</td></tr>';
+    }).join('');
+  }
+
+  function updateResetLabel2(){
+    var filter = elT.classFilter.value;
+    elT.reset.dataset.label = (filter==='all') ? '전체 초기화' : (filter+'반 초기화');
+    disarmReset2();
+  }
+
+  elT.classFilter.addEventListener('change', function(){
+    renderRows2();
+    updateResetLabel2();
+  });
+
+  function loadSubmissions2(){
+    elT.body.innerHTML = '<tr><td colspan="'+TCOLSPAN+'" style="color:var(--faint)">불러오는 중...</td></tr>';
+    elT.empty.style.display = 'none';
+
+    if(!window.storage || typeof window.storage.list !== 'function'){
+      elT.body.innerHTML = '<tr><td colspan="'+TCOLSPAN+'" style="color:var(--warn)">저장 기능을 쓸 수 없는 화면이에요. Claude가 안내한 링크로 열어주세요.</td></tr>';
+      return;
+    }
+
+    var done = false;
+    var timer = setTimeout(function(){
+      if(done) return;
+      done = true;
+      elT.body.innerHTML = '<tr><td colspan="'+TCOLSPAN+'" style="color:var(--warn)">응답이 없어요. 인터넷 연결을 확인하고 새로고침을 눌러보세요.</td></tr>';
+    }, 8000);
+
+    Promise.resolve().then(function(){
+      return window.storage.list('sub-chem-', true);
+    }).then(function(res){
+      if(done) return;
+      var keys = (res && res.keys) ? res.keys : [];
+      if(keys.length === 0){
+        done = true; clearTimeout(timer);
+        elT.body.innerHTML = '';
+        elT.empty.style.display = 'block';
+        allRows = []; lastRows = [];
+        return;
+      }
+      return Promise.all(keys.map(function(k){
+        return window.storage.get(k, true).catch(function(){ return null; });
+      })).then(function(results){
+        if(done) return;
+        done = true; clearTimeout(timer);
+        var rows = results
+          .filter(function(r){ return r && r.value; })
+          .map(function(r){ try { return JSON.parse(r.value); } catch(e){ return null; } })
+          .filter(Boolean);
+        allRows = rows;
+        renderRows2();
+      });
+    }).catch(function(){
+      if(done) return;
+      done = true; clearTimeout(timer);
+      elT.body.innerHTML = '<tr><td colspan="'+TCOLSPAN+'" style="color:var(--warn)">불러오기에 실패했어요. 새로고침을 눌러보세요.</td></tr>';
+    });
+  }
+
+  function showGate2(){
+    elT.gate.classList.add('show');
+    elT.tcode.value = '';
+    elT.tcodeStatus.className = 'tstatus';
+    elT.tcode.focus();
+  }
+
+  function openTeacherPanel2(){
+    teacherOpen = true;
+    elT.gate.classList.remove('show');
+    elT.panel.classList.add('show');
+    elT.toggle.textContent = '교사용 보기 닫기';
+    loadSubmissions2();
+  }
+
+  elT.toggle.addEventListener('click', function(){
+    if(teacherOpen){
+      teacherOpen = false;
+      elT.panel.classList.remove('show');
+      elT.gate.classList.remove('show');
+      elT.toggle.textContent = '교사용 보기';
+      return;
+    }
+    var gateVisible = elT.gate.classList.contains('show');
+    if(gateVisible){ elT.gate.classList.remove('show'); }
+    else { showGate2(); }
+  });
+
+  elT.tcodeBtn.addEventListener('click', checkCode2);
+  elT.tcode.addEventListener('keydown', function(e){ if(e.key === 'Enter') checkCode2(); });
+
+  function checkCode2(){
+    var code = elT.tcode.value.trim();
+    if(code === TEACHER_CODE){ openTeacherPanel2(); }
+    else{
+      elT.tcodeStatus.textContent = '코드가 일치하지 않아요. 다시 확인해주세요.';
+      elT.tcodeStatus.className = 'tstatus show err';
+    }
+  }
+
+  elT.refresh.addEventListener('click', loadSubmissions2);
+
+  function showCopyStatus2(msg, ok){
+    elT.copyStatus.textContent = msg;
+    elT.copyStatus.className = 'tstatus show ' + (ok ? 'ok' : 'err');
+  }
+
+  function legacyCopy2(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  elT.copy.addEventListener('click', function(){
+    if(lastRows.length === 0){ showCopyStatus2('복사할 데이터가 없어요.', false); return; }
+    var header = ['반','번호'].concat(MISSION_KEYS).concat(['힌트','마지막 저장']).join('\t');
+    var body = lastRows.map(function(r){
+      var completed = r.completed || {};
+      var cells = MISSION_KEYS.map(function(k){ return completed[k] ? 'O' : '-'; });
+      var time = r.updated ? new Date(r.updated).toLocaleString('ko-KR') : '-';
+      return [r.classNum+'반', r.studentId].concat(cells).concat([hintTotal(r), time]).join('\t');
+    }).join('\n');
+    var tsv = header + '\n' + body;
+
+    if(legacyCopy2(tsv)){
+      showCopyStatus2('표를 복사했어요. 스프레드시트에 붙여넣기 하세요.', true);
+      return;
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(tsv).then(function(){
+        showCopyStatus2('표를 복사했어요. 스프레드시트에 붙여넣기 하세요.', true);
+      }).catch(function(){
+        showCopyStatus2('자동 복사가 막혀 있어요. 아래 표를 직접 드래그해서 복사해주세요.', false);
+      });
+    } else {
+      showCopyStatus2('이 화면에서는 자동 복사가 지원되지 않아요. 아래 표를 직접 드래그해서 복사해주세요.', false);
+    }
+  });
+
+  // ---- 초기화 ----
+  var resetArmed2 = false, resetTimer2 = null;
+
+  function disarmReset2(){
+    resetArmed2 = false;
+    if(resetTimer2){ clearTimeout(resetTimer2); resetTimer2 = null; }
+    elT.reset.textContent = elT.reset.dataset.label || '전체 초기화';
+  }
+
+  updateResetLabel2();
+
+  elT.reset.addEventListener('click', function(){
+    if(lastRows.length === 0){ showCopyStatus2('삭제할 데이터가 없어요.', false); return; }
+
+    if(!resetArmed2){
+      resetArmed2 = true;
+      elT.reset.textContent = '정말요? 다시 누르면 삭제';
+      resetTimer2 = setTimeout(disarmReset2, 4000);
+      return;
+    }
+
+    disarmReset2();
+    var targets = lastRows.slice();
+    var keys = targets.map(function(r){ return 'sub-chem-' + r.classNum + '-' + r.studentId; });
+
+    if(!window.storage || typeof window.storage.delete !== 'function'){
+      showCopyStatus2('저장 기능을 쓸 수 없는 화면이에요. Claude가 안내한 링크로 열어주세요.', false);
+      return;
+    }
+
+    showCopyStatus2('삭제하는 중...', true);
+    Promise.all(keys.map(function(k){
+      return window.storage.delete(k, true).catch(function(){ return null; });
+    })).then(function(){
+      var removedKeys = {};
+      keys.forEach(function(k){ removedKeys[k] = true; });
+      allRows = allRows.filter(function(r){
+        return !removedKeys['sub-chem-' + r.classNum + '-' + r.studentId];
+      });
+      renderRows2();
+      showCopyStatus2(targets.length + '건 삭제했어요.', true);
+    }).catch(function(){
+      showCopyStatus2('삭제 중 일부 실패했어요. 새로고침 후 다시 확인해주세요.', false);
+    });
+  });
+
+  buildMissions();
+  loadMission();
+})();
+</script>
+</body>
+</html>
