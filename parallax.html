@@ -204,6 +204,19 @@
   table.ttable td{padding:10px 9px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink)}
   table.ttable tr:last-child td{border-bottom:none}
   .tempty{font-size:16px;color:var(--faint);padding:18px 4px;text-align:center}
+  .qnum{color:var(--warn);font-weight:800}
+  .term{color:var(--warn);font-weight:700}
+  select option[value=""]{color:#999}
+  select option:not([value=""]){color:var(--ink)}
+  .qtable-wrap{overflow-x:auto}
+  table.qtable{width:100%;border-collapse:collapse;font-size:19px}
+  table.qtable th{text-align:center;color:var(--dim);font-weight:700;font-size:16px;
+    padding:10px 8px;border-bottom:1px solid var(--line);background:#f8fafc}
+  table.qtable td{padding:10px 8px;border-bottom:1px solid var(--line2);text-align:center;color:var(--ink)}
+  table.qtable tr:last-child td{border-bottom:none}
+  table.qtable td.qtable-rowlbl{text-align:left;font-weight:700;color:var(--dim);white-space:nowrap}
+  table.qtable input{width:100%;max-width:110px;font-size:17px;padding:8px 4px;border:2px solid var(--line);
+    border-radius:8px;text-align:center;font-family:inherit;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -221,6 +234,7 @@
   <div class="missions">
     <div class="mtab on" id="mtab1"><div class="mt">지구에서 별 관찰</div><div class="md">(시차)</div></div>
     <div class="mtab" id="mtab2"><div class="mt">별까지 거리 구하기</div><div class="md">(연주시차)</div></div>
+    <div class="mtab" id="mtab3"><div class="mt">더 먼 별은?</div><div class="md">(읽기 자료)</div></div>
   </div>
 
   <div class="tabpage on" id="tab1">
@@ -382,8 +396,18 @@
     <div class="privacy-note">※ 제출한 내용은 선생님이 확인할 수 있어요. 이름 대신 번호만 입력해주세요.</div>
 
     <div class="q">
-      <label for="q1">질문 1. 시차가 클수록 별까지의 거리는 가까울까요, 멀까요?</label>
+      <label for="q1"><span class="qnum">질문 1.</span> 지구에서 6개월 간격으로 별을 관측하면, 별이 이동한 것처럼 보이는 각도를 <span class="term">시차</span>라고 해요. 이 시차와 연주시차 사이에는 어떤 관계가 있을까요?</label>
       <select id="q1">
+        <option value="">선택하세요</option>
+        <option value="같다">시차와 연주시차는 같다</option>
+        <option value="절반">연주시차는 시차의 1/2배이다</option>
+        <option value="두배">연주시차는 시차의 2배이다</option>
+      </select>
+    </div>
+
+    <div class="q">
+      <label for="q2"><span class="qnum">질문 2.</span> 연주시차가 클수록 별까지의 거리는 가까울까요, 멀까요?</label>
+      <select id="q2">
         <option value="">선택하세요</option>
         <option value="가깝다">가깝다</option>
         <option value="멀다">멀다</option>
@@ -391,25 +415,47 @@
     </div>
 
     <div class="q">
-      <label for="q2par">질문 2. 트라피스트-1의 시차는 0.165″입니다. 연주시차와 거리를 순서대로 구해보세요.</label>
-      <div class="qrow">
-        <div class="qfield">
-          <span class="sublabel">연주시차 (″)</span>
-          <input type="text" id="q2par" placeholder="″" inputmode="decimal" autocomplete="off">
-        </div>
+      <label for="q3tri"><span class="qnum">질문 3.</span> 아래 세 별의 시차를 보고, 연주시차와 지구로부터의 거리를 각각 구해보세요. (소수 둘째 자리까지 구하시오.)</label>
+      <div class="qtable-wrap" style="margin-top:10px">
+        <table class="qtable">
+          <thead>
+            <tr>
+              <th></th>
+              <th>프록시마 센타우리</th>
+              <th>시리우스</th>
+              <th>트라피스트-1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="qtable-rowlbl">시차(″)</td>
+              <td>1.54″</td>
+              <td>0.76″</td>
+              <td>0.16″</td>
+            </tr>
+            <tr>
+              <td class="qtable-rowlbl">연주시차(″)</td>
+              <td><input type="text" id="q3par1" placeholder="″" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="q3par2" placeholder="″" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="q3par3" placeholder="″" inputmode="decimal" autocomplete="off"></td>
+            </tr>
+            <tr>
+              <td class="qtable-rowlbl">거리(pc)</td>
+              <td><input type="text" id="q3dist1" placeholder="pc" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="q3dist2" placeholder="pc" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="q3dist3" placeholder="pc" inputmode="decimal" autocomplete="off"></td>
+            </tr>
+            <tr>
+              <td class="qtable-rowlbl">거리(광년)</td>
+              <td><input type="text" id="q3ly1" placeholder="광년" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="q3ly2" placeholder="광년" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="q3ly3" placeholder="광년" inputmode="decimal" autocomplete="off"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="qrow">
-        <div class="qfield">
-          <span class="sublabel">거리 (pc)</span>
-          <input type="text" id="q2pc" placeholder="pc" inputmode="decimal" autocomplete="off">
-        </div>
-        <div class="qfield">
-          <span class="sublabel">거리 (광년)</span>
-          <input type="text" id="q2ly" placeholder="광년" inputmode="decimal" autocomplete="off">
-        </div>
-      </div>
-      <button class="qhintbtn" type="button" id="q2hintBtn">💡 힌트 보기</button>
-      <div class="qhint" id="q2hint"></div>
+      <button class="qhintbtn" type="button" id="q3hintBtn">💡 힌트 보기</button>
+      <div class="qhint" id="q3hint"></div>
     </div>
 
     <button class="done-btn" id="submitBtn">제출하기</button>
@@ -417,6 +463,67 @@
   </div>
 
   </div><!-- /tab2 -->
+
+  <div class="tabpage" id="tab3">
+
+  <div class="panel" style="margin-top:0">
+    <h2 class="big">🔭 연주시차로는 어디까지 잴 수 있을까?</h2>
+    <div class="note" style="margin-top:0">
+      연주시차는 아주 작은 각도라서, 별이 멀어질수록 재기가 점점 어려워져요.
+      아무리 성능 좋은 망원경도 구별할 수 있는 각도에는 한계가 있어서, 연주시차로 거리를
+      잴 수 있는 범위도 정해져 있어요. 우주에는 그보다 훨씬 먼 별과 은하도 많은데,
+      그런 곳까지는 어떻게 거리를 잴까요?
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="big">💡 별빛의 색으로 거리 재기 — 분광시차법</h2>
+    <div class="note" style="margin-top:0">
+      별빛을 분석하면(이걸 <b>분광</b>이라고 해요) 그 별이 어떤 종류인지, 원래는 얼마나
+      밝은 별인지(<b>절대 등급</b>) 알아낼 수 있어요. 이 값을 우리 눈에 보이는 밝기(<b>겉보기 등급</b>)와
+      비교하면, 그 차이로부터 거리를 계산할 수 있어요.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="big">💡 깜빡이는 별의 규칙 — 세페이드 변광성</h2>
+    <div class="note" style="margin-top:0">
+      어떤 별은 밝기가 일정한 주기로 커졌다 작아졌다 해요. 이런 별을 <b>변광성</b>이라고 하는데,
+      그중 <b>세페이드</b>라는 별은 "밝기가 변하는 주기가 길수록, 원래 밝기도 더 밝다"는 규칙을 따라요.
+      그래서 주기만 재면 원래 밝기를 알 수 있고, 겉보기 밝기와 비교해서 거리도 구할 수 있어요.
+      이 방법 덕분에 우리은하를 넘어 다른 은하까지의 거리도 잴 수 있게 됐어요.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="big">💡 항상 같은 밝기로 터지는 별 — Ia형 초신성</h2>
+    <div class="note" style="margin-top:0">
+      별이 폭발하는 것을 <b>초신성</b>이라고 하는데, 그중에서도 <b>Ia형 초신성</b>은 폭발할 때
+      항상 거의 같은 밝기를 내요. 원래 밝기가 정해져 있으니, 겉보기 밝기만 재면 거리를 알 수 있는 거예요.
+      워낙 밝게 터지기 때문에, 아주 멀리 있는 은하까지의 거리도 잴 수 있어요.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="big">💡 우주가 멀어지는 속도로 거리 재기 — 허블 법칙</h2>
+    <div class="note" style="margin-top:0">
+      우주는 지금도 계속 팽창하고 있어요. 은하가 멀리 있을수록 우리에게서 더 빠르게 멀어지는데,
+      이때 은하에서 오는 빛의 색이 원래보다 붉은 쪽으로 치우쳐 보여요(이걸 <b>적색편이</b>라고 해요).
+      이 붉어진 정도를 재면, 우주에서 가장 먼 은하까지의 거리도 추정할 수 있어요.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="big">🚀 가까운 방법으로 먼 방법을 검증한다</h2>
+    <div class="note" style="margin-top:0">
+      연주시차 → 분광시차법 → 세페이드 변광성 → Ia형 초신성 → 허블 법칙(적색편이) —
+      천문학자들은 이렇게 비교적 가까운 거리에서 잘 맞는 방법으로, 그보다 조금 더 먼 방법을
+      검증하고, 그 방법으로 또 그다음 방법을 검증하며 거리를 하나씩 늘려가요.
+      그래서 이 방법들을 이어놓은 걸 <b>"우주의 거리 사다리"</b>라고 불러요.
+    </div>
+  </div>
+
+  </div><!-- /tab3 -->
 
   <div class="teacher-link">
     <button id="teacherToggle" type="button">교사용 보기</button>
@@ -448,7 +555,7 @@
     <div class="ttable-wrap">
       <table class="ttable" id="ttable">
         <thead><tr>
-          <th>반</th><th>번호</th><th>질문1</th><th>연주시차(″)</th><th>거리(pc)</th><th>거리(광년)</th><th>제출 시각</th>
+          <th>반</th><th>번호</th><th>질문1</th><th>질문2</th><th>프록시마(연주시차/pc/광년)</th><th>시리우스(연주시차/pc/광년)</th><th>트라피스트-1(연주시차/pc/광년)</th><th>제출 시각</th>
         </tr></thead>
         <tbody id="ttableBody"></tbody>
       </table>
@@ -494,7 +601,7 @@
   }
 (function(){
   "use strict";
-  var PC_TO_LY = 3.2616;
+  var PC_TO_LY = 3.26;
 
   var els = {
     stageTop: document.getElementById('stageTop'),
@@ -639,7 +746,7 @@
     // 거리 라벨 (단위 반영) — 별 오른쪽에 표시
     var dLbl = (state.unit==='pc')
       ? state.distPc.toFixed(1)+' pc'
-      : (state.distPc*PC_TO_LY).toFixed(1)+' ly';
+      : (state.distPc*PC_TO_LY).toFixed(2)+' ly';
     ctx.fillStyle='#c7d0e3'; ctx.font='14px sans-serif'; ctx.textAlign='start';
     ctx.fillText('별까지 '+dLbl, cx+26, starDrawY+6);
   }
@@ -700,17 +807,17 @@
     var p = parallaxArcsec(state.distPc);
     var ly = state.distPc * PC_TO_LY;
     els.rDistPc.innerHTML = fmt(state.distPc,1)+'<span class="u">pc</span>';
-    els.rDistLy.innerHTML = fmt(ly,1)+'<span class="u">ly</span>';
+    els.rDistLy.innerHTML = fmt(ly,2)+'<span class="u">ly</span>';
     els.rPar.innerHTML  = fmt(p,3)+'<span class="u">″</span>';
 
     // 별빛이 출발한 시점 = 거리(광년).
-    els.starLight.textContent = ly.toFixed(1);
+    els.starLight.textContent = ly.toFixed(2);
 
     // 슬라이더 값 라벨
     if(state.unit==='pc'){
       els.distVal.textContent = fmt(state.distPc,1)+' pc';
     } else {
-      els.distVal.textContent = fmt(state.distPc*PC_TO_LY,1)+' ly';
+      els.distVal.textContent = fmt(state.distPc*PC_TO_LY,2)+' ly';
     }
     var mi = Math.round(state.angle/30)%12;
     els.posVal.textContent = months[mi];
@@ -795,21 +902,21 @@
   syncViews(); updateReadout(); render();
 
   // ================= 탭 전환 =================
-  var mtab1 = document.getElementById('mtab1'), mtab2 = document.getElementById('mtab2');
-  var tab1 = document.getElementById('tab1'), tab2 = document.getElementById('tab2');
+  var mtab1 = document.getElementById('mtab1'), mtab2 = document.getElementById('mtab2'), mtab3 = document.getElementById('mtab3');
+  var tab1 = document.getElementById('tab1'), tab2 = document.getElementById('tab2'), tab3 = document.getElementById('tab3');
   function showTab(n){
-    if(n===1){
-      mtab1.classList.add('on'); mtab2.classList.remove('on');
-      tab1.classList.add('on'); tab2.classList.remove('on');
-      render();
-    } else {
-      pause();
-      mtab2.classList.add('on'); mtab1.classList.remove('on');
-      tab2.classList.add('on'); tab1.classList.remove('on');
-    }
+    pause();
+    mtab1.classList.toggle('on', n===1);
+    mtab2.classList.toggle('on', n===2);
+    mtab3.classList.toggle('on', n===3);
+    tab1.classList.toggle('on', n===1);
+    tab2.classList.toggle('on', n===2);
+    tab3.classList.toggle('on', n===3);
+    if(n===1) render();
   }
   mtab1.addEventListener('click', function(){ showTab(1); });
   mtab2.addEventListener('click', function(){ showTab(2); });
+  mtab3.addEventListener('click', function(){ showTab(3); });
 
   // ================= 사잇각 비교 다이어그램 =================
   var STAR_PRESET = {
@@ -873,32 +980,40 @@
     classNum: document.getElementById('classNum'),
     sid: document.getElementById('sid'),
     q1: document.getElementById('q1'),
-    q2par: document.getElementById('q2par'),
-    q2pc: document.getElementById('q2pc'),
-    q2ly: document.getElementById('q2ly'),
-    q2hintBtn: document.getElementById('q2hintBtn'),
-    q2hint: document.getElementById('q2hint'),
+    q2: document.getElementById('q2'),
+    q3par1: document.getElementById('q3par1'),
+    q3dist1: document.getElementById('q3dist1'),
+    q3ly1: document.getElementById('q3ly1'),
+    q3par2: document.getElementById('q3par2'),
+    q3dist2: document.getElementById('q3dist2'),
+    q3ly2: document.getElementById('q3ly2'),
+    q3par3: document.getElementById('q3par3'),
+    q3dist3: document.getElementById('q3dist3'),
+    q3ly3: document.getElementById('q3ly3'),
+    q3hintBtn: document.getElementById('q3hintBtn'),
+    q3hint: document.getElementById('q3hint'),
     submitBtn: document.getElementById('submitBtn'),
     status: document.getElementById('submitStatus')
   };
 
-  var Q2_HINTS = [
+  var Q3_HINTS = [
     '연주시차 = 시차 ÷ 2 예요.',
-    '파섹(pc)은 연주시차가 정확히 1″가 되는 거리예요. 1pc은 약 3.26광년이에요.',
-    '거리(pc) = 1 ÷ 연주시차(″) 예요.'
+    '파섹(pc)은 연주시차가 정확히 1″가 되는 거리예요.',
+    '거리(pc) = 1 ÷ 연주시차(″) 예요.',
+    '거리(광년) = 거리(pc) × 3.26 이에요.'
   ];
-  var q2HintStage = 0;
-  elS.q2hintBtn.addEventListener('click', function(){
-    if(q2HintStage >= Q2_HINTS.length) return;
-    q2HintStage++;
+  var q3HintStage = 0;
+  elS.q3hintBtn.addEventListener('click', function(){
+    if(q3HintStage >= Q3_HINTS.length) return;
+    q3HintStage++;
     var shown='';
-    for(var i=0;i<q2HintStage;i++){
-      shown += '<div'+(i>0?' style="margin-top:8px;padding-top:8px;border-top:1px solid var(--warn-line)"':'')+'><b>힌트 '+(i+1)+'.</b> '+Q2_HINTS[i]+'</div>';
+    for(var i=0;i<q3HintStage;i++){
+      shown += '<div'+(i>0?' style="margin-top:8px;padding-top:8px;border-top:1px solid var(--warn-line)"':'')+'><b>힌트 '+(i+1)+'.</b> '+Q3_HINTS[i]+'</div>';
     }
-    elS.q2hint.innerHTML=shown;
-    elS.q2hint.classList.add('show');
-    if(q2HintStage>=Q2_HINTS.length){ elS.q2hintBtn.textContent='힌트를 모두 봤어요'; }
-    else { elS.q2hintBtn.textContent='💡 힌트 더 보기 ('+q2HintStage+'/'+Q2_HINTS.length+')'; }
+    elS.q3hint.innerHTML=shown;
+    elS.q3hint.classList.add('show');
+    if(q3HintStage>=Q3_HINTS.length){ elS.q3hintBtn.textContent='힌트를 모두 봤어요'; }
+    else { elS.q3hintBtn.textContent='💡 힌트 더 보기 ('+q3HintStage+'/'+Q3_HINTS.length+')'; }
   });
 
   function sanitizeId(raw){
@@ -914,22 +1029,28 @@
     var classNum = elS.classNum.value;
     var sid = sanitizeId(elS.sid.value);
     var q1 = elS.q1.value.trim();
-    var q2par = elS.q2par.value.trim();
-    var q2pc = elS.q2pc.value.trim();
-    var q2ly = elS.q2ly.value.trim();
+    var q2 = elS.q2.value.trim();
+    var q3par1 = elS.q3par1.value.trim(), q3dist1 = elS.q3dist1.value.trim(), q3ly1 = elS.q3ly1.value.trim();
+    var q3par2 = elS.q3par2.value.trim(), q3dist2 = elS.q3dist2.value.trim(), q3ly2 = elS.q3ly2.value.trim();
+    var q3par3 = elS.q3par3.value.trim(), q3dist3 = elS.q3dist3.value.trim(), q3ly3 = elS.q3ly3.value.trim();
 
     if(!classNum){ showStatus('반을 선택해주세요.', false); return; }
     if(!sid){ showStatus('번호를 입력해주세요.', false); return; }
-    if(!q1){ showStatus('질문 1에서 가깝다/멀다를 선택해주세요.', false); return; }
-    if(!q2par){ showStatus('질문 2의 연주시차 값을 입력해주세요.', false); return; }
-    if(!q2pc || !q2ly){ showStatus('질문 2의 거리(pc)와 거리(광년)를 모두 입력해주세요.', false); return; }
+    if(!q1){ showStatus('질문 1을 선택해주세요.', false); return; }
+    if(!q2){ showStatus('질문 2에서 가깝다/멀다를 선택해주세요.', false); return; }
+    if(!q3par1 || !q3dist1 || !q3ly1 || !q3par2 || !q3dist2 || !q3ly2 || !q3par3 || !q3dist3 || !q3ly3){
+      showStatus('질문 3의 세 별 모두 연주시차·거리(pc)·거리(광년)를 입력해주세요.', false); return;
+    }
 
     elS.submitBtn.disabled = true;
     elS.submitBtn.textContent = '제출 중...';
 
     var record = {
       classNum: classNum, studentId: sid,
-      q1: q1, q2par: q2par, q2pc: q2pc, q2ly: q2ly,
+      q1: q1, q2: q2,
+      q3par1: q3par1, q3dist1: q3dist1, q3ly1: q3ly1,
+      q3par2: q3par2, q3dist2: q3dist2, q3ly2: q3ly2,
+      q3par3: q3par3, q3dist3: q3dist3, q3ly3: q3ly3,
       ts: new Date().toISOString()
     };
 
@@ -997,7 +1118,7 @@
     elT.body.innerHTML = rows.map(function(r){
       var time = r.ts ? new Date(r.ts).toLocaleString('ko-KR') : '-';
       return '<tr><td>'+esc2(r.classNum)+'반</td><td>'+esc2(r.studentId)+'</td>'+
-        '<td>'+esc2(r.q1||'')+'</td><td>'+esc2(r.q2par||'')+'</td><td>'+esc2(r.q2pc||'')+'</td><td>'+esc2(r.q2ly||'')+'</td><td>'+time+'</td></tr>';
+        '<td>'+esc2(r.q1||'')+'</td><td>'+esc2(r.q2||'')+'</td><td>'+esc2(r.q3par1||'')+' / '+esc2(r.q3dist1||'')+' / '+esc2(r.q3ly1||'')+'</td><td>'+esc2(r.q3par2||'')+' / '+esc2(r.q3dist2||'')+' / '+esc2(r.q3ly2||'')+'</td><td>'+esc2(r.q3par3||'')+' / '+esc2(r.q3dist3||'')+' / '+esc2(r.q3ly3||'')+'</td><td>'+time+'</td></tr>';
     }).join('');
   }
 
@@ -1115,10 +1236,11 @@
 
   elT.copy.addEventListener('click', function(){
     if(lastRows.length === 0){ showCopyStatus2('복사할 데이터가 없어요.', false); return; }
-    var header = ['반','번호','질문1','연주시차(″)','거리(pc)','거리(광년)','제출 시각'].join('\t');
+    var header = ['반','번호','질문1','질문2','프록시마_연주시차','프록시마_거리pc','프록시마_거리광년','시리우스_연주시차','시리우스_거리pc','시리우스_거리광년','트라피스트1_연주시차','트라피스트1_거리pc','트라피스트1_거리광년','제출 시각'].join('\t');
     var body = lastRows.map(function(r){
       var time = r.ts ? new Date(r.ts).toLocaleString('ko-KR') : '-';
-      return [r.classNum+'반', r.studentId, (r.q1||'').replace(/\t/g,' '), r.q2par||'', r.q2pc||'', r.q2ly||'', time].join('\t');
+      return [r.classNum+'반', r.studentId, (r.q1||'').replace(/\t/g,' '), (r.q2||'').replace(/\t/g,' '),
+        r.q3par1||'', r.q3dist1||'', r.q3ly1||'', r.q3par2||'', r.q3dist2||'', r.q3ly2||'', r.q3par3||'', r.q3dist3||'', r.q3ly3||'', time].join('\t');
     }).join('\n');
     var tsv = header + '\n' + body;
 
