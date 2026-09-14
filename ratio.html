@@ -131,6 +131,8 @@
   .propcard.good{border-color:var(--accent-line);background:var(--accent-bg)} .propcard.good .pf{color:var(--accent)}
   .propcard.bad{border-color:var(--bad-line);background:var(--bad-bg)} .propcard.bad .pf{color:var(--bad)}
   .propnote{font-size:20px;line-height:1.6;color:var(--ink);margin-top:19px;padding-top:19px;border-top:1px solid #c7d6f0}
+  .tab-next{display:inline-block;margin-top:18px;padding:14px 22px;border-radius:12px;border:none;
+    background:var(--warn);color:#fff;font-weight:800;font-size:19px;cursor:pointer;font-family:inherit}
   .propnote b{color:var(--warn)}
 
   .lawnote{margin-top:26px;padding:24px 26px;background:#fff7ed;border:2px solid var(--warn-line);
@@ -782,17 +784,25 @@
   function maybeShowProperty(m){
     if(!(madeLeft && madeRight)) return;
       var p=m.prop;
+      var isLast = curIdx >= MISSIONS.length - 1;
       el.property.innerHTML=
         '<h3>✓ 성분비가 다르면 성질도 달라요</h3>'+
         '<div class="propgrid">'+
           '<div class="propcard '+p.good.cls+'"><div class="pf">'+p.good.f+'</div><div class="pr">'+p.good.r+'</div><div class="pd">'+p.good.d+'</div></div>'+
           '<div class="propcard '+p.bad.cls+'"><div class="pf">'+p.bad.f+'</div><div class="pr">'+p.bad.r+'</div><div class="pd">'+p.bad.d+'</div></div>'+
         '</div>'+
-        '<div class="propnote">'+p.note+'</div>';
+        '<div class="propnote">'+p.note+'</div>'+
+        '<button type="button" class="tab-next" id="missionNextBtn">'+(isLast?'형성평가로 →':'다음 탭으로 →')+'</button>';
       if(!el.property.classList.contains('show')){
         el.property.classList.add('show');
         el.property.scrollIntoView({behavior:'smooth',block:'nearest'});
       }
+      var missionNextBtn = document.getElementById('missionNextBtn');
+      if(missionNextBtn) missionNextBtn.addEventListener('click', function(){
+        if(isLast){ viewMode='assess'; loadAssessTab(); }
+        else{ curIdx += 1; loadMission(); }
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
   }
 
   el.reactBtnL.addEventListener('click', function(){ reactOne(el.cboxL, cur().left, true); });
