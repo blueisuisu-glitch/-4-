@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>질량은 변할까? — 아레스 4 프로젝트</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --panel:#ffffff; --line:#d3dbe6; --line2:#e2e8f0;
+    --ink:#16202f; --dim:#5a6478; --faint:#94a0b4;
+    --accent:#15a34a; --accent-bg:#e7f7ee; --accent-line:#a7e0be;
+    --warn:#d9670f; --warn-bg:#fdf0e4; --warn-line:#f2c79a;
+    --bad:#d63c33; --bad-bg:#fdeceb; --bad-line:#f2b3ae;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:'Segoe UI','Malgun Gothic',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+  .wrap{max-width:1120px;margin:0 auto;padding:26px 20px 70px}
+
+  header{margin-bottom:22px}
+  .eyebrow{font-size:20px;letter-spacing:.2em;color:var(--warn);
+    text-transform:uppercase;font-weight:800;margin-bottom:10px}
+  h1{font-size:42px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+
+  .story{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--warn);
+    border-radius:0 16px 16px 0;padding:20px 24px;margin-bottom:22px;font-size:23px;line-height:1.65;color:var(--ink)}
+  .story b{color:var(--warn)}
+
+  .idbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+  .idbar label{font-size:20px;font-weight:700;color:var(--dim);white-space:nowrap}
+  .idbar select, .idbar input[type=text]{
+    background:#f8fafc;border:1px solid var(--line);border-radius:10px;color:var(--ink);
+    font-family:inherit;font-size:22px;padding:11px 14px;outline:none}
+  .idbar select{width:120px}
+  .idbar input[type=text]{width:110px}
+
+  .tabnav{display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid var(--line);flex-wrap:wrap}
+  .tabbtn{flex:1;min-width:200px;padding:16px 14px;border:none;background:transparent;cursor:pointer;
+    font-family:inherit;font-size:19px;font-weight:700;color:var(--faint);border-bottom:4px solid transparent;
+    margin-bottom:-2px;transition:.15s;text-align:center}
+  .tabbtn:hover{color:var(--dim)}
+  .tabbtn.on{color:var(--warn);border-bottom-color:var(--warn)}
+  .tabpanel{display:none}
+  .tabpanel.show{display:block}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;
+    padding:26px 28px;margin-bottom:20px;box-shadow:0 1px 3px rgba(20,30,50,.05)}
+  h2{font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:16px}
+  h2.big{font-size:23px;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:800;margin-bottom:14px}
+  .qnum{color:var(--warn);font-weight:800;margin-right:6px}
+
+  .note{margin-top:0;padding:18px 20px;background:#f8fafc;
+    border-left:4px solid var(--warn);border-radius:0 12px 12px 0;
+    font-size:18px;line-height:1.65;color:var(--ink)}
+
+  .ttable-wrap{overflow-x:auto;margin-top:16px}
+  table.rt{width:100%;border-collapse:collapse;font-size:16px;min-width:560px}
+  table.rt th{background:#f8fafc;color:var(--dim);font-weight:700;font-size:14px;
+    padding:12px 8px;border:1px solid var(--line);text-align:center}
+  table.rt td{border:1px solid var(--line2);padding:8px;text-align:center;vertical-align:middle}
+  table.rt td.rowlbl{background:#f8fafc;font-weight:700;color:var(--dim);white-space:nowrap;padding:12px 10px}
+  table.rt input[type=text], table.rt input[type=number]{width:100%;min-width:80px;border:1.5px solid var(--line);
+    border-radius:8px;padding:9px 6px;font-family:inherit;font-size:16px;text-align:center;color:var(--ink);background:#fff}
+  table.rt input:focus{outline:none;border-color:var(--warn);background:var(--warn-bg)}
+  table.rt .unit{color:var(--faint);font-size:14px;margin-left:2px}
+  table.rt select{width:100%;min-width:140px;border:1.5px solid var(--warn-line);border-radius:8px;
+    padding:9px 6px;font-family:inherit;font-size:18px;text-align:center;color:var(--ink);background:#fff}
+  table.rt select:focus{outline:none;border-color:var(--warn);background:var(--warn-bg)}
+  select option[value=""]{color:#999}
+  select option:not([value=""]){color:var(--ink)}
+
+  .q{margin-bottom:22px}
+  .q:last-child{margin-bottom:0}
+  .q label{display:block;font-size:20px;font-weight:700;margin-bottom:12px;line-height:1.5}
+  .qrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+  .qrow select{background:#f8fafc;border:2px solid var(--warn-line);color:var(--ink);border-radius:10px;
+    padding:10px 14px;font-family:inherit;font-size:18px}
+  textarea{width:100%;background:#f8fafc;border:2px solid var(--line);color:var(--ink);border-radius:12px;
+    padding:14px;font-family:inherit;font-size:18px;line-height:1.55;outline:none;resize:vertical;min-height:70px}
+  textarea:focus{border-color:var(--warn);background:#fff}
+
+  .blanksent{font-size:19px;line-height:2.4;background:#f8fafc;border-radius:12px;padding:16px 18px}
+  .blank{display:inline-block;background:#fff;border:2px solid var(--warn-line);border-radius:8px;
+    padding:6px 10px;font-family:inherit;font-size:17px;color:var(--ink);margin:0 2px}
+  .blank.wide{min-width:180px}
+
+  .ctrl-list{display:flex;flex-direction:column;gap:10px;background:#f8fafc;border-radius:12px;padding:14px 16px}
+
+  .lawword-reason{color:var(--accent);font-weight:800}
+  .lawword-def{color:#2563c9;font-weight:800}
+  .emph-red{color:var(--bad);font-weight:800}
+  .blankline{font-size:19px;line-height:2;color:var(--ink);background:#f8fafc;border:1px solid var(--line);
+    border-radius:12px;padding:16px 18px}
+  .blankinput{width:120px;padding:8px 10px;margin:0 3px;border:2px solid var(--warn-line);border-radius:9px;
+    background:#fff;color:var(--warn);font-family:inherit;font-size:17px;font-weight:800;text-align:center;vertical-align:middle}
+  .blankinput:focus{outline:none;border-color:var(--warn);background:var(--warn-bg)}
+  .readbox{background:#eef4ff;border:1.5px solid #b9d3f5;border-radius:14px;padding:18px 20px;
+    margin-bottom:16px;font-size:17px;line-height:1.65;color:var(--ink)}
+  .readbox .rb-tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.04em;
+    color:#2563c9;background:#dbe8ff;padding:3px 10px;border-radius:999px;margin-bottom:8px}
+  .ctrl-list label{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:600;color:var(--ink);
+    margin-bottom:0;cursor:pointer}
+  .ctrl-list input[type=checkbox]{width:20px;height:20px;accent-color:var(--warn);cursor:pointer;flex-shrink:0}
+
+  .done-btn{width:100%;margin-top:4px;padding:20px;border-radius:16px;border:none;background:var(--accent);color:#fff;
+    font-weight:800;font-size:23px;cursor:pointer;font-family:inherit;box-shadow:0 2px 5px rgba(21,163,74,.22)}
+  .done-btn:hover{filter:brightness(1.06)}
+  .done-btn:disabled{opacity:.5;cursor:not-allowed}
+  .tab-next{display:inline-block;margin-top:18px;padding:14px 22px;border-radius:12px;border:none;
+    background:var(--warn);color:#fff;font-weight:800;font-size:19px;cursor:pointer;font-family:inherit}
+  .status{margin-top:14px;padding:14px 18px;border-radius:12px;font-size:18px;font-weight:700;
+    text-align:center;display:none}
+  .status.show{display:block}
+  .status.ok{background:var(--accent-bg);color:#0f5c30;border:1px solid var(--accent-line)}
+  .status.err{background:var(--bad-bg);color:#a12a22;border:1px solid var(--bad-line)}
+
+  /* ---- 교사용 ---- */
+  .teacher-link{text-align:center;margin-top:26px}
+  .teacher-link button{background:none;border:none;color:var(--faint);font-size:16px;
+    cursor:pointer;font-family:inherit;padding:6px;text-decoration:underline;text-underline-offset:2px}
+  .tgate{display:none;margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:16px 20px;text-align:center}
+  .tgate.show{display:block}
+  .tgate input{background:#f8fafc;border:1px solid var(--line);border-radius:10px;color:var(--ink);
+    font-family:inherit;font-size:18px;padding:10px 14px;margin-right:8px}
+  .tgate button.go{background:var(--warn);color:#fff;border:none;border-radius:10px;padding:10px 16px;
+    font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
+  .tstatus{margin-top:8px;font-size:14px;display:none}
+  .tstatus.show{display:block}
+  .tstatus.err{color:var(--bad)}
+  .tstatus.ok{color:var(--accent)}
+  .tpanel{display:none;margin-top:16px;background:var(--panel);border:1px solid var(--line);
+    border-radius:18px;padding:22px 20px}
+  .tpanel.show{display:block}
+  .tbtns{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+  .tbtns button{background:#f8fafc;border:1px solid var(--line);color:var(--ink);
+    font-size:14px;font-weight:700;padding:9px 13px;border-radius:9px;cursor:pointer;font-family:inherit}
+  table.ttable{width:100%;border-collapse:collapse;font-size:13px}
+  table.ttable th{text-align:left;color:var(--dim);font-weight:700;font-size:11px;
+    letter-spacing:.03em;text-transform:uppercase;padding:9px 8px;border-bottom:1px solid var(--line);
+    background:#f8fafc;white-space:nowrap}
+  table.ttable td{padding:9px 8px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink)}
+  .tempty{font-size:15px;color:var(--faint);padding:18px 4px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">아레스 4 프로젝트</div>
+    <h1>기체가 발생하거나 앙금이 생겨도 질량은 변할까?</h1>
+  </header>
+
+  <div class="story">
+    화성 기지에서는 토양 속 <b>탄산칼슘</b>을 분리하거나, 폐수 속 물질을 <b>앙금으로 가라앉혀</b> 걸러내는
+    작업이 자주 필요하다. 그런데 반응이 일어나 기체가 빠져나가거나 뿌연 앙금이 생기면, 마치 물질의
+    질량이 사라지거나 새로 생긴 것처럼 보인다. <b>정말 질량이 변할까?</b> 두 가지 반응으로 직접 확인해보자.
+  </div>
+
+  <div class="idbar">
+    <label for="classNum">반</label>
+    <select id="classNum">
+      <option value="">선택</option>
+      <option value="1">1반</option>
+      <option value="2">2반</option>
+      <option value="3">3반</option>
+      <option value="4">4반</option>
+    </select>
+    <label for="sid">번호</label>
+    <input type="text" id="sid" placeholder="예: 15" inputmode="numeric" autocomplete="off">
+  </div>
+
+  <div class="tabnav" id="tabnav">
+    <button class="tabbtn on" data-tab="tab2" type="button">탐구 1. 기체 발생 반응</button>
+    <button class="tabbtn" data-tab="tab3" type="button">탐구 2. 앙금 생성 반응</button>
+  </div>
+
+  <div class="tabpanel show" id="tab2">
+    <div class="panel">
+      <h2 class="big">탐구 문제</h2>
+      <div class="note">
+        기체가 발생하는 반응에서, 반응 용기의 입구를 막았는지 여부에 따라 측정되는 질량은 달라질까?
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">가설 세우기</h2>
+      <div class="q">
+        <label><span class="qnum">1.</span> 위 탐구 문제에 대한 나의 가설을 세워보세요.</label>
+        <textarea id="hypothesis" placeholder="~라면, ~할 것이다 형식으로 써보세요"></textarea>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">변인 설정</h2>
+      <div class="q">
+        <div class="note" style="margin-bottom:12px">
+          <b>조작변인</b>이란, 원인이 되는 조건을 알아보기 위해 실험자가 일부러 다르게 설정하는 값이에요.
+        </div>
+        <label><span class="qnum">2.</span> 이번 실험(탐구 A·B)에서 조작변인은 무엇인가요?</label>
+        <div class="qrow">
+          <select id="varManip">
+            <option value="">선택하세요</option>
+            <option value="seal">반응 용기의 입구를 막았는지 여부(개방/밀폐)</option>
+            <option value="amount">탄산칼슘의 양</option>
+            <option value="conc">염산의 농도</option>
+          </select>
+        </div>
+      </div>
+      <div class="q">
+        <div class="note" style="margin-bottom:12px">
+          <b>종속변인</b>이란, 조작변인에 따라 결과적으로 달라지는 값, 즉 우리가 측정해서 확인하는 값이에요.
+        </div>
+        <label><span class="qnum">3.</span> 이번 실험에서 종속변인은 무엇인가요?</label>
+        <div class="qrow">
+          <select id="varDep">
+            <option value="">선택하세요</option>
+            <option value="mass">반응 전·후의 질량</option>
+            <option value="speed">기체가 발생하는 속도</option>
+            <option value="color">용액의 색깔 변화</option>
+          </select>
+        </div>
+      </div>
+      <div class="q">
+        <div class="note" style="margin-bottom:12px">
+          <b>통제변인</b>이란, 조작변인과 종속변인을 뺀 나머지 조건들 중, 결과에 영향을 주지 않도록
+          처음부터 끝까지 똑같이 맞춰야 하는 값들이에요.
+        </div>
+        <label><span class="qnum">4.</span> 이번 실험에서 통제변인이 될 수 있는 것을 모두 고르세요.</label>
+        <div class="ctrl-list">
+          <label><input type="checkbox" id="ctrlG_amount"> 탄산칼슘의 양</label>
+          <label><input type="checkbox" id="ctrlG_conc"> 염산의 농도</label>
+          <label><input type="checkbox" id="ctrlG_volume"> 염산의 양</label>
+          <label><input type="checkbox" id="ctrlG_temp"> 실험실의 온도</label>
+          <label><input type="checkbox" id="ctrlG_flask"> 삼각플라스크의 크기</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">탐구 과정</h2>
+      <div class="note" style="line-height:2">
+        <b>탐구 A (입구를 막지 않음)</b><br>
+        <span class="qnum">1.</span> 작은 비커에 탄산칼슘 2g을 담는다.<br>
+        <span class="qnum">2.</span> 묽은 염산을 넣은 삼각플라스크와 탄산칼슘 비커를 함께 전자저울에 올려 질량을 측정한다.<br>
+        <span class="qnum">3.</span> 탄산칼슘을 삼각플라스크에 넣고 반응을 관찰한 뒤, 질량을 측정한다.<br><br>
+        <b>탐구 B (풍선으로 입구를 막음)</b><br>
+        <span class="qnum">1.</span> 풍선에 탄산칼슘 2g을 넣은 뒤, 그 풍선을 염산이 든 삼각플라스크 입구에 씌운다.<br>
+        <span class="qnum">2.</span> 풍선을 씌운 채로 전자저울에 올려 질량을 측정한다.<br>
+        <span class="qnum">3.</span> 풍선을 들어 올려 안에 있던 탄산칼슘을 염산에 넣고 반응을 관찰한 뒤, 질량을 측정한다.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">탐구 결과</h2>
+      <div class="ttable-wrap">
+        <table class="rt">
+          <thead>
+            <tr><th></th><th>반응 전 질량</th><th>반응 후 질량</th><th>질량 차이</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rowlbl">탐구 A<br><span style="font-weight:400;font-size:13px">(입구를 막지 않음)</span></td>
+              <td><input type="number" step="0.1" id="gA_before"><span class="unit">g</span></td>
+              <td><input type="number" step="0.1" id="gA_after"><span class="unit">g</span></td>
+              <td><input type="text" id="gA_diff"></td>
+            </tr>
+            <tr>
+              <td class="rowlbl">탐구 B<br><span style="font-weight:400;font-size:13px">(풍선으로 막음)</span></td>
+              <td><input type="number" step="0.1" id="gB_before"><span class="unit">g</span></td>
+              <td><input type="number" step="0.1" id="gB_after"><span class="unit">g</span></td>
+              <td><input type="text" id="gB_diff"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">결과 해석</h2>
+
+      <div class="q">
+        <label><span class="qnum">1.</span> 탐구 A와 탐구 B에서 반응 전후 질량에 차이가 나는 이유는 무엇인가요?</label>
+        <textarea id="gA_reason" placeholder="이유를 서술하세요"></textarea>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">2.</span> 탐구 A와 탐구 B 중 질량 차이가 더 크게 나타난 쪽은 어디인가요? 그 이유는 무엇인가요?</label>
+        <div class="qrow">
+          <select id="gBigger">
+            <option value="">선택하세요</option>
+            <option value="A">탐구 A(입구를 막지 않음)</option>
+            <option value="B">탐구 B(풍선으로 막음)</option>
+          </select>
+        </div>
+        <textarea id="gBigger_reason" placeholder="이유를 서술하세요"></textarea>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">3.</span> 예상하기 — 삼각플라스크 입구를 완전히 밀폐했다면, 반응 전·후 질량은 어떨까요?</label>
+        <div class="qrow">
+          <select id="gPredict">
+            <option value="">선택하세요</option>
+            <option value="same">반응 전후 질량이 같을 것이다</option>
+            <option value="diff">반응 전후 질량이 다를 것이다</option>
+          </select>
+        </div>
+        <textarea id="gPredict_reason" placeholder="그렇게 예상한 이유를 서술하세요"></textarea>
+      </div>
+      <button type="button" class="tab-next" id="toTab3Btn">다음 탭으로 →</button>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="tab3">
+    <div class="panel">
+      <h2 class="big">탐구 문제</h2>
+      <div class="note">
+        탄산 나트륨 수용액과 염화칼슘 수용액이 반응해 뿌연 앙금이 생겨도, 반응 전·후 물질의 총 질량은 같을까?
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">가설 세우기</h2>
+      <div class="q">
+        <label><span class="qnum">1.</span> 위 탐구 문제에 대한 나의 가설을 세워보세요.</label>
+        <textarea id="hypothesis2" placeholder="~라면, ~할 것이다 형식으로 써보세요"></textarea>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">변인 설정</h2>
+      <div class="q">
+        <div class="note" style="margin-bottom:12px">
+          <b>조작변인</b>이란, 원인이 되는 조건을 알아보기 위해 실험자가 일부러 다르게 설정하는 값이에요.
+        </div>
+        <label><span class="qnum">2.</span> 이번 실험에서 조작변인은 무엇인가요?</label>
+        <div class="qrow">
+          <select id="varManip2">
+            <option value="">선택하세요</option>
+            <option value="mix">두 수용액을 섞었는지 여부(반응 전/후)</option>
+            <option value="temp">수용액의 온도</option>
+            <option value="conc">수용액의 농도</option>
+          </select>
+        </div>
+      </div>
+      <div class="q">
+        <div class="note" style="margin-bottom:12px">
+          <b>종속변인</b>이란, 조작변인에 따라 결과적으로 달라지는 값, 즉 우리가 측정해서 확인하는 값이에요.
+        </div>
+        <label><span class="qnum">3.</span> 이번 실험에서 종속변인은 무엇인가요?</label>
+        <div class="qrow">
+          <select id="varDep2">
+            <option value="">선택하세요</option>
+            <option value="mass">반응 전·후의 총 질량</option>
+            <option value="color">앙금의 색깔</option>
+            <option value="speed">앙금이 생기는 속도</option>
+          </select>
+        </div>
+      </div>
+      <div class="q">
+        <div class="note" style="margin-bottom:12px">
+          <b>통제변인</b>이란, 조작변인과 종속변인을 뺀 나머지 조건들 중, 결과에 영향을 주지 않도록
+          처음부터 끝까지 똑같이 맞춰야 하는 값들이에요.
+        </div>
+        <label><span class="qnum">4.</span> 이번 실험에서 통제변인이 될 수 있는 것을 모두 고르세요.</label>
+        <div class="ctrl-list">
+          <label><input type="checkbox" id="ctrlP_amount"> 두 수용액의 양</label>
+          <label><input type="checkbox" id="ctrlP_conc"> 두 수용액의 농도</label>
+          <label><input type="checkbox" id="ctrlP_temp"> 측정할 때의 온도</label>
+          <label><input type="checkbox" id="ctrlP_vial"> 바이알병 밀폐 여부</label>
+          <label><input type="checkbox" id="ctrlP_time"> 측정하는 시간</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">탐구 과정</h2>
+      <div class="note" style="line-height:2">
+        <span class="qnum">1.</span> 두 개의 바이알에 각각 탄산 나트륨 수용액과 염화칼슘 수용액을 넣은 후, 두 바이알을 함께
+        전자저울에 올려 질량을 측정한다.<br>
+        <span class="qnum">2.</span> 한 바이알 속 수용액을 다른 바이알에 부어 섞은 후, 두 바이알을 전자저울에 올려 질량을
+        측정한다.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">탐구 결과</h2>
+      <div class="ttable-wrap">
+        <table class="rt">
+          <thead><tr><th>반응 전 물질의 총 질량</th><th>반응 후 물질의 총 질량</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><input type="number" step="0.1" id="pBefore"><span class="unit">g</span></td>
+              <td><input type="number" step="0.1" id="pAfter"><span class="unit">g</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="big">결과 해석</h2>
+
+      <div class="q">
+        <label><span class="qnum">1.</span> 탄산 나트륨 수용액과 염화칼슘 수용액을 섞으면 어떤 변화가 일어나나요?</label>
+        <textarea id="pChange" placeholder="관찰한 변화를 서술하세요"></textarea>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">2.</span> 탄산 나트륨 수용액과 염화칼슘 수용액의 반응 전·후 질량 변화를 비교하시오.</label>
+        <textarea id="pReason" placeholder="비교 결과와 이유를 서술하세요"></textarea>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">3.</span> 아래 화학 반응 모형을 보고 다음을 확인해보세요.</label>
+        <div class="note" style="margin-bottom:16px">
+          <b>Na₂CO₃ + CaCl₂ → 2NaCl + CaCO₃</b>
+        </div>
+        <svg viewBox="0 0 620 190" style="width:100%;max-width:620px;display:block;margin:0 auto 16px">
+          <!-- Na2CO3 -->
+          <circle cx="95" cy="75" r="17" fill="#3b82f6" stroke="#2456a0" stroke-width="1.3"/>
+          <text x="95" y="81" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">C</text>
+          <circle cx="95" cy="46" r="15" fill="#ef4444" stroke="#a92c2c" stroke-width="1.3"/>
+          <text x="95" y="51" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">O</text>
+          <circle cx="70" cy="92" r="15" fill="#ef4444" stroke="#a92c2c" stroke-width="1.3"/>
+          <text x="70" y="97" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">O</text>
+          <circle cx="120" cy="92" r="15" fill="#ef4444" stroke="#a92c2c" stroke-width="1.3"/>
+          <text x="120" y="97" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">O</text>
+          <circle cx="42" cy="106" r="14" fill="#f5c542" stroke="#b58a1c" stroke-width="1.3"/>
+          <text x="42" y="111" text-anchor="middle" font-size="12" font-weight="800" fill="#5a4408">Na</text>
+          <circle cx="148" cy="106" r="14" fill="#f5c542" stroke="#b58a1c" stroke-width="1.3"/>
+          <text x="148" y="111" text-anchor="middle" font-size="12" font-weight="800" fill="#5a4408">Na</text>
+          <text x="95" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="var(--dim)">탄산 나트륨</text>
+
+          <text x="180" y="85" text-anchor="middle" font-size="26" fill="var(--faint)">+</text>
+
+          <!-- CaCl2 -->
+          <circle cx="206" cy="75" r="15" fill="#22c55e" stroke="#15803d" stroke-width="1.3"/>
+          <text x="206" y="80" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Cl</text>
+          <circle cx="235" cy="75" r="17" fill="#f97316" stroke="#b8500f" stroke-width="1.3"/>
+          <text x="235" y="81" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Ca</text>
+          <circle cx="264" cy="75" r="15" fill="#22c55e" stroke="#15803d" stroke-width="1.3"/>
+          <text x="264" y="80" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Cl</text>
+          <text x="235" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="var(--dim)">염화 칼슘</text>
+
+          <text x="305" y="85" text-anchor="middle" font-size="30" fill="var(--accent)">→</text>
+
+          <!-- 2 NaCl -->
+          <circle cx="365" cy="55" r="14" fill="#f5c542" stroke="#b58a1c" stroke-width="1.3"/>
+          <text x="365" y="60" text-anchor="middle" font-size="12" font-weight="800" fill="#5a4408">Na</text>
+          <circle cx="392" cy="55" r="15" fill="#22c55e" stroke="#15803d" stroke-width="1.3"/>
+          <text x="392" y="60" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Cl</text>
+          <circle cx="365" cy="100" r="14" fill="#f5c542" stroke="#b58a1c" stroke-width="1.3"/>
+          <text x="365" y="105" text-anchor="middle" font-size="12" font-weight="800" fill="#5a4408">Na</text>
+          <circle cx="392" cy="100" r="15" fill="#22c55e" stroke="#15803d" stroke-width="1.3"/>
+          <text x="392" y="105" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Cl</text>
+          <text x="378" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="var(--dim)">염화 나트륨</text>
+
+          <text x="440" y="85" text-anchor="middle" font-size="26" fill="var(--faint)">+</text>
+
+          <!-- CaCO3 -->
+          <circle cx="530" cy="27" r="17" fill="#f97316" stroke="#b8500f" stroke-width="1.3"/>
+          <text x="530" y="33" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Ca</text>
+          <circle cx="530" cy="75" r="17" fill="#3b82f6" stroke="#2456a0" stroke-width="1.3"/>
+          <text x="530" y="81" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">C</text>
+          <circle cx="530" cy="51" r="15" fill="#ef4444" stroke="#a92c2c" stroke-width="1.3"/>
+          <text x="530" y="56" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">O</text>
+          <circle cx="505" cy="92" r="15" fill="#ef4444" stroke="#a92c2c" stroke-width="1.3"/>
+          <text x="505" y="97" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">O</text>
+          <circle cx="555" cy="92" r="15" fill="#ef4444" stroke="#a92c2c" stroke-width="1.3"/>
+          <text x="555" y="97" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">O</text>
+          <text x="530" y="152" text-anchor="middle" font-size="16" font-weight="700" fill="var(--dim)">탄산 칼슘(앙금)</text>
+        </svg>
+
+        <div style="margin-bottom:10px;font-weight:700;color:var(--dim);font-size:16px">(1) 분자의 개수와 종류 확인하기</div>
+        <div class="ttable-wrap">
+          <table class="rt">
+            <thead><tr><th></th><th>반응 물질</th><th>생성 물질</th></tr></thead>
+            <tbody>
+              <tr><td class="rowlbl">분자 종류</td><td><input type="text" id="molKind_l"></td><td><input type="text" id="molKind_r"></td></tr>
+              <tr><td class="rowlbl">분자 총 개수</td><td><input type="text" id="molCount_l"></td><td><input type="text" id="molCount_r"></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="qrow" style="margin-top:14px;margin-bottom:20px">
+          <label style="font-size:18px;font-weight:700;margin:0">반응 전·후 분자의 종류와 개수는</label>
+          <select id="molSame">
+            <option value="">선택하세요</option>
+            <option value="same">같다</option>
+            <option value="diff">다르다</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:10px;font-weight:700;color:var(--dim);font-size:16px">(2) 원자의 개수와 종류 확인하기</div>
+        <div class="ttable-wrap">
+          <table class="rt">
+            <thead><tr><th>원자</th><th>반응 물질 (개수)</th><th>생성 물질 (개수)</th></tr></thead>
+            <tbody>
+              <tr><td class="rowlbl">탄소</td><td><input type="text" id="atC_l"></td><td><input type="text" id="atC_r"></td></tr>
+              <tr><td class="rowlbl">산소</td><td><input type="text" id="atO_l"></td><td><input type="text" id="atO_r"></td></tr>
+              <tr><td class="rowlbl">나트륨</td><td><input type="text" id="atNa_l"></td><td><input type="text" id="atNa_r"></td></tr>
+              <tr><td class="rowlbl">염소</td><td><input type="text" id="atCl_l"></td><td><input type="text" id="atCl_r"></td></tr>
+              <tr><td class="rowlbl">칼슘</td><td><input type="text" id="atCa_l"></td><td><input type="text" id="atCa_r"></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="qrow" style="margin-top:14px;margin-bottom:20px">
+          <label style="font-size:18px;font-weight:700;margin:0">반응 전·후 원자의 종류와 개수는</label>
+          <select id="atSame">
+            <option value="">선택하세요</option>
+            <option value="same">같다</option>
+            <option value="diff">다르다</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">4.</span> 탄산 나트륨 수용액과 염화칼슘 수용액의 반응 전·후 질량이 같은 이유를 서술하시오.</label>
+        <textarea id="massFinalReason" placeholder="이유를 서술하세요"></textarea>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">5.</span> 탐구 1에서 예상한 "입구를 완전히 밀폐했을 때"의 결과와, 탐구 2(앙금 생성 반응)의 실제 결과에서 공통으로 나타나는 특징은 무엇인가요?</label>
+        <textarea id="lawCommon" placeholder="여기에 적어보세요"></textarea>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">6.</span> 그 특징이 나타나는 <span class="lawword-reason">근거</span>를 빈칸에 채워 완성하세요.</label>
+        <div class="blankline">
+          <span class="emph-red">질량 보존 법칙</span>이 성립하는 <span class="lawword-reason">근거</span>는, 화학 반응에 참여하는 물질을 이루는
+          <input type="text" class="blankinput" id="lawReason_0" placeholder="낱말">
+          의 <input type="text" class="blankinput" id="lawReason_1" placeholder="낱말">
+          와 <input type="text" class="blankinput" id="lawReason_2" placeholder="낱말">
+          가 반응 전후에 달라지지 않기 때문이다.
+        </div>
+      </div>
+
+      <div class="q">
+        <label><span class="qnum">7.</span> 아래 글을 읽고, 빈칸을 채워 <span class="emph-red">질량 보존 법칙</span>의 <span class="lawword-def">정의</span>를 완성하세요.</label>
+        <div class="readbox">
+          <span class="rb-tag">읽어보기</span><br>
+          이 법칙은 18세기 후반 프랑스의 과학자 <b>라부아지에</b>가 발견했어요. 그는 밀폐된 용기 안에서 여러
+          화학 반응을 진행시키며 반응 전후의 질량을 정밀한 저울로 재보았어요. 그 결과, 반응이 일어나 물질의
+          성질이 완전히 달라져도 반응 전후 물질의 총 질량은 항상 똑같다는 사실을 확인하고 이를 법칙으로
+          정리했어요.
+        </div>
+        <div class="blankline">
+          <span class="emph-red">질량 보존 법칙</span>은, 화학 반응이 일어나도 반응 전과 후 물질의 총
+          <input type="text" class="blankinput" id="lawDef_0" placeholder="낱말">
+          은 서로 <input type="text" class="blankinput" id="lawDef_1" placeholder="낱말">
+          는 법칙이다.
+        </div>
+      </div>
+
+      <button class="done-btn" id="submitBtn">제출하기</button>
+      <div class="status" id="submitStatus"></div>
+    </div>
+  </div>
+
+  <div class="teacher-link">
+    <button id="teacherToggle" type="button">교사용 보기</button>
+  </div>
+  <div class="tgate" id="tgate">
+    <input type="text" id="tcode" placeholder="교사 확인 코드" autocomplete="off">
+    <button class="go" id="tcodeBtn" type="button">확인</button>
+    <div class="tstatus" id="tcodeStatus"></div>
+  </div>
+
+  <div class="tpanel" id="tpanel">
+    <h2>제출 현황</h2>
+    <div class="tbtns">
+      <select id="classFilter">
+        <option value="all">전체 반</option>
+        <option value="1">1반</option><option value="2">2반</option>
+        <option value="3">3반</option><option value="4">4반</option>
+      </select>
+      <button id="refreshBtn" type="button">새로고침</button>
+      <button id="copyBtn" type="button">TSV로 복사</button>
+      <button id="resetBtn" type="button" data-label="전체 초기화">전체 초기화</button>
+    </div>
+    <div class="ttable-wrap">
+      <table class="ttable">
+        <thead>
+          <tr><th>반</th><th>번호</th><th>가설1</th><th>변인1</th><th>통제1</th><th>탐구A(전→후)</th><th>탐구B(전→후)</th><th>차이 비교</th><th>예상</th>
+            <th>가설2</th><th>변인2</th><th>통제2</th><th>앙금 전→후</th><th>분자비교</th><th>원자표</th><th>4번(질량같은이유)</th>
+            <th>5(공통점)</th><th>6(근거)</th><th>7(정의)</th><th>제출 시각</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="tempty" id="tempty" style="display:none">아직 제출된 응답이 없어요.</div>
+    </div>
+    <div class="tstatus" id="copyStatus" style="text-align:center;margin-top:10px"></div>
+  </div>
+
+</div>
+<script>
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbzdapQzEDTejuSgrpX39izgCwxvljDXmRUeaXmB9tmqHU6OMQYsE0veCUhX02SVmHE/exec';
+  function submitToSheet(sim, record, onDone){
+    var done = false;
+    var timer = setTimeout(function(){
+      if(done) return;
+      done = true;
+      onDone(false, true);
+    }, 8000);
+    try{
+      var payload = Object.assign({sim: sim}, record);
+      fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify(payload)
+      }).then(function(){
+        if(done) return;
+        done = true;
+        clearTimeout(timer);
+        onDone(true, false);
+      }).catch(function(){
+        if(done) return;
+        done = true;
+        clearTimeout(timer);
+        onDone(false, false);
+      });
+    } catch(e){
+      if(!done){
+        done = true;
+        clearTimeout(timer);
+        onDone(false, false);
+      }
+    }
+  }
+(function(){
+  'use strict';
+  var TEACHER_CODE = 'dltndltn';
+  var STORE_PREFIX = 'sub-massconserve-';
+
+  var tabBtns = [].slice.call(document.querySelectorAll('.tabbtn'));
+  var tabPanels = { tab2: document.getElementById('tab2'), tab3: document.getElementById('tab3') };
+  tabBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      tabBtns.forEach(function(x){ x.classList.toggle('on', x===b); });
+      Object.keys(tabPanels).forEach(function(k){
+        tabPanels[k].classList.toggle('show', k===b.dataset.tab);
+      });
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+
+  var toTab3Btn = document.getElementById('toTab3Btn');
+  if(toTab3Btn) toTab3Btn.addEventListener('click', function(){
+    var tab3Btn = document.querySelector('.tabbtn[data-tab="tab3"]');
+    if(tab3Btn) tab3Btn.click();
+  });
+
+  function sanitizeId(raw){
+    return String(raw||'').trim().replace(/[\s\/\\'"]/g,'');
+  }
+
+  var elS = {
+    classNum: document.getElementById('classNum'),
+    sid: document.getElementById('sid'),
+    submitBtn: document.getElementById('submitBtn'),
+    status: document.getElementById('submitStatus')
+  };
+
+  var numFieldIds = ['gA_before','gA_after','gB_before','gB_after','pBefore','pAfter'];
+  var textFieldIds = ['gA_diff','gB_diff','molKind_l','molKind_r','molCount_l','molCount_r'];
+  var reasonIds = ['hypothesis','gA_reason','gBigger_reason','gPredict_reason',
+    'hypothesis2','pChange','pReason','massFinalReason','lawCommon'];
+  var selectIds = ['varManip','varDep','gBigger','gPredict','varManip2','varDep2','molSame','atSame'];
+  var atomIds = ['atC_l','atC_r','atO_l','atO_r','atNa_l','atNa_r','atCl_l','atCl_r','atCa_l','atCa_r'];
+  var blankIds2 = ['lawReason_0','lawReason_1','lawReason_2','lawDef_0','lawDef_1'];
+  var ctrlGIds = ['ctrlG_amount','ctrlG_conc','ctrlG_volume','ctrlG_temp','ctrlG_flask'];
+  var ctrlPIds = ['ctrlP_amount','ctrlP_conc','ctrlP_temp','ctrlP_vial','ctrlP_time'];
+
+  function showStatus(msg, ok){
+    elS.status.textContent = msg;
+    elS.status.className = 'status show ' + (ok ? 'ok' : 'err');
+  }
+
+  elS.submitBtn.addEventListener('click', function(){
+    var classNum = elS.classNum.value;
+    var sid = sanitizeId(elS.sid.value);
+    if(!classNum){ showStatus('반을 선택해주세요.', false); return; }
+    if(!sid){ showStatus('번호를 입력해주세요.', false); return; }
+
+    var record = { classNum: classNum, studentId: sid, ts: new Date().toISOString() };
+    var missing = false;
+
+    numFieldIds.forEach(function(id){
+      var v = document.getElementById(id).value;
+      if(v === '') missing = true;
+      record[id] = v;
+    });
+    textFieldIds.concat(reasonIds).forEach(function(id){
+      var v = document.getElementById(id).value.trim();
+      if(!v) missing = true;
+      record[id] = v;
+    });
+    selectIds.forEach(function(id){
+      var v = document.getElementById(id).value;
+      if(!v) missing = true;
+      record[id] = v;
+    });
+    atomIds.forEach(function(id){
+      var v = document.getElementById(id).value.trim();
+      if(!v) missing = true;
+      record[id] = v;
+    });
+    blankIds2.forEach(function(id){
+      var v = document.getElementById(id).value.trim();
+      if(!v) missing = true;
+      record[id] = v;
+    });
+
+    var ctrlGChecked = ctrlGIds.filter(function(id){ return document.getElementById(id).checked; });
+    if(!ctrlGChecked.length) missing = true;
+    record.ctrlG = ctrlGChecked.join(', ');
+
+    var ctrlPChecked = ctrlPIds.filter(function(id){ return document.getElementById(id).checked; });
+    if(!ctrlPChecked.length) missing = true;
+    record.ctrlP = ctrlPChecked.join(', ');
+
+    if(missing){ showStatus('빈 칸 없이 모두 작성해주세요. (탭 1과 2 둘 다 확인해주세요)', false); return; }
+
+    elS.submitBtn.disabled = true;
+    elS.submitBtn.textContent = '제출 중...';
+
+    submitToSheet('massconserve', record, function(ok, timedOut){
+      elS.submitBtn.disabled = false;
+      elS.submitBtn.textContent = '제출하기';
+      if(ok){
+        showStatus('제출 완료! 다시 제출하면 이전 내용을 덮어써요.', true);
+      } else if(timedOut){
+        showStatus('응답이 없어요. 인터넷 연결을 확인하고 다시 시도해주세요.', false);
+      } else {
+        showStatus('제출에 실패했어요. 네트워크를 확인하고 다시 시도해주세요.', false);
+      }
+    });
+  });
+
+  var elT = {
+    toggle: document.getElementById('teacherToggle'),
+    gate: document.getElementById('tgate'),
+    tcode: document.getElementById('tcode'),
+    tcodeBtn: document.getElementById('tcodeBtn'),
+    tcodeStatus: document.getElementById('tcodeStatus'),
+    panel: document.getElementById('tpanel'),
+    classFilter: document.getElementById('classFilter'),
+    refresh: document.getElementById('refreshBtn'),
+    copy: document.getElementById('copyBtn'),
+    reset: document.getElementById('resetBtn'),
+    body: document.getElementById('tbody'),
+    empty: document.getElementById('tempty'),
+    copyStatus: document.getElementById('copyStatus')
+  };
+  var teacherOpen = false;
+  var allRows = [], lastRows = [];
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderRows(){
+    var filter = elT.classFilter.value;
+    var rows = allRows.filter(function(r){ return filter==='all' || r.classNum===filter; });
+    rows.sort(function(a,b){
+      if(a.classNum!==b.classNum) return a.classNum.localeCompare(b.classNum);
+      return (a.studentId||'').localeCompare(b.studentId||'', undefined, {numeric:true});
+    });
+    lastRows = rows;
+    if(!rows.length){
+      elT.body.innerHTML = '';
+      elT.empty.style.display = 'block';
+      return;
+    }
+    elT.empty.style.display = 'none';
+    elT.body.innerHTML = rows.map(function(r){
+      var time = r.ts ? new Date(r.ts).toLocaleString('ko-KR') : '';
+      var manipTxt = r.varManip==='seal'?'막음 여부':r.varManip==='amount'?'탄산칼슘 양':r.varManip==='conc'?'염산 농도':'';
+      var depTxt = r.varDep==='mass'?'질량':r.varDep==='speed'?'반응 속도':r.varDep==='color'?'색깔':'';
+      var varTxt = manipTxt + ' / ' + depTxt;
+      var manip2Txt = r.varManip2==='mix'?'섞음 여부':r.varManip2==='temp'?'온도':r.varManip2==='conc'?'농도':'';
+      var dep2Txt = r.varDep2==='mass'?'질량':r.varDep2==='color'?'색깔':r.varDep2==='speed'?'속도':'';
+      var var2Txt = manip2Txt + ' / ' + dep2Txt;
+      var aTxt = (r.gA_before||'') + 'g→' + (r.gA_after||'') + 'g';
+      var bTxt = (r.gB_before||'') + 'g→' + (r.gB_after||'') + 'g';
+      var biggerTxt = (r.gBigger==='A'?'탐구A':r.gBigger==='B'?'탐구B':'') + ' / ' + esc(r.gBigger_reason||'');
+      var predictTxt = r.gPredict==='same'?'같다':r.gPredict==='diff'?'다르다':'';
+      var pTxt = (r.pBefore||'') + 'g→' + (r.pAfter||'') + 'g';
+      var molTxt = '종류:'+(r.molKind_l||'')+'→'+(r.molKind_r||'')+' 개수:'+(r.molCount_l||'')+'→'+(r.molCount_r||'')+
+        ' ('+(r.molSame==='same'?'같다':r.molSame==='diff'?'다르다':'')+')';
+      var atomTxt = 'C:'+(r.atC_l||'')+'→'+(r.atC_r||'')+' O:'+(r.atO_l||'')+'→'+(r.atO_r||'')+
+        ' Na:'+(r.atNa_l||'')+'→'+(r.atNa_r||'')+' Cl:'+(r.atCl_l||'')+'→'+(r.atCl_r||'')+
+        ' Ca:'+(r.atCa_l||'')+'→'+(r.atCa_r||'')+
+        ' ('+(r.atSame==='same'?'같다':r.atSame==='diff'?'다르다':'')+')';
+      return '<tr><td>'+esc(r.classNum)+'반</td><td>'+esc(r.studentId)+'</td>'+
+        '<td>'+esc(r.hypothesis||'')+'</td><td>'+esc(varTxt)+'</td><td>'+esc(r.ctrlG||'')+'</td>'+
+        '<td>'+esc(aTxt)+'</td><td>'+esc(bTxt)+'</td><td>'+biggerTxt+'</td><td>'+esc(predictTxt)+'</td>'+
+        '<td>'+esc(r.hypothesis2||'')+'</td><td>'+esc(var2Txt)+'</td><td>'+esc(r.ctrlP||'')+'</td>'+
+        '<td>'+esc(pTxt)+'</td><td>'+esc(molTxt)+'</td><td>'+esc(atomTxt)+'</td>'+
+        '<td>'+esc(r.massFinalReason||'')+'</td>'+
+        '<td>'+esc(r.lawCommon||'')+'</td>'+
+        '<td>'+esc(r.lawReason_0||'')+' / '+esc(r.lawReason_1||'')+' / '+esc(r.lawReason_2||'')+'</td>'+
+        '<td>'+esc(r.lawDef_0||'')+' / '+esc(r.lawDef_1||'')+'</td>'+
+        '<td>'+time+'</td></tr>';
+    }).join('');
+  }
+
+  function loadSubmissions(){
+    elT.body.innerHTML = '<tr><td colspan="20" style="color:var(--faint)">불러오는 중...</td></tr>';
+    if(!window.storage || typeof window.storage.list !== 'function'){
+      elT.body.innerHTML = '<tr><td colspan="20" style="color:var(--warn)">저장 기능을 쓸 수 없는 화면이에요.</td></tr>';
+      return;
+    }
+    window.storage.list(STORE_PREFIX, true).then(function(res){
+      var keys = (res && res.keys) ? res.keys : [];
+      if(!keys.length){
+        elT.body.innerHTML = '';
+        elT.empty.style.display = 'block';
+        allRows = [];
+        return;
+      }
+      return Promise.all(keys.map(function(k){
+        return window.storage.get(k, true).catch(function(){ return null; });
+      })).then(function(results){
+        var rows = results.filter(function(r){ return r && r.value; })
+          .map(function(r){ try { return JSON.parse(r.value); } catch(e){ return null; } })
+          .filter(Boolean);
+        allRows = rows;
+        renderRows();
+      });
+    }).catch(function(){
+      elT.body.innerHTML = '<tr><td colspan="20" style="color:var(--warn)">불러오기에 실패했어요.</td></tr>';
+    });
+  }
+
+  elT.toggle.addEventListener('click', function(){
+    if(teacherOpen){
+      teacherOpen = false;
+      elT.panel.classList.remove('show');
+      elT.gate.classList.remove('show');
+      elT.toggle.textContent = '교사용 보기';
+      return;
+    }
+    elT.gate.classList.toggle('show');
+    elT.tcode.value = '';
+    elT.tcodeStatus.className = 'tstatus';
+    elT.tcode.focus();
+  });
+
+  function checkCode(){
+    if(elT.tcode.value.trim() === TEACHER_CODE){
+      teacherOpen = true;
+      elT.gate.classList.remove('show');
+      elT.panel.classList.add('show');
+      elT.toggle.textContent = '교사용 보기 닫기';
+      loadSubmissions();
+    } else {
+      elT.tcodeStatus.textContent = '코드가 일치하지 않아요.';
+      elT.tcodeStatus.className = 'tstatus show err';
+    }
+  }
+  elT.tcodeBtn.addEventListener('click', checkCode);
+  elT.tcode.addEventListener('keydown', function(e){ if(e.key==='Enter') checkCode(); });
+  elT.refresh.addEventListener('click', loadSubmissions);
+  elT.classFilter.addEventListener('change', renderRows);
+
+  function legacyCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly','');
+    ta.style.position='fixed'; ta.style.top='0'; ta.style.left='-9999px';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  elT.copy.addEventListener('click', function(){
+    if(!lastRows.length){
+      elT.copyStatus.textContent = '복사할 데이터가 없어요.';
+      elT.copyStatus.className = 'tstatus show err';
+      return;
+    }
+    var cols = ['classNum','studentId','hypothesis','varManip','varDep','ctrlG',
+      'gA_before','gA_after','gA_diff',
+      'gB_before','gB_after','gB_diff','gA_reason','gBigger','gBigger_reason','gPredict','gPredict_reason',
+      'hypothesis2','varManip2','varDep2','ctrlP',
+      'pBefore','pAfter','pChange',
+      'molKind_l','molKind_r','molCount_l','molCount_r','molSame',
+      'atC_l','atC_r','atO_l','atO_r','atNa_l','atNa_r','atCl_l','atCl_r','atCa_l','atCa_r',
+      'atSame','pReason','massFinalReason','lawCommon','lawReason_0','lawReason_1','lawReason_2','lawDef_0','lawDef_1','ts'];
+    var header = cols.join('\t');
+    var body = lastRows.map(function(r){
+      return cols.map(function(c){
+        var v = r[c]===undefined? '' : String(r[c]);
+        if(c==='classNum') return v+'반';
+        if(c==='ts') return v ? new Date(v).toLocaleString('ko-KR') : '';
+        return v.replace(/\t/g,' ');
+      }).join('\t');
+    }).join('\n');
+    var tsv = header + '\n' + body;
+    if(legacyCopy(tsv)){
+      elT.copyStatus.textContent = '표를 복사했어요. 스프레드시트에 붙여넣기 하세요.';
+      elT.copyStatus.className = 'tstatus show ok';
+    } else if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(tsv).then(function(){
+        elT.copyStatus.textContent = '표를 복사했어요.';
+        elT.copyStatus.className = 'tstatus show ok';
+      });
+    }
+  });
+
+  var resetArmed=false, resetTimer=null;
+  elT.reset.addEventListener('click', function(){
+    if(!lastRows.length){
+      elT.copyStatus.textContent = '삭제할 데이터가 없어요.';
+      elT.copyStatus.className = 'tstatus show err';
+      return;
+    }
+    if(!resetArmed){
+      resetArmed = true;
+      elT.reset.textContent = '정말요? 다시 누르면 삭제';
+      resetTimer = setTimeout(function(){ resetArmed=false; elT.reset.textContent = elT.reset.dataset.label; }, 4000);
+      return;
+    }
+    resetArmed = false; clearTimeout(resetTimer);
+    elT.reset.textContent = elT.reset.dataset.label;
+    var targets = lastRows.slice();
+    var keys = targets.map(function(r){ return STORE_PREFIX + r.classNum + '-' + r.studentId; });
+    Promise.all(keys.map(function(k){ return window.storage.delete(k, true).catch(function(){return null;}); }))
+      .then(function(){
+        var removed = {}; keys.forEach(function(k){ removed[k]=true; });
+        allRows = allRows.filter(function(r){ return !removed[STORE_PREFIX+r.classNum+'-'+r.studentId]; });
+        renderRows();
+        elT.copyStatus.textContent = targets.length + '건 삭제했어요.';
+        elT.copyStatus.className = 'tstatus show ok';
+      });
+  });
+
+})();
+</script>
+</body>
+</html>
