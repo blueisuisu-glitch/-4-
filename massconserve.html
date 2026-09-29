@@ -86,10 +86,14 @@
   .blank.wide{min-width:180px}
 
   .ctrl-list{display:flex;flex-direction:column;gap:10px;background:#f8fafc;border-radius:12px;padding:14px 16px}
+  .ctrl-list label{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:600;color:var(--ink);
+    margin-bottom:0;cursor:pointer}
+  .ctrl-list input[type=checkbox]{width:20px;height:20px;accent-color:var(--warn);cursor:pointer;flex-shrink:0}
 
   .lawword-reason{color:var(--accent);font-weight:800}
   .lawword-def{color:#2563c9;font-weight:800}
   .emph-red{color:var(--bad);font-weight:800}
+  .emph-blue{color:#2563c9;font-weight:800}
   .blankline{font-size:19px;line-height:2;color:var(--ink);background:#f8fafc;border:1px solid var(--line);
     border-radius:12px;padding:16px 18px}
   .blankinput{width:120px;padding:8px 10px;margin:0 3px;border:2px solid var(--warn-line);border-radius:9px;
@@ -99,9 +103,6 @@
     margin-bottom:16px;font-size:17px;line-height:1.65;color:var(--ink)}
   .readbox .rb-tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.04em;
     color:#2563c9;background:#dbe8ff;padding:3px 10px;border-radius:999px;margin-bottom:8px}
-  .ctrl-list label{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:600;color:var(--ink);
-    margin-bottom:0;cursor:pointer}
-  .ctrl-list input[type=checkbox]{width:20px;height:20px;accent-color:var(--warn);cursor:pointer;flex-shrink:0}
 
   .done-btn{width:100%;margin-top:4px;padding:20px;border-radius:16px;border:none;background:var(--accent);color:#fff;
     font-weight:800;font-size:23px;cursor:pointer;font-family:inherit;box-shadow:0 2px 5px rgba(21,163,74,.22)}
@@ -307,6 +308,8 @@
         </div>
         <textarea id="gPredict_reason" placeholder="그렇게 예상한 이유를 서술하세요"></textarea>
       </div>
+      <button class="done-btn" id="submit1Btn">1차 제출하기</button>
+      <div class="status" id="submit1Status"></div>
       <button type="button" class="tab-next" id="toTab3Btn">다음 탭으로 →</button>
     </div>
   </div>
@@ -315,7 +318,7 @@
     <div class="panel">
       <h2 class="big">탐구 문제</h2>
       <div class="note">
-        탄산 나트륨 수용액과 염화칼슘 수용액이 반응해 뿌연 앙금이 생겨도, 반응 전·후 물질의 총 질량은 같을까?
+        탄산 나트륨 수용액과 염화 칼슘 수용액이 반응해 뿌연 앙금이 생겨도, 반응 전·후 물질의 총 질량은 같을까?
       </div>
     </div>
 
@@ -376,7 +379,7 @@
     <div class="panel">
       <h2 class="big">탐구 과정</h2>
       <div class="note" style="line-height:2">
-        <span class="qnum">1.</span> 두 개의 바이알에 각각 탄산 나트륨 수용액과 염화칼슘 수용액을 넣은 후, 두 바이알을 함께
+        <span class="qnum">1.</span> 두 개의 바이알에 각각 탄산 나트륨 수용액과 염화 칼슘 수용액을 넣은 후, 두 바이알을 함께
         전자저울에 올려 질량을 측정한다.<br>
         <span class="qnum">2.</span> 한 바이알 속 수용액을 다른 바이알에 부어 섞은 후, 두 바이알을 전자저울에 올려 질량을
         측정한다.
@@ -402,17 +405,22 @@
       <h2 class="big">결과 해석</h2>
 
       <div class="q">
-        <label><span class="qnum">1.</span> 탄산 나트륨 수용액과 염화칼슘 수용액을 섞으면 어떤 변화가 일어나나요?</label>
+        <label><span class="qnum">1.</span> 탄산 나트륨 수용액과 염화 칼슘 수용액을 섞으면 어떤 변화가 일어나나요?</label>
         <textarea id="pChange" placeholder="관찰한 변화를 서술하세요"></textarea>
       </div>
 
       <div class="q">
-        <label><span class="qnum">2.</span> 탄산 나트륨 수용액과 염화칼슘 수용액의 반응 전·후 질량 변화를 비교하시오.</label>
+        <label><span class="qnum">2.</span> 탄산 나트륨 수용액과 염화 칼슘 수용액의 반응 전·후 질량 변화를 비교하시오.</label>
         <textarea id="pReason" placeholder="비교 결과와 이유를 서술하세요"></textarea>
       </div>
 
       <div class="q">
-        <label><span class="qnum">3.</span> 아래 화학 반응 모형을 보고 다음을 확인해보세요.</label>
+        <label><span class="qnum">3.</span> 탐구 1에서 예상한 "입구를 완전히 밀폐했을 때"의 결과와, 탐구 2(앙금 생성 반응)의 실제 결과에서 공통으로 나타나는 특징은 무엇인가요?</label>
+        <textarea id="lawCommon" placeholder="여기에 적어보세요"></textarea>
+      </div>
+
+            <div class="q">
+        <label><span class="qnum">4.</span> 그렇다면 왜 그럴까요? 아래 화학 반응 모형을 보고, 분자와 원자의 종류와 개수를 확인해 답을 찾아봅시다.</label>
         <div class="note" style="margin-bottom:16px">
           <b>Na₂CO₃ + CaCl₂ → 2NaCl + CaCO₃</b>
         </div>
@@ -477,7 +485,40 @@
           <table class="rt">
             <thead><tr><th></th><th>반응 물질</th><th>생성 물질</th></tr></thead>
             <tbody>
-              <tr><td class="rowlbl">분자 종류</td><td><input type="text" id="molKind_l"></td><td><input type="text" id="molKind_r"></td></tr>
+              <tr><td class="rowlbl">분자 종류</td>
+                <td>
+                  <select id="molKind_l1" style="margin-bottom:6px">
+                    <option value="">선택하세요</option>
+                    <option value="na2co3">탄산 나트륨</option>
+                    <option value="cacl2">염화 칼슘</option>
+                    <option value="nacl">염화 나트륨</option>
+                    <option value="caco3">탄산 칼슘</option>
+                  </select>
+                  <select id="molKind_l2">
+                    <option value="">선택하세요</option>
+                    <option value="na2co3">탄산 나트륨</option>
+                    <option value="cacl2">염화 칼슘</option>
+                    <option value="nacl">염화 나트륨</option>
+                    <option value="caco3">탄산 칼슘</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="molKind_r1" style="margin-bottom:6px">
+                    <option value="">선택하세요</option>
+                    <option value="na2co3">탄산 나트륨</option>
+                    <option value="cacl2">염화 칼슘</option>
+                    <option value="nacl">염화 나트륨</option>
+                    <option value="caco3">탄산 칼슘</option>
+                  </select>
+                  <select id="molKind_r2">
+                    <option value="">선택하세요</option>
+                    <option value="na2co3">탄산 나트륨</option>
+                    <option value="cacl2">염화 칼슘</option>
+                    <option value="nacl">염화 나트륨</option>
+                    <option value="caco3">탄산 칼슘</option>
+                  </select>
+                </td>
+              </tr>
               <tr><td class="rowlbl">분자 총 개수</td><td><input type="text" id="molCount_l"></td><td><input type="text" id="molCount_r"></td></tr>
             </tbody>
           </table>
@@ -514,20 +555,11 @@
         </div>
       </div>
 
-      <div class="q">
-        <label><span class="qnum">4.</span> 탄산 나트륨 수용액과 염화칼슘 수용액의 반응 전·후 질량이 같은 이유를 서술하시오.</label>
-        <textarea id="massFinalReason" placeholder="이유를 서술하세요"></textarea>
-      </div>
-
-      <div class="q">
-        <label><span class="qnum">5.</span> 탐구 1에서 예상한 "입구를 완전히 밀폐했을 때"의 결과와, 탐구 2(앙금 생성 반응)의 실제 결과에서 공통으로 나타나는 특징은 무엇인가요?</label>
-        <textarea id="lawCommon" placeholder="여기에 적어보세요"></textarea>
-      </div>
-
-      <div class="q">
-        <label><span class="qnum">6.</span> 그 특징이 나타나는 <span class="lawword-reason">근거</span>를 빈칸에 채워 완성하세요.</label>
+<div class="q">
+        <label><span class="qnum">5.</span> 실험에서 반응 전후 질량이 항상 일정하게 나타나는 <span class="lawword-reason">근거</span>를 빈칸에 채워 완성하세요.</label>
         <div class="blankline">
-          <span class="emph-red">질량 보존 법칙</span>이 성립하는 <span class="lawword-reason">근거</span>는, 화학 반응에 참여하는 물질을 이루는
+          <b>화학 반응이 일어나 물질의 종류가 바뀌어도 반응 <span class="emph-red">전</span>과 <span class="emph-blue">후</span> 질량이 일정하게 나타나는
+          <span class="lawword-reason">근거</span>는,</b> 화학 반응에 참여하는 물질을 이루는
           <input type="text" class="blankinput" id="lawReason_0" placeholder="낱말">
           의 <input type="text" class="blankinput" id="lawReason_1" placeholder="낱말">
           와 <input type="text" class="blankinput" id="lawReason_2" placeholder="낱말">
@@ -536,7 +568,7 @@
       </div>
 
       <div class="q">
-        <label><span class="qnum">7.</span> 아래 글을 읽고, 빈칸을 채워 <span class="emph-red">질량 보존 법칙</span>의 <span class="lawword-def">정의</span>를 완성하세요.</label>
+        <label><span class="qnum">6.</span> 아래 글을 읽고, 빈칸을 채워 <span class="emph-red">질량 보존 법칙</span>의 <span class="lawword-def">정의</span>를 완성하세요.</label>
         <div class="readbox">
           <span class="rb-tag">읽어보기</span><br>
           이 법칙은 18세기 후반 프랑스의 과학자 <b>라부아지에</b>가 발견했어요. 그는 밀폐된 용기 안에서 여러
@@ -545,15 +577,16 @@
           정리했어요.
         </div>
         <div class="blankline">
-          <span class="emph-red">질량 보존 법칙</span>은, 화학 반응이 일어나도 반응 전과 후 물질의 총
+          <span class="emph-red">질량 보존 법칙</span>은, 화학 반응이 일어나도 반응
+          <span class="emph-red">전</span>과 <span class="emph-blue">후</span> 물질의
           <input type="text" class="blankinput" id="lawDef_0" placeholder="낱말">
           은 서로 <input type="text" class="blankinput" id="lawDef_1" placeholder="낱말">
           는 법칙이다.
         </div>
       </div>
 
-      <button class="done-btn" id="submitBtn">제출하기</button>
-      <div class="status" id="submitStatus"></div>
+      <button class="done-btn" id="submit2Btn">2차 제출하기</button>
+      <div class="status" id="submit2Status"></div>
     </div>
   </div>
 
@@ -581,9 +614,9 @@
     <div class="ttable-wrap">
       <table class="ttable">
         <thead>
-          <tr><th>반</th><th>번호</th><th>가설1</th><th>변인1</th><th>통제1</th><th>탐구A(전→후)</th><th>탐구B(전→후)</th><th>차이 비교</th><th>예상</th>
-            <th>가설2</th><th>변인2</th><th>통제2</th><th>앙금 전→후</th><th>분자비교</th><th>원자표</th><th>4번(질량같은이유)</th>
-            <th>5(공통점)</th><th>6(근거)</th><th>7(정의)</th><th>제출 시각</th></tr>
+          <tr><th>반</th><th>번호</th><th>1차</th><th>2차</th><th>가설1</th><th>변인1</th><th>통제1</th><th>탐구A(전→후)</th><th>탐구B(전→후)</th><th>차이 비교</th><th>예상</th>
+            <th>가설2</th><th>변인2</th><th>통제2</th><th>앙금 전→후</th><th>분자비교</th><th>원자표</th>
+            <th>4(공통점)</th><th>5(근거)</th><th>6(정의)</th><th>1차 시각</th><th>2차 시각</th></tr>
         </thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -655,87 +688,85 @@
     return String(raw||'').trim().replace(/[\s\/\\'"]/g,'');
   }
 
-  var elS = {
-    classNum: document.getElementById('classNum'),
-    sid: document.getElementById('sid'),
-    submitBtn: document.getElementById('submitBtn'),
-    status: document.getElementById('submitStatus')
-  };
+  var STORE_PREFIX_1 = 'sub-massconserve-1st-';
+  var STORE_PREFIX_2 = 'sub-massconserve-2nd-';
 
-  var numFieldIds = ['gA_before','gA_after','gB_before','gB_after','pBefore','pAfter'];
-  var textFieldIds = ['gA_diff','gB_diff','molKind_l','molKind_r','molCount_l','molCount_r'];
-  var reasonIds = ['hypothesis','gA_reason','gBigger_reason','gPredict_reason',
-    'hypothesis2','pChange','pReason','massFinalReason','lawCommon'];
-  var selectIds = ['varManip','varDep','gBigger','gPredict','varManip2','varDep2','molSame','atSame'];
+  var elId = { classNum: document.getElementById('classNum'), sid: document.getElementById('sid') };
+
+  // 탐구1(기체발생) 필드
+  var g1OptionalIds = ['hypothesis','varManip','varDep','gA_before','gA_after','gA_diff','gB_before','gB_after','gB_diff'];
+  var ctrlGIds = ['ctrlG_amount','ctrlG_conc','ctrlG_volume','ctrlG_temp','ctrlG_flask'];
+  var g1RequiredTextIds = ['gA_reason','gBigger_reason','gPredict_reason'];
+  var g1RequiredSelectIds = ['gBigger','gPredict'];
+
+  // 탐구2(앙금생성) 필드
+  var g2OptionalIds = ['hypothesis2','varManip2','varDep2','pBefore','pAfter'];
+  var ctrlPIds = ['ctrlP_amount','ctrlP_conc','ctrlP_temp','ctrlP_vial','ctrlP_time'];
+  var g2RequiredTextIds = ['pChange','pReason','lawCommon','molCount_l','molCount_r'];
+  var g2RequiredSelectIds = ['molKind_l1','molKind_l2','molKind_r1','molKind_r2','molSame','atSame'];
   var atomIds = ['atC_l','atC_r','atO_l','atO_r','atNa_l','atNa_r','atCl_l','atCl_r','atCa_l','atCa_r'];
   var blankIds2 = ['lawReason_0','lawReason_1','lawReason_2','lawDef_0','lawDef_1'];
-  var ctrlGIds = ['ctrlG_amount','ctrlG_conc','ctrlG_volume','ctrlG_temp','ctrlG_flask'];
-  var ctrlPIds = ['ctrlP_amount','ctrlP_conc','ctrlP_temp','ctrlP_vial','ctrlP_time'];
 
-  function showStatus(msg, ok){
-    elS.status.textContent = msg;
-    elS.status.className = 'status show ' + (ok ? 'ok' : 'err');
+  function makeSubmitHandler(opts){
+    var btn = document.getElementById(opts.btnId);
+    var statusEl = document.getElementById(opts.statusId);
+    function showStatus(msg, ok){
+      statusEl.textContent = msg;
+      statusEl.className = 'status show ' + (ok ? 'ok' : 'err');
+    }
+    btn.addEventListener('click', function(){
+      var classNum = elId.classNum.value;
+      var sid = sanitizeId(elId.sid.value);
+      if(!classNum){ showStatus('반을 선택해주세요.', false); return; }
+      if(!sid){ showStatus('번호를 입력해주세요.', false); return; }
+
+      var record = { classNum: classNum, studentId: sid, ts: new Date().toISOString() };
+      var missing = false;
+
+      opts.optionalIds.forEach(function(id){
+        var el = document.getElementById(id);
+        record[id] = el ? el.value : '';
+      });
+      if(opts.ctrlIds){
+        var checked = opts.ctrlIds.filter(function(id){ return document.getElementById(id).checked; });
+        record[opts.ctrlKey] = checked.join(', ');
+      }
+      opts.requiredTextIds.forEach(function(id){
+        var v = document.getElementById(id).value.trim();
+        if(!v) missing = true;
+        record[id] = v;
+      });
+      opts.requiredSelectIds.forEach(function(id){
+        var v = document.getElementById(id).value;
+        if(!v) missing = true;
+        record[id] = v;
+      });
+
+      if(missing){ showStatus('결과 해석의 빈 칸을 모두 채워주세요.', false); return; }
+
+      btn.disabled = true;
+      btn.textContent = '제출 중...';
+
+      submitToSheet('massconserve', Object.assign({ stage: opts.stage }, record), function(ok, timedOut){
+        btn.disabled = false;
+        btn.textContent = opts.label;
+        if(ok){ showStatus('제출 완료! 다시 제출하면 해당 칸만 덮어써요.', true); }
+        else if(timedOut){ showStatus('응답이 없어요. 인터넷 연결을 확인하고 다시 시도해주세요.', false); }
+        else { showStatus('제출에 실패했어요. 네트워크를 확인하고 다시 시도해주세요.', false); }
+      });
+    });
   }
 
-  elS.submitBtn.addEventListener('click', function(){
-    var classNum = elS.classNum.value;
-    var sid = sanitizeId(elS.sid.value);
-    if(!classNum){ showStatus('반을 선택해주세요.', false); return; }
-    if(!sid){ showStatus('번호를 입력해주세요.', false); return; }
+  makeSubmitHandler({
+    btnId: 'submit1Btn', statusId: 'submit1Status', prefix: STORE_PREFIX_1, label: '1차 제출하기', stage: '1',
+    optionalIds: g1OptionalIds, ctrlIds: ctrlGIds, ctrlKey: 'ctrlG',
+    requiredTextIds: g1RequiredTextIds, requiredSelectIds: g1RequiredSelectIds
+  });
 
-    var record = { classNum: classNum, studentId: sid, ts: new Date().toISOString() };
-    var missing = false;
-
-    numFieldIds.forEach(function(id){
-      var v = document.getElementById(id).value;
-      if(v === '') missing = true;
-      record[id] = v;
-    });
-    textFieldIds.concat(reasonIds).forEach(function(id){
-      var v = document.getElementById(id).value.trim();
-      if(!v) missing = true;
-      record[id] = v;
-    });
-    selectIds.forEach(function(id){
-      var v = document.getElementById(id).value;
-      if(!v) missing = true;
-      record[id] = v;
-    });
-    atomIds.forEach(function(id){
-      var v = document.getElementById(id).value.trim();
-      if(!v) missing = true;
-      record[id] = v;
-    });
-    blankIds2.forEach(function(id){
-      var v = document.getElementById(id).value.trim();
-      if(!v) missing = true;
-      record[id] = v;
-    });
-
-    var ctrlGChecked = ctrlGIds.filter(function(id){ return document.getElementById(id).checked; });
-    if(!ctrlGChecked.length) missing = true;
-    record.ctrlG = ctrlGChecked.join(', ');
-
-    var ctrlPChecked = ctrlPIds.filter(function(id){ return document.getElementById(id).checked; });
-    if(!ctrlPChecked.length) missing = true;
-    record.ctrlP = ctrlPChecked.join(', ');
-
-    if(missing){ showStatus('빈 칸 없이 모두 작성해주세요. (탭 1과 2 둘 다 확인해주세요)', false); return; }
-
-    elS.submitBtn.disabled = true;
-    elS.submitBtn.textContent = '제출 중...';
-
-    submitToSheet('massconserve', record, function(ok, timedOut){
-      elS.submitBtn.disabled = false;
-      elS.submitBtn.textContent = '제출하기';
-      if(ok){
-        showStatus('제출 완료! 다시 제출하면 이전 내용을 덮어써요.', true);
-      } else if(timedOut){
-        showStatus('응답이 없어요. 인터넷 연결을 확인하고 다시 시도해주세요.', false);
-      } else {
-        showStatus('제출에 실패했어요. 네트워크를 확인하고 다시 시도해주세요.', false);
-      }
-    });
+  makeSubmitHandler({
+    btnId: 'submit2Btn', statusId: 'submit2Status', prefix: STORE_PREFIX_2, label: '2차 제출하기', stage: '2',
+    optionalIds: g2OptionalIds, ctrlIds: ctrlPIds, ctrlKey: 'ctrlP',
+    requiredTextIds: g2RequiredTextIds.concat(atomIds).concat(blankIds2), requiredSelectIds: g2RequiredSelectIds
   });
 
   var elT = {
@@ -773,62 +804,84 @@
     }
     elT.empty.style.display = 'none';
     elT.body.innerHTML = rows.map(function(r){
-      var time = r.ts ? new Date(r.ts).toLocaleString('ko-KR') : '';
-      var manipTxt = r.varManip==='seal'?'막음 여부':r.varManip==='amount'?'탄산칼슘 양':r.varManip==='conc'?'염산 농도':'';
-      var depTxt = r.varDep==='mass'?'질량':r.varDep==='speed'?'반응 속도':r.varDep==='color'?'색깔':'';
+      var s1 = r.stage1 || {};
+      var s2 = r.stage2 || {};
+      var time1 = s1.ts ? new Date(s1.ts).toLocaleString('ko-KR') : '-';
+      var time2 = s2.ts ? new Date(s2.ts).toLocaleString('ko-KR') : '-';
+      var manipTxt = s1.varManip==='seal'?'막음 여부':s1.varManip==='amount'?'탄산칼슘 양':s1.varManip==='conc'?'염산 농도':'';
+      var depTxt = s1.varDep==='mass'?'질량':s1.varDep==='speed'?'반응 속도':s1.varDep==='color'?'색깔':'';
       var varTxt = manipTxt + ' / ' + depTxt;
-      var manip2Txt = r.varManip2==='mix'?'섞음 여부':r.varManip2==='temp'?'온도':r.varManip2==='conc'?'농도':'';
-      var dep2Txt = r.varDep2==='mass'?'질량':r.varDep2==='color'?'색깔':r.varDep2==='speed'?'속도':'';
+      var manip2Txt = s2.varManip2==='mix'?'섞음 여부':s2.varManip2==='temp'?'온도':s2.varManip2==='conc'?'농도':'';
+      var dep2Txt = s2.varDep2==='mass'?'질량':s2.varDep2==='color'?'색깔':s2.varDep2==='speed'?'속도':'';
       var var2Txt = manip2Txt + ' / ' + dep2Txt;
-      var aTxt = (r.gA_before||'') + 'g→' + (r.gA_after||'') + 'g';
-      var bTxt = (r.gB_before||'') + 'g→' + (r.gB_after||'') + 'g';
-      var biggerTxt = (r.gBigger==='A'?'탐구A':r.gBigger==='B'?'탐구B':'') + ' / ' + esc(r.gBigger_reason||'');
-      var predictTxt = r.gPredict==='same'?'같다':r.gPredict==='diff'?'다르다':'';
-      var pTxt = (r.pBefore||'') + 'g→' + (r.pAfter||'') + 'g';
-      var molTxt = '종류:'+(r.molKind_l||'')+'→'+(r.molKind_r||'')+' 개수:'+(r.molCount_l||'')+'→'+(r.molCount_r||'')+
-        ' ('+(r.molSame==='same'?'같다':r.molSame==='diff'?'다르다':'')+')';
-      var atomTxt = 'C:'+(r.atC_l||'')+'→'+(r.atC_r||'')+' O:'+(r.atO_l||'')+'→'+(r.atO_r||'')+
-        ' Na:'+(r.atNa_l||'')+'→'+(r.atNa_r||'')+' Cl:'+(r.atCl_l||'')+'→'+(r.atCl_r||'')+
-        ' Ca:'+(r.atCa_l||'')+'→'+(r.atCa_r||'')+
-        ' ('+(r.atSame==='same'?'같다':r.atSame==='diff'?'다르다':'')+')';
+      var aTxt = (s1.gA_before||'') + 'g→' + (s1.gA_after||'') + 'g';
+      var bTxt = (s1.gB_before||'') + 'g→' + (s1.gB_after||'') + 'g';
+      var biggerTxt = (s1.gBigger==='A'?'탐구A':s1.gBigger==='B'?'탐구B':'') + ' / ' + esc(s1.gBigger_reason||'');
+      var predictTxt = s1.gPredict==='same'?'같다':s1.gPredict==='diff'?'다르다':'';
+      var pTxt = (s2.pBefore||'') + 'g→' + (s2.pAfter||'') + 'g';
+      var molLabel = {na2co3:'탄산 나트륨', cacl2:'염화 칼슘', nacl:'염화 나트륨', caco3:'탄산 칼슘'};
+      var molL = (molLabel[s2.molKind_l1]||'') + ', ' + (molLabel[s2.molKind_l2]||'');
+      var molR = (molLabel[s2.molKind_r1]||'') + ', ' + (molLabel[s2.molKind_r2]||'');
+      var molTxt = '종류:'+molL+'→'+molR+' 개수:'+(s2.molCount_l||'')+'→'+(s2.molCount_r||'')+
+        ' ('+(s2.molSame==='same'?'같다':s2.molSame==='diff'?'다르다':'')+')';
+      var atomTxt = 'C:'+(s2.atC_l||'')+'→'+(s2.atC_r||'')+' O:'+(s2.atO_l||'')+'→'+(s2.atO_r||'')+
+        ' Na:'+(s2.atNa_l||'')+'→'+(s2.atNa_r||'')+' Cl:'+(s2.atCl_l||'')+'→'+(s2.atCl_r||'')+
+        ' Ca:'+(s2.atCa_l||'')+'→'+(s2.atCa_r||'')+
+        ' ('+(s2.atSame==='same'?'같다':s2.atSame==='diff'?'다르다':'')+')';
+      var stage1Done = r.stage1 ? '✓' : '-';
+      var stage2Done = r.stage2 ? '✓' : '-';
       return '<tr><td>'+esc(r.classNum)+'반</td><td>'+esc(r.studentId)+'</td>'+
-        '<td>'+esc(r.hypothesis||'')+'</td><td>'+esc(varTxt)+'</td><td>'+esc(r.ctrlG||'')+'</td>'+
+        '<td>'+stage1Done+'</td><td>'+stage2Done+'</td>'+
+        '<td>'+esc(s1.hypothesis||'')+'</td><td>'+esc(varTxt)+'</td><td>'+esc(s1.ctrlG||'')+'</td>'+
         '<td>'+esc(aTxt)+'</td><td>'+esc(bTxt)+'</td><td>'+biggerTxt+'</td><td>'+esc(predictTxt)+'</td>'+
-        '<td>'+esc(r.hypothesis2||'')+'</td><td>'+esc(var2Txt)+'</td><td>'+esc(r.ctrlP||'')+'</td>'+
+        '<td>'+esc(s2.hypothesis2||'')+'</td><td>'+esc(var2Txt)+'</td><td>'+esc(s2.ctrlP||'')+'</td>'+
         '<td>'+esc(pTxt)+'</td><td>'+esc(molTxt)+'</td><td>'+esc(atomTxt)+'</td>'+
-        '<td>'+esc(r.massFinalReason||'')+'</td>'+
-        '<td>'+esc(r.lawCommon||'')+'</td>'+
-        '<td>'+esc(r.lawReason_0||'')+' / '+esc(r.lawReason_1||'')+' / '+esc(r.lawReason_2||'')+'</td>'+
-        '<td>'+esc(r.lawDef_0||'')+' / '+esc(r.lawDef_1||'')+'</td>'+
-        '<td>'+time+'</td></tr>';
+        '<td>'+esc(s2.lawCommon||'')+'</td>'+
+        '<td>'+esc(s2.lawReason_0||'')+' / '+esc(s2.lawReason_1||'')+' / '+esc(s2.lawReason_2||'')+'</td>'+
+        '<td>'+esc(s2.lawDef_0||'')+' / '+esc(s2.lawDef_1||'')+'</td>'+
+        '<td>'+time1+'</td><td>'+time2+'</td></tr>';
     }).join('');
   }
 
   function loadSubmissions(){
-    elT.body.innerHTML = '<tr><td colspan="20" style="color:var(--faint)">불러오는 중...</td></tr>';
+    elT.body.innerHTML = '<tr><td colspan="21" style="color:var(--faint)">불러오는 중...</td></tr>';
     if(!window.storage || typeof window.storage.list !== 'function'){
-      elT.body.innerHTML = '<tr><td colspan="20" style="color:var(--warn)">저장 기능을 쓸 수 없는 화면이에요.</td></tr>';
+      elT.body.innerHTML = '<tr><td colspan="21" style="color:var(--warn)">저장 기능을 쓸 수 없는 화면이에요.</td></tr>';
       return;
     }
-    window.storage.list(STORE_PREFIX, true).then(function(res){
-      var keys = (res && res.keys) ? res.keys : [];
-      if(!keys.length){
+    Promise.all([
+      window.storage.list(STORE_PREFIX_1, true).catch(function(){ return null; }),
+      window.storage.list(STORE_PREFIX_2, true).catch(function(){ return null; })
+    ]).then(function(results){
+      var keys1 = (results[0] && results[0].keys) ? results[0].keys : [];
+      var keys2 = (results[1] && results[1].keys) ? results[1].keys : [];
+      var allKeys = keys1.map(function(k){ return {key:k, stage:1}; })
+        .concat(keys2.map(function(k){ return {key:k, stage:2}; }));
+      if(!allKeys.length){
         elT.body.innerHTML = '';
         elT.empty.style.display = 'block';
         allRows = [];
         return;
       }
-      return Promise.all(keys.map(function(k){
-        return window.storage.get(k, true).catch(function(){ return null; });
-      })).then(function(results){
-        var rows = results.filter(function(r){ return r && r.value; })
-          .map(function(r){ try { return JSON.parse(r.value); } catch(e){ return null; } })
-          .filter(Boolean);
-        allRows = rows;
+      return Promise.all(allKeys.map(function(item){
+        return window.storage.get(item.key, true).then(function(r){
+          return { stage: item.stage, key: item.key, value: r ? r.value : null };
+        }).catch(function(){ return { stage: item.stage, key: item.key, value: null }; });
+      })).then(function(results2){
+        var merged = {};
+        results2.forEach(function(item){
+          if(!item.value) return;
+          var rec; try { rec = JSON.parse(item.value); } catch(e){ return; }
+          var mkey = rec.classNum + '-' + rec.studentId;
+          if(!merged[mkey]) merged[mkey] = { classNum: rec.classNum, studentId: rec.studentId };
+          if(item.stage === 1){ merged[mkey].stage1 = rec; merged[mkey].key1 = item.key; }
+          else { merged[mkey].stage2 = rec; merged[mkey].key2 = item.key; }
+        });
+        allRows = Object.keys(merged).map(function(k){ return merged[k]; });
         renderRows();
       });
     }).catch(function(){
-      elT.body.innerHTML = '<tr><td colspan="20" style="color:var(--warn)">불러오기에 실패했어요.</td></tr>';
+      elT.body.innerHTML = '<tr><td colspan="21" style="color:var(--warn)">불러오기에 실패했어요.</td></tr>';
     });
   }
 
@@ -879,22 +932,28 @@
       elT.copyStatus.className = 'tstatus show err';
       return;
     }
-    var cols = ['classNum','studentId','hypothesis','varManip','varDep','ctrlG',
+    var cols1 = ['hypothesis','varManip','varDep','ctrlG',
       'gA_before','gA_after','gA_diff',
-      'gB_before','gB_after','gB_diff','gA_reason','gBigger','gBigger_reason','gPredict','gPredict_reason',
-      'hypothesis2','varManip2','varDep2','ctrlP',
+      'gB_before','gB_after','gB_diff','gA_reason','gBigger','gBigger_reason','gPredict','gPredict_reason'];
+    var cols2 = ['hypothesis2','varManip2','varDep2','ctrlP',
       'pBefore','pAfter','pChange',
-      'molKind_l','molKind_r','molCount_l','molCount_r','molSame',
+      'molKind_l1','molKind_l2','molKind_r1','molKind_r2','molCount_l','molCount_r','molSame',
       'atC_l','atC_r','atO_l','atO_r','atNa_l','atNa_r','atCl_l','atCl_r','atCa_l','atCa_r',
-      'atSame','pReason','massFinalReason','lawCommon','lawReason_0','lawReason_1','lawReason_2','lawDef_0','lawDef_1','ts'];
-    var header = cols.join('\t');
+      'atSame','pReason',
+      'lawCommon','lawReason_0','lawReason_1','lawReason_2','lawDef_0','lawDef_1'];
+    var header = ['classNum','studentId','stage1_done','stage2_done']
+      .concat(cols1.map(function(c){ return '1차_'+c; }))
+      .concat(cols2.map(function(c){ return '2차_'+c; }))
+      .concat(['1차_시각','2차_시각']).join('\t');
     var body = lastRows.map(function(r){
-      return cols.map(function(c){
-        var v = r[c]===undefined? '' : String(r[c]);
-        if(c==='classNum') return v+'반';
-        if(c==='ts') return v ? new Date(v).toLocaleString('ko-KR') : '';
-        return v.replace(/\t/g,' ');
-      }).join('\t');
+      var s1 = r.stage1 || {};
+      var s2 = r.stage2 || {};
+      var row = [r.classNum+'반', r.studentId, r.stage1?'제출':'미제출', r.stage2?'제출':'미제출'];
+      cols1.forEach(function(c){ row.push((s1[c]===undefined?'':String(s1[c])).replace(/\t/g,' ')); });
+      cols2.forEach(function(c){ row.push((s2[c]===undefined?'':String(s2[c])).replace(/\t/g,' ')); });
+      row.push(s1.ts ? new Date(s1.ts).toLocaleString('ko-KR') : '');
+      row.push(s2.ts ? new Date(s2.ts).toLocaleString('ko-KR') : '');
+      return row.join('\t');
     }).join('\n');
     var tsv = header + '\n' + body;
     if(legacyCopy(tsv)){
@@ -924,13 +983,19 @@
     resetArmed = false; clearTimeout(resetTimer);
     elT.reset.textContent = elT.reset.dataset.label;
     var targets = lastRows.slice();
-    var keys = targets.map(function(r){ return STORE_PREFIX + r.classNum + '-' + r.studentId; });
+    var keys = [];
+    targets.forEach(function(r){
+      if(r.key1) keys.push(r.key1);
+      if(r.key2) keys.push(r.key2);
+    });
     Promise.all(keys.map(function(k){ return window.storage.delete(k, true).catch(function(){return null;}); }))
       .then(function(){
-        var removed = {}; keys.forEach(function(k){ removed[k]=true; });
-        allRows = allRows.filter(function(r){ return !removed[STORE_PREFIX+r.classNum+'-'+r.studentId]; });
+        var removedKeys = {}; keys.forEach(function(k){ removedKeys[k]=true; });
+        allRows = allRows.filter(function(r){
+          return !(r.key1 && removedKeys[r.key1]) && !(r.key2 && removedKeys[r.key2]);
+        });
         renderRows();
-        elT.copyStatus.textContent = targets.length + '건 삭제했어요.';
+        elT.copyStatus.textContent = targets.length + '명 분 삭제했어요.';
         elT.copyStatus.className = 'tstatus show ok';
       });
   });
