@@ -33,6 +33,9 @@
     background:#f8fafc;border:1px solid var(--line);border-radius:10px;color:var(--ink);
     font-family:inherit;font-size:22px;padding:11px 14px;outline:none}
   .idbar select{width:120px}
+  .privacy-note{font-size:16px;color:var(--faint);margin-bottom:20px;line-height:1.5}
+  .assess{position:relative;border:3px solid var(--warn);border-radius:18px;padding:28px 22px 22px;margin-top:26px;background:var(--panel)}
+  .assess-tag{position:absolute;top:-19px;left:22px;background:var(--warn);color:#fff;font-size:15px;font-weight:800;padding:5px 14px;border-radius:20px}
   .idbar input[type=text]{width:110px}
 
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;
@@ -107,33 +110,18 @@
   .status.ok{background:var(--accent-bg);color:#0f5c30;border:1px solid var(--accent-line)}
   .status.err{background:var(--bad-bg);color:#a12a22;border:1px solid var(--bad-line)}
 
-  /* ---- 교사용 ---- */
-  .teacher-link{text-align:center;margin-top:26px}
-  .teacher-link button{background:none;border:none;color:var(--faint);font-size:16px;
-    cursor:pointer;font-family:inherit;padding:6px;text-decoration:underline;text-underline-offset:2px}
-  .tgate{display:none;margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
-    padding:16px 20px;text-align:center}
-  .tgate.show{display:block}
-  .tgate input{background:#f8fafc;border:1px solid var(--line);border-radius:10px;color:var(--ink);
-    font-family:inherit;font-size:18px;padding:10px 14px;margin-right:8px}
-  .tgate button.go{background:var(--warn);color:#fff;border:none;border-radius:10px;padding:10px 16px;
-    font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
-  .tstatus{margin-top:8px;font-size:14px;display:none}
-  .tstatus.show{display:block}
-  .tstatus.err{color:var(--bad)}
-  .tstatus.ok{color:var(--accent)}
-  .tpanel{display:none;margin-top:16px;background:var(--panel);border:1px solid var(--line);
-    border-radius:18px;padding:22px 20px}
-  .tpanel.show{display:block}
-  .tbtns{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
-  .tbtns button{background:#f8fafc;border:1px solid var(--line);color:var(--ink);
-    font-size:14px;font-weight:700;padding:9px 13px;border-radius:9px;cursor:pointer;font-family:inherit}
-  table.ttable{width:100%;border-collapse:collapse;font-size:13px}
-  table.ttable th{text-align:left;color:var(--dim);font-weight:700;font-size:11px;
-    letter-spacing:.03em;text-transform:uppercase;padding:9px 8px;border-bottom:1px solid var(--line);
-    background:#f8fafc;white-space:nowrap}
-  table.ttable td{padding:9px 8px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink)}
-  .tempty{font-size:15px;color:var(--faint);padding:18px 4px;text-align:center}
+  .grade-ok{border-color:var(--accent) !important;background:var(--accent-bg) !important}
+  .grade-bad{border-color:var(--bad) !important;background:var(--bad-bg) !important}
+  .grade-mark{display:inline-block;margin-left:6px;font-weight:800}
+  .grade-mark.ok{color:var(--accent)}
+  .grade-mark.bad{color:var(--bad)}
+  .grade-correct-note{font-size:13px;color:var(--bad);margin-top:4px;text-align:left}
+  .grade-review-note{font-size:13px;color:var(--dim);margin-top:4px;text-align:left;font-style:italic}
+  .grade-summary{background:#fff;border:2px solid var(--line);
+    border-radius:14px;padding:16px 20px;margin-bottom:20px;font-size:18px;font-weight:700;
+    text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.08);display:none}
+  .grade-summary.show{display:block}
+  .grade-summary .sub{display:block;font-size:14px;font-weight:400;color:var(--dim);margin-top:4px}
 </style>
 </head>
 <body>
@@ -150,19 +138,6 @@
     실험으로 확인해보자.
   </div>
 
-  <div class="idbar">
-    <label for="classNum">반</label>
-    <select id="classNum">
-      <option value="">선택</option>
-      <option value="1">1반</option>
-      <option value="2">2반</option>
-      <option value="3">3반</option>
-      <option value="4">4반</option>
-    </select>
-    <label for="sid">번호</label>
-    <input type="text" id="sid" placeholder="예: 15" inputmode="numeric" autocomplete="off">
-  </div>
-
   <div class="panel">
     <h2 class="big">핵심 질문</h2>
     <div class="note">물리 변화와 화학 변화의 차이를 설명할 수 있을까?</div>
@@ -173,7 +148,7 @@
     <div class="note" style="line-height:2">
       <span class="qnum">1.</span> 마그네슘 리본(A)의 처음 색깔·광택·단단한 정도를 관찰한다.<br>
       <span class="qnum">2.</span> A에 식초를 4~5방울 떨어뜨려 반응을 관찰한다.<br>
-      <span class="qnum">3.</span> A를 깨끗이 씻은 뒤, 새 마그네슘 리본을 준비해 절반으로 잘라 B·C 두 조각을 만든다.<br>
+      <span class="qnum">3.</span> A를 깨끗이 씻은 뒤, 절반으로 잘라 B·C 두 조각을 만든다.<br>
       <span class="qnum">4.</span> B는 손으로 구부리거나 눌러서 자유롭게 모양을 변형시킨다.<br>
       <span class="qnum">5.</span> C는 불로 태운다(연소).<br>
       <span class="qnum">6.</span> B·C의 색깔·광택·단단한 정도를 A와 비교해 관찰한다.<br>
@@ -202,21 +177,69 @@
           </tr>
           <tr>
             <td class="rowlbl">색깔</td>
-            <td><input type="text" id="rA1"></td>
-            <td><input type="text" id="rB1"></td>
-            <td><input type="text" id="rC1"></td>
+            <td>
+              <select id="rA1">
+                <option value="">선택하세요</option>
+                <option value="은백색">은백색</option>
+                <option value="흰색">흰색</option>
+              </select>
+            </td>
+            <td>
+              <select id="rB1">
+                <option value="">선택하세요</option>
+                <option value="은백색">은백색</option>
+                <option value="흰색">흰색</option>
+              </select>
+            </td>
+            <td>
+              <select id="rC1">
+                <option value="">선택하세요</option>
+                <option value="은백색">은백색</option>
+                <option value="흰색">흰색</option>
+              </select>
+            </td>
           </tr>
           <tr>
             <td class="rowlbl">광택 유무</td>
-            <td><input type="text" id="rA2"></td>
-            <td><input type="text" id="rB2"></td>
-            <td><input type="text" id="rC2"></td>
+            <td>
+              <select id="rA2">
+                <option value="">선택하세요</option>
+                <option value="있다">있다</option>
+                <option value="없다">없다</option>
+              </select>
+            </td>
+            <td>
+              <select id="rB2">
+                <option value="">선택하세요</option>
+                <option value="있다">있다</option>
+                <option value="없다">없다</option>
+              </select>
+            </td>
+            <td>
+              <select id="rC2">
+                <option value="">선택하세요</option>
+                <option value="있다">있다</option>
+                <option value="없다">없다</option>
+              </select>
+            </td>
           </tr>
           <tr>
             <td class="rowlbl">단단한 정도</td>
             <td class="given-cell">단단함</td>
-            <td><input type="text" id="rB3"></td>
-            <td><input type="text" id="rC3"></td>
+            <td>
+              <select id="rB3">
+                <option value="">선택하세요</option>
+                <option value="단단함">단단함</option>
+                <option value="잘 부서짐">잘 부서짐</option>
+              </select>
+            </td>
+            <td>
+              <select id="rC3">
+                <option value="">선택하세요</option>
+                <option value="단단함">단단함</option>
+                <option value="잘 부서짐">잘 부서짐</option>
+              </select>
+            </td>
           </tr>
           <tr>
             <td class="rowlbl">식초와의 반응</td>
@@ -233,7 +256,7 @@
     <h2 class="big">결과 해석</h2>
 
     <div class="q">
-      <label><span class="qnum">1.</span> 마그네슘 리본 A와 B는 성질이 같은가요, 다른가요? 그 이유는?</label>
+      <label><span class="qnum">1.</span> 마그네슘 리본 A와 B는 성질이 같은가요, 다른가요?</label>
       <div class="qrow">
         <select id="q1same">
           <option value="">선택하세요</option>
@@ -241,11 +264,10 @@
           <option value="diff">다르다</option>
         </select>
       </div>
-      <textarea id="q1reason" placeholder="이유를 서술하세요"></textarea>
     </div>
 
     <div class="q">
-      <label><span class="qnum">2.</span> 마그네슘 리본 A와 C는 성질이 같은가요, 다른가요? 그 이유는?</label>
+      <label><span class="qnum">2.</span> 마그네슘 리본 A와 C는 성질이 같은가요, 다른가요?</label>
       <div class="qrow">
         <select id="q3same">
           <option value="">선택하세요</option>
@@ -253,7 +275,6 @@
           <option value="diff">다르다</option>
         </select>
       </div>
-      <textarea id="q3reason" placeholder="이유를 서술하세요"></textarea>
     </div>
 
     <div class="q">
@@ -298,93 +319,138 @@
                 </select>
               </td>
             </tr>
+            <tr>
+              <td class="rowlbl">어떤 변화일까?</td>
+              <td>
+                <select id="q4e">
+                  <option value="">선택하세요</option>
+                  <option value="physical">물리 변화</option>
+                  <option value="chemical">화학 변화</option>
+                </select>
+              </td>
+              <td>
+                <select id="q4f">
+                  <option value="">선택하세요</option>
+                  <option value="physical">물리 변화</option>
+                  <option value="chemical">화학 변화</option>
+                </select>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="q">
-      <label><span class="qnum">4.</span> 마그네슘 리본 C(연소)는 색깔·광택·단단한 정도가 A와 다르게 나타났어요. 그 이유는 무엇일까요?</label>
-      <textarea id="q5reason" placeholder="이유를 서술하세요"></textarea>
-      <button class="qhintbtn" type="button" id="q5hintBtn">💡 힌트 보기</button>
-      <div class="qhint" id="q5hint">
-        <div class="note" style="margin-bottom:14px;margin-top:0">
-          마그네슘 원자를 작은 알갱이로 표현해서, 자르기(모양 변화)와 연소(화학 변화)가 원자 수준에서
-          어떻게 다른지 살펴보자.
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+    <div class="q" id="q4summaryWrap" style="display:none">
+      <label><b>정리</b></label>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
           <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px">
-            <div style="text-align:center;font-weight:800;color:var(--accent);margin-bottom:8px">B — 모양 변화(구부리기 등)</div>
-            <svg viewBox="0 0 280 130" style="width:100%;display:block">
+            <div style="text-align:center;font-weight:800;color:var(--accent);margin-bottom:8px">모양 변화(자르기)</div>
+            <svg viewBox="0 0 300 175" style="width:100%;display:block">
               <g fill="#c3cad6" stroke="#8896a8" stroke-width="1.2">
-                <circle cx="26" cy="40" r="9"/><circle cx="44" cy="40" r="9"/><circle cx="62" cy="40" r="9"/>
-                <circle cx="26" cy="58" r="9"/><circle cx="44" cy="58" r="9"/><circle cx="62" cy="58" r="9"/>
-                <circle cx="26" cy="76" r="9"/><circle cx="44" cy="76" r="9"/><circle cx="62" cy="76" r="9"/>
-                <circle cx="26" cy="94" r="9"/><circle cx="44" cy="94" r="9"/><circle cx="62" cy="94" r="9"/>
+                <circle cx="26" cy="40" r="9"/><circle cx="44" cy="40" r="9"/><circle cx="62" cy="40" r="9"/><circle cx="80" cy="40" r="9"/>
+                <circle cx="26" cy="58" r="9"/><circle cx="44" cy="58" r="9"/><circle cx="62" cy="58" r="9"/><circle cx="80" cy="58" r="9"/>
               </g>
-              <text x="44" y="115" text-anchor="middle" font-size="11" fill="var(--dim)">마그네슘 원자 덩어리</text>
+              <line x1="53" y1="26" x2="53" y2="72" stroke="var(--bad)" stroke-width="2" stroke-dasharray="4,3"/>
+              <text x="53" y="88" text-anchor="middle" font-size="13" fill="var(--dim)">
+                <tspan x="53" dy="0">자르기 전</tspan>
+                <tspan x="53" dy="14">마그네슘</tspan>
+                <tspan x="53" dy="17" font-size="15" font-weight="900" fill="#2563c9">(A)</tspan>
+              </text>
 
-              <text x="130" y="70" font-size="26" fill="var(--faint)">→</text>
+              <text x="148" y="49" text-anchor="middle" font-size="36" font-weight="900" fill="var(--warn)">→</text>
 
               <g fill="#c3cad6" stroke="#8896a8" stroke-width="1.2">
-                <circle cx="185" cy="30" r="9"/><circle cx="203" cy="30" r="9"/>
-                <circle cx="185" cy="48" r="9"/><circle cx="203" cy="48" r="9"/>
-                <circle cx="185" cy="66" r="9"/><circle cx="203" cy="66" r="9"/>
-                <circle cx="185" cy="84" r="9"/><circle cx="203" cy="84" r="9"/><circle cx="221" cy="84" r="9"/>
-                <circle cx="185" cy="102" r="9"/><circle cx="203" cy="102" r="9"/><circle cx="221" cy="102" r="9"/>
+                <circle cx="223" cy="40" r="9"/><circle cx="241" cy="40" r="9"/>
+                <circle cx="223" cy="58" r="9"/><circle cx="241" cy="58" r="9"/>
               </g>
-              <text x="211" y="118" text-anchor="middle" font-size="11" fill="var(--dim)">구부러짐(같은 원자, 모양만 변형)</text>
+              <text x="232" y="88" text-anchor="middle" font-size="13" fill="var(--dim)">
+                <tspan x="232" dy="0">잘라서</tspan>
+                <tspan x="232" dy="14">짧아진 조각</tspan>
+                <tspan x="232" dy="17" font-size="15" font-weight="900" fill="var(--accent)">(B)</tspan>
+              </text>
             </svg>
-            <div class="note" style="margin-top:10px;font-size:14px">
-              마그네슘은 정해진 개수의 원자가 묶인 <b>분자가 아니라</b>, 원자들이 촘촘하게 모여 있는
-              <b>금속 덩어리</b>예요. 구부리거나 눌러서 겉모양이 달라져도, 그 안의 원자는 <b>여전히 같은
-              마그네슘 원자</b>일 뿐이에요. 그래서 성질도 그대로예요.
+            <div class="note" style="margin-top:10px;font-size:16px">
+              잘라도 원자는 여전히 같은 마그네슘 원자예요. <span style="color:#fff;background:#7c3aed;font-weight:800;padding:1px 6px;border-radius:5px">성질은 그대로</span>라,
+              <b style="color:var(--accent)">B</b>는 <b style="color:#2563c9">A</b>와 <span style="color:#fff;background:#2563c9;font-weight:800;padding:1px 6px;border-radius:5px">같은 물질</span>이에요.
             </div>
           </div>
 
           <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px">
-            <div style="text-align:center;font-weight:800;color:var(--bad);margin-bottom:8px">C — 화학 변화(연소)</div>
-            <svg viewBox="0 0 280 130" style="width:100%;display:block">
+            <div style="text-align:center;font-weight:800;color:var(--bad);margin-bottom:8px">연소</div>
+            <svg viewBox="0 0 300 175" style="width:100%;display:block">
               <g fill="#c3cad6" stroke="#8896a8" stroke-width="1.2">
-                <circle cx="24" cy="40" r="9"/><circle cx="42" cy="40" r="9"/>
-                <circle cx="24" cy="58" r="9"/><circle cx="42" cy="58" r="9"/>
-                <circle cx="24" cy="76" r="9"/><circle cx="42" cy="76" r="9"/>
+                <circle cx="28" cy="30" r="9"/><circle cx="46" cy="30" r="9"/>
+                <circle cx="28" cy="48" r="9"/><circle cx="46" cy="48" r="9"/>
+                <circle cx="28" cy="66" r="9"/><circle cx="46" cy="66" r="9"/>
               </g>
-              <circle cx="72" cy="45" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
-              <circle cx="88" cy="45" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
-              <circle cx="72" cy="70" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
-              <circle cx="88" cy="70" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
-              <text x="55" y="115" text-anchor="middle" font-size="11" fill="var(--dim)">마그네슘 + 산소(+불꽃)</text>
+              <text x="37" y="93" text-anchor="middle" font-size="13" fill="var(--dim)">
+                <tspan x="37" dy="0">마그네슘</tspan>
+                <tspan x="37" dy="17" font-size="15" font-weight="900" fill="#2563c9">(A)</tspan>
+              </text>
 
-              <text x="130" y="70" font-size="26" fill="var(--faint)">→</text>
+              <text x="70" y="52" text-anchor="middle" font-size="24" font-weight="900" fill="var(--dim)">+</text>
+
+              <circle cx="94" cy="35" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+              <circle cx="110" cy="35" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+              <circle cx="94" cy="60" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+              <circle cx="110" cy="60" r="9" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+              <text x="102" y="93" text-anchor="middle" font-size="13" fill="var(--dim)">산소</text>
+
+              <text x="155" y="60" text-anchor="middle" font-size="36" font-weight="900" fill="var(--warn)">→</text>
 
               <g>
-                <circle cx="175" cy="45" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
-                <circle cx="189" cy="38" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+                <circle cx="200" cy="35" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
+                <circle cx="214" cy="28" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
               </g>
               <g>
-                <circle cx="210" cy="45" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
-                <circle cx="224" cy="38" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+                <circle cx="235" cy="35" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
+                <circle cx="249" cy="28" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
               </g>
               <g>
-                <circle cx="175" cy="80" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
-                <circle cx="189" cy="73" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+                <circle cx="200" cy="70" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
+                <circle cx="214" cy="63" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
               </g>
               <g>
-                <circle cx="210" cy="80" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
-                <circle cx="224" cy="73" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
+                <circle cx="235" cy="70" r="9" fill="#c3cad6" stroke="#8896a8" stroke-width="1.2"/>
+                <circle cx="249" cy="63" r="7" fill="#ef8a7c" stroke="#c2463a" stroke-width="1.2"/>
               </g>
-              <text x="200" y="115" text-anchor="middle" font-size="11" fill="var(--dim)">산화마그네슘(새 물질)</text>
+              <text x="225" y="100" text-anchor="middle" font-size="13" fill="var(--dim)">
+                <tspan x="225" dy="0">산화마그네슘</tspan>
+                <tspan x="225" dy="17" font-size="15" font-weight="900" fill="var(--bad)">(C)</tspan>
+              </text>
             </svg>
-            <div class="note" style="margin-top:10px;font-size:14px">
-              마그네슘 원자 하나하나가 산소 원자와 <b>새롭게 결합</b>해서, 원래는 없던
-              <b>전혀 다른 물질(산화마그네슘)</b>이 만들어졌어요. 원자의 <b>배열 자체가 재구성</b>된
-              거라서, 색깔·광택·단단함 같은 성질도 완전히 달라져요.
+            <div class="note" style="margin-top:10px;font-size:16px">
+              산소와 결합해 전혀 다른 물질(산화마그네슘)이 됐어요.
+              <span style="color:#fff;background:#7c3aed;font-weight:800;padding:1px 6px;border-radius:5px">성질도 완전 달라져서</span>,
+              <b style="color:var(--bad)">C</b>는 <b style="color:#2563c9">A</b>와 <span style="color:#fff;background:#2563c9;font-weight:800;padding:1px 6px;border-radius:5px">다른 물질</span>이에요.
             </div>
           </div>
-        </div>
+      </div>
+      <div style="margin-top:16px;padding:18px 20px;background:#fff;border:2px solid var(--line);border-radius:14px;font-size:17px;font-weight:700;text-align:center;line-height:2">
+        <span style="color:#fff;background:var(--accent);font-weight:800;padding:1px 6px;border-radius:5px">물리 변화</span>는
+        물질의 종류가 바뀌지 않는 변화이므로 <span style="color:#fff;background:#7c3aed;font-weight:800;padding:1px 6px;border-radius:5px">성질이 변하지 않아요</span>.<br>
+        <span style="color:#fff;background:var(--bad);font-weight:800;padding:1px 6px;border-radius:5px">화학 변화</span>는
+        새로운 물질이 생성되기 때문에 <span style="color:#fff;background:#7c3aed;font-weight:800;padding:1px 6px;border-radius:5px">성질이 변해요</span>.
       </div>
     </div>
   </div>
+
+  <div class="assess">
+    <div class="assess-tag">형성평가</div>
+
+    <div class="idbar">
+      <label for="classNum">반</label>
+      <select id="classNum">
+        <option value="">선택</option>
+        <option value="1">1반</option>
+        <option value="2">2반</option>
+        <option value="3">3반</option>
+        <option value="4">4반</option>
+      </select>
+      <label for="sid">번호</label>
+      <input type="text" id="sid" placeholder="예: 15" inputmode="numeric" autocomplete="off">
+    </div>
+    <div class="privacy-note">※ 반과 번호를 먼저 입력하고 아래 문제를 풀어주세요. 제출한 내용은 선생님이 확인할 수 있어요.</div>
 
   <div class="panel">
     <h2 class="big"><span class="qnum">5.</span> 물리 변화와 화학 변화의 차이점 알아보기</h2>
@@ -578,40 +644,14 @@
     </div>
   </div>
 
+  <div class="grade-summary" id="gradeSummary">
+    <span id="gradeSummaryMain"></span>
+    <span class="sub">2~4번(탐구 결과 해석)은 채점하지 않아요. 5~8번만 채점 대상이에요.</span>
+  </div>
+
   <button class="done-btn" id="submitBtn">제출하기</button>
   <div class="status" id="submitStatus"></div>
 
-  <div class="teacher-link">
-    <button id="teacherToggle" type="button">교사용 보기</button>
-  </div>
-  <div class="tgate" id="tgate">
-    <input type="text" id="tcode" placeholder="교사 확인 코드" autocomplete="off">
-    <button class="go" id="tcodeBtn" type="button">확인</button>
-    <div class="tstatus" id="tcodeStatus"></div>
-  </div>
-
-  <div class="tpanel" id="tpanel">
-    <h2>제출 현황</h2>
-    <div class="tbtns">
-      <select id="classFilter">
-        <option value="all">전체 반</option>
-        <option value="1">1반</option><option value="2">2반</option>
-        <option value="3">3반</option><option value="4">4반</option>
-      </select>
-      <button id="refreshBtn" type="button">새로고침</button>
-      <button id="copyBtn" type="button">TSV로 복사</button>
-      <button id="resetBtn" type="button" data-label="전체 초기화">전체 초기화</button>
-    </div>
-    <div class="ttable-wrap">
-      <table class="ttable">
-        <thead>
-          <tr><th>반</th><th>번호</th><th>1</th><th>3</th><th>빈칸</th><th>4(왜 바뀜)</th><th>5(차이점)</th><th>7(물)</th><th>8(정리)</th><th>분류</th><th>제출 시각</th></tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-      <div class="tempty" id="tempty" style="display:none">아직 제출된 응답이 없어요.</div>
-    </div>
-    <div class="tstatus" id="copyStatus" style="text-align:center;margin-top:10px"></div>
   </div>
 
 </div>
@@ -652,7 +692,6 @@
   }
 (function(){
   'use strict';
-  var TEACHER_CODE = 'dltndltn';
   var STORE_PREFIX = 'sub-mgchange-';
 
   function sanitizeId(raw){
@@ -666,10 +705,7 @@
     status: document.getElementById('submitStatus')
   };
 
-  var fieldIds = ['rA1','rA2','rA4','rB0','rC0','rB1','rC1','rB2','rC2','rB3','rC3','rB4','rC4'];
-  var qSelectIds = ['q1same','q3same'];
-  var qReasonIds = ['q1reason','q3reason','q5reason'];
-  var blankIds = ['q4a','q4b','q4c','q4d'];
+  var blankIds = ['q4a','q4b','q4c','q4d','q4e','q4f'];
   var q5diffIds = ['q5a','q5b','q5c','q5d'];
   var q7Ids = ['q7same','q7drop','q7type','q7reason','q7state'];
   var q8Ids = ['q8a','q8b','q8c','q8d','q8e'];
@@ -677,17 +713,96 @@
   var classifyIds = ['v_apple_a','v_apple_b','v_nail_a','v_nail_b','v_bread_a','v_bread_b',
     'v_sugar_a','v_sugar_b'];
 
-  var q5hintBtn = document.getElementById('q5hintBtn');
-  var q5hint = document.getElementById('q5hint');
-  q5hintBtn.addEventListener('click', function(){
-    q5hint.classList.add('show');
-    q5hintBtn.style.display = 'none';
-  });
-
   function showStatus(msg, ok){
     elS.status.textContent = msg;
     elS.status.className = 'status show ' + (ok ? 'ok' : 'err');
   }
+
+  // ---- 채점 ----
+  var ANSWER_KEY = {
+    q5a:'physical', q5b:'chemical', q5c:'physical', q5d:'chemical',
+    v_apple_a:'physical', v_apple_b:'chemical',
+    v_nail_a:'physical', v_nail_b:'chemical',
+    v_bread_a:'physical', v_bread_b:'chemical',
+    v_sugar_a:'physical', v_sugar_b:'chemical',
+    q7same:'same', q7drop:'vapor', q7type:'physical', q7reason:'same', q7state:'change',
+    q8a:'physical', q8b:'physical', q8c:'chemical', q8d:'chemical', q8e:'chemical'
+  };
+  var REVIEW_IDS = [];
+
+  function clearGradeMark(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('grade-ok','grade-bad');
+    var note = document.getElementById(id + '_gradenote');
+    if(note) note.remove();
+  }
+
+  function runGrading(){
+    var total = 0, correct = 0;
+    Object.keys(ANSWER_KEY).forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      total++;
+      clearGradeMark(id);
+      var ok = el.value === ANSWER_KEY[id];
+      if(ok){
+        correct++;
+        el.classList.add('grade-ok');
+      } else {
+        el.classList.add('grade-bad');
+        if(!el.classList.contains('blank')){
+          var note = document.createElement('div');
+          note.id = id + '_gradenote';
+          note.className = 'grade-correct-note';
+          note.textContent = '다시 생각해보세요.';
+          el.insertAdjacentElement('afterend', note);
+        }
+      }
+    });
+    REVIEW_IDS.forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      var noteId = id + '_gradenote';
+      if(document.getElementById(noteId)) return;
+      var note = document.createElement('div');
+      note.id = noteId;
+      note.className = 'grade-review-note';
+      note.textContent = '✏️ 서술형이라 선생님이 직접 확인할게요.';
+      el.insertAdjacentElement('afterend', note);
+    });
+
+    var summary = document.getElementById('gradeSummary');
+    var main = document.getElementById('gradeSummaryMain');
+    main.textContent = '채점 결과: 객관식 ' + total + '문제 중 ' + correct + '개 정답이에요.';
+    summary.classList.add('show');
+    summary.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+
+  // 답을 고치면 해당 칸의 채점 표시는 지워짐 (다시 제출해야 새로 채점됨)
+  Object.keys(ANSWER_KEY).concat(REVIEW_IDS).forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', function(){ clearGradeMark(id); });
+    el.addEventListener('change', function(){ clearGradeMark(id); });
+  });
+
+  // 3번 표(q4a~d)를 다 채우면 정리 설명을 보여줌 (채점 대상 아님)
+  function updateQ4Summary(){
+    var wrap = document.getElementById('q4summaryWrap');
+    if(!wrap) return;
+    var filled = blankIds.every(function(id){
+      var el = document.getElementById(id);
+      return el && el.value;
+    });
+    wrap.style.display = filled ? 'block' : 'none';
+  }
+  blankIds.forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('change', updateQ4Summary);
+  });
+  updateQ4Summary();
 
   elS.submitBtn.addEventListener('click', function(){
     var classNum = elS.classNum.value;
@@ -698,26 +813,6 @@
     var record = { classNum: classNum, studentId: sid, ts: new Date().toISOString() };
     var missing = false;
 
-    fieldIds.forEach(function(id){
-      var v = document.getElementById(id).value.trim();
-      if(!v) missing = true;
-      record[id] = v;
-    });
-    qSelectIds.forEach(function(id){
-      var v = document.getElementById(id).value;
-      if(!v) missing = true;
-      record[id] = v;
-    });
-    qReasonIds.forEach(function(id){
-      var v = document.getElementById(id).value.trim();
-      if(!v) missing = true;
-      record[id] = v;
-    });
-    blankIds.forEach(function(id){
-      var v = document.getElementById(id).value;
-      if(!v) missing = true;
-      record[id] = v;
-    });
     q5diffIds.forEach(function(id){
       var v = document.getElementById(id).value;
       if(!v) missing = true;
@@ -741,6 +836,8 @@
 
     if(missing){ showStatus('빈 칸 없이 모두 작성해주세요.', false); return; }
 
+    runGrading();
+
     elS.submitBtn.disabled = true;
     elS.submitBtn.textContent = '제출 중...';
 
@@ -755,196 +852,6 @@
         showStatus('제출에 실패했어요. 네트워크를 확인하고 다시 시도해주세요.', false);
       }
     });
-  });
-
-  // ---- 교사용 ----
-  var elT = {
-    toggle: document.getElementById('teacherToggle'),
-    gate: document.getElementById('tgate'),
-    tcode: document.getElementById('tcode'),
-    tcodeBtn: document.getElementById('tcodeBtn'),
-    tcodeStatus: document.getElementById('tcodeStatus'),
-    panel: document.getElementById('tpanel'),
-    classFilter: document.getElementById('classFilter'),
-    refresh: document.getElementById('refreshBtn'),
-    copy: document.getElementById('copyBtn'),
-    reset: document.getElementById('resetBtn'),
-    body: document.getElementById('tbody'),
-    empty: document.getElementById('tempty'),
-    copyStatus: document.getElementById('copyStatus')
-  };
-  var teacherOpen = false;
-  var allRows = [], lastRows = [];
-
-  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-  function renderRows(){
-    var filter = elT.classFilter.value;
-    var rows = allRows.filter(function(r){ return filter==='all' || r.classNum===filter; });
-    rows.sort(function(a,b){
-      if(a.classNum!==b.classNum) return a.classNum.localeCompare(b.classNum);
-      return (a.studentId||'').localeCompare(b.studentId||'', undefined, {numeric:true});
-    });
-    lastRows = rows;
-    if(!rows.length){
-      elT.body.innerHTML = '';
-      elT.empty.style.display = 'block';
-      return;
-    }
-    elT.empty.style.display = 'none';
-    elT.body.innerHTML = rows.map(function(r){
-      var time = r.ts ? new Date(r.ts).toLocaleString('ko-KR') : '';
-      var q1 = (r.q1same==='same'?'같다':r.q1same==='diff'?'다르다':'') + ' / ' + esc(r.q1reason||'');
-      var q3 = (r.q3same==='same'?'같다':r.q3same==='diff'?'다르다':'') + ' / ' + esc(r.q3reason||'');
-      var q4 = [r.q4a,r.q4b,r.q4c,r.q4d].map(function(v){
-        return v==='same'?'변하지않음':v==='diff'?'변함':v==='nochange'?'변하지않는다':v==='change'?'변한다':'';
-      }).join(', ');
-      var q5diff = q5diffIds.map(function(id){
-        return r[id]==='physical'?'물리':r[id]==='chemical'?'화학':'-';
-      }).join(' ');
-      var q7txt = (r.q7same==='same'?'같다':r.q7same==='diff'?'다르다':'') + ' / ' +
-        (r.q7type==='physical'?'물리':r.q7type==='chemical'?'화학':'');
-      var q8txt = q8Ids.map(function(id){
-        return r[id]==='physical'?'물리':r[id]==='chemical'?'화학':'-';
-      }).join(' ');
-      var cls = classifyIds.map(function(id){
-        return r[id]==='physical'?'물리':r[id]==='chemical'?'화학':'-';
-      }).join(' ');
-      return '<tr><td>'+esc(r.classNum)+'반</td><td>'+esc(r.studentId)+'</td>'+
-        '<td>'+q1+'</td><td>'+q3+'</td><td>'+esc(q4)+'</td><td>'+esc(r.q5reason||'')+'</td>'+
-        '<td>'+esc(q5diff)+'</td><td>'+esc(q7txt)+'</td><td>'+esc(q8txt)+'</td><td>'+esc(cls)+'</td>'+
-        '<td>'+time+'</td></tr>';
-    }).join('');
-  }
-
-  function loadSubmissions(){
-    elT.body.innerHTML = '<tr><td colspan="11" style="color:var(--faint)">불러오는 중...</td></tr>';
-    if(!window.storage || typeof window.storage.list !== 'function'){
-      elT.body.innerHTML = '<tr><td colspan="11" style="color:var(--warn)">저장 기능을 쓸 수 없는 화면이에요.</td></tr>';
-      return;
-    }
-    window.storage.list(STORE_PREFIX, true).then(function(res){
-      var keys = (res && res.keys) ? res.keys : [];
-      if(!keys.length){
-        elT.body.innerHTML = '';
-        elT.empty.style.display = 'block';
-        allRows = [];
-        return;
-      }
-      return Promise.all(keys.map(function(k){
-        return window.storage.get(k, true).catch(function(){ return null; });
-      })).then(function(results){
-        var rows = results.filter(function(r){ return r && r.value; })
-          .map(function(r){ try { return JSON.parse(r.value); } catch(e){ return null; } })
-          .filter(Boolean);
-        allRows = rows;
-        renderRows();
-      });
-    }).catch(function(){
-      elT.body.innerHTML = '<tr><td colspan="11" style="color:var(--warn)">불러오기에 실패했어요.</td></tr>';
-    });
-  }
-
-  elT.toggle.addEventListener('click', function(){
-    if(teacherOpen){
-      teacherOpen = false;
-      elT.panel.classList.remove('show');
-      elT.gate.classList.remove('show');
-      elT.toggle.textContent = '교사용 보기';
-      return;
-    }
-    elT.gate.classList.toggle('show');
-    elT.tcode.value = '';
-    elT.tcodeStatus.className = 'tstatus';
-    elT.tcode.focus();
-  });
-
-  function checkCode(){
-    if(elT.tcode.value.trim() === TEACHER_CODE){
-      teacherOpen = true;
-      elT.gate.classList.remove('show');
-      elT.panel.classList.add('show');
-      elT.toggle.textContent = '교사용 보기 닫기';
-      loadSubmissions();
-    } else {
-      elT.tcodeStatus.textContent = '코드가 일치하지 않아요.';
-      elT.tcodeStatus.className = 'tstatus show err';
-    }
-  }
-  elT.tcodeBtn.addEventListener('click', checkCode);
-  elT.tcode.addEventListener('keydown', function(e){ if(e.key==='Enter') checkCode(); });
-  elT.refresh.addEventListener('click', loadSubmissions);
-  elT.classFilter.addEventListener('change', renderRows);
-
-  function legacyCopy(text){
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.setAttribute('readonly','');
-    ta.style.position='fixed'; ta.style.top='0'; ta.style.left='-9999px';
-    document.body.appendChild(ta); ta.focus(); ta.select();
-    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
-    document.body.removeChild(ta);
-    return ok;
-  }
-
-  elT.copy.addEventListener('click', function(){
-    if(!lastRows.length){
-      elT.copyStatus.textContent = '복사할 데이터가 없어요.';
-      elT.copyStatus.className = 'tstatus show err';
-      return;
-    }
-    var header = ['반','번호','A1','A2','A4','B0','C0','B1','C1','B2','C2','B3','C3','B4','C4',
-      'Q1_같다다르다','Q1_이유','Q3_같다다르다','Q3_이유','Q4a','Q4b','Q4c','Q4d','Q5_이유']
-      .concat(q5diffIds).concat(q7Ids).concat(q8Ids).concat(classifyIds).concat(['제출시각']).join('\t');
-    var body = lastRows.map(function(r){
-      var time = r.ts ? new Date(r.ts).toLocaleString('ko-KR') : '';
-      var q5d = q5diffIds.map(function(id){ return r[id]||''; });
-      var q7v = q7Ids.map(function(id){ return r[id]||''; });
-      var q8v = q8Ids.map(function(id){ return r[id]||''; });
-      var cls = classifyIds.map(function(id){ return r[id]||''; });
-      return [r.classNum+'반', r.studentId,
-        r.rA1,r.rA2,r.rA4,r.rB0,r.rC0,r.rB1,r.rC1,r.rB2,r.rC2,r.rB3,r.rC3,r.rB4,r.rC4,
-        r.q1same,(r.q1reason||'').replace(/\t/g,' '),
-        r.q3same,(r.q3reason||'').replace(/\t/g,' '),
-        r.q4a,r.q4b,r.q4c,r.q4d,(r.q5reason||'').replace(/\t/g,' ')
-      ].concat(q5d).concat(q7v).concat(q8v).concat(cls).concat([time]).join('\t');
-    }).join('\n');
-    var tsv = header + '\n' + body;
-    if(legacyCopy(tsv)){
-      elT.copyStatus.textContent = '표를 복사했어요. 스프레드시트에 붙여넣기 하세요.';
-      elT.copyStatus.className = 'tstatus show ok';
-    } else if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(tsv).then(function(){
-        elT.copyStatus.textContent = '표를 복사했어요.';
-        elT.copyStatus.className = 'tstatus show ok';
-      });
-    }
-  });
-
-  var resetArmed=false, resetTimer=null;
-  elT.reset.addEventListener('click', function(){
-    if(!lastRows.length){
-      elT.copyStatus.textContent = '삭제할 데이터가 없어요.';
-      elT.copyStatus.className = 'tstatus show err';
-      return;
-    }
-    if(!resetArmed){
-      resetArmed = true;
-      elT.reset.textContent = '정말요? 다시 누르면 삭제';
-      resetTimer = setTimeout(function(){ resetArmed=false; elT.reset.textContent = elT.reset.dataset.label; }, 4000);
-      return;
-    }
-    resetArmed = false; clearTimeout(resetTimer);
-    elT.reset.textContent = elT.reset.dataset.label;
-    var targets = lastRows.slice();
-    var keys = targets.map(function(r){ return STORE_PREFIX + r.classNum + '-' + r.studentId; });
-    Promise.all(keys.map(function(k){ return window.storage.delete(k, true).catch(function(){return null;}); }))
-      .then(function(){
-        var removed = {}; keys.forEach(function(k){ removed[k]=true; });
-        allRows = allRows.filter(function(r){ return !removed[STORE_PREFIX+r.classNum+'-'+r.studentId]; });
-        renderRows();
-        elT.copyStatus.textContent = targets.length + '건 삭제했어요.';
-        elT.copyStatus.className = 'tstatus show ok';
-      });
   });
 
 })();

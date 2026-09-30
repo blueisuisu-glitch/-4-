@@ -116,33 +116,18 @@
   .status.ok{background:var(--accent-bg);color:#0f5c30;border:1px solid var(--accent-line)}
   .status.err{background:var(--bad-bg);color:#a12a22;border:1px solid var(--bad-line)}
 
-  /* ---- 교사용 ---- */
-  .teacher-link{text-align:center;margin-top:26px}
-  .teacher-link button{background:none;border:none;color:var(--faint);font-size:16px;
-    cursor:pointer;font-family:inherit;padding:6px;text-decoration:underline;text-underline-offset:2px}
-  .tgate{display:none;margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
-    padding:16px 20px;text-align:center}
-  .tgate.show{display:block}
-  .tgate input{background:#f8fafc;border:1px solid var(--line);border-radius:10px;color:var(--ink);
-    font-family:inherit;font-size:18px;padding:10px 14px;margin-right:8px}
-  .tgate button.go{background:var(--warn);color:#fff;border:none;border-radius:10px;padding:10px 16px;
-    font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
-  .tstatus{margin-top:8px;font-size:14px;display:none}
-  .tstatus.show{display:block}
-  .tstatus.err{color:var(--bad)}
-  .tstatus.ok{color:var(--accent)}
-  .tpanel{display:none;margin-top:16px;background:var(--panel);border:1px solid var(--line);
-    border-radius:18px;padding:22px 20px}
-  .tpanel.show{display:block}
-  .tbtns{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
-  .tbtns button{background:#f8fafc;border:1px solid var(--line);color:var(--ink);
-    font-size:14px;font-weight:700;padding:9px 13px;border-radius:9px;cursor:pointer;font-family:inherit}
-  table.ttable{width:100%;border-collapse:collapse;font-size:13px}
-  table.ttable th{text-align:left;color:var(--dim);font-weight:700;font-size:11px;
-    letter-spacing:.03em;text-transform:uppercase;padding:9px 8px;border-bottom:1px solid var(--line);
-    background:#f8fafc;white-space:nowrap}
-  table.ttable td{padding:9px 8px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink)}
-  .tempty{font-size:15px;color:var(--faint);padding:18px 4px;text-align:center}
+  .grade-ok{border-color:var(--accent) !important;background:var(--accent-bg) !important}
+  .grade-bad{border-color:var(--bad) !important;background:var(--bad-bg) !important}
+  .grade-correct-note{font-size:13px;color:var(--bad);margin-top:4px;text-align:left}
+  .grade-review-note{font-size:13px;color:var(--dim);margin-top:4px;text-align:left;font-style:italic}
+  .grade-group-note{font-size:13px;margin-top:8px;text-align:left}
+  .grade-group-note.ok{color:var(--accent);font-weight:700}
+  .grade-group-note.bad{color:var(--bad);font-weight:700}
+  .grade-summary{background:#fff;border:2px solid var(--line);
+    border-radius:14px;padding:16px 20px;margin-bottom:20px;font-size:18px;font-weight:700;
+    text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.08);display:none}
+  .grade-summary.show{display:block}
+  .grade-summary .sub{display:block;font-size:14px;font-weight:400;color:var(--dim);margin-top:4px}
 </style>
 </head>
 <body>
@@ -307,6 +292,10 @@
           </select>
         </div>
         <textarea id="gPredict_reason" placeholder="그렇게 예상한 이유를 서술하세요"></textarea>
+      </div>
+      <div class="grade-summary" id="gradeSummary1">
+        <span id="gradeSummary1Main"></span>
+        <span class="sub">채점은 객관식(선택·체크박스·빈칸) 문항만 자동으로 확인해요. 서술형과 측정값은 선생님이 따로 확인할게요.</span>
       </div>
       <button class="done-btn" id="submit1Btn">1차 제출하기</button>
       <div class="status" id="submit1Status"></div>
@@ -585,44 +574,13 @@
         </div>
       </div>
 
+      <div class="grade-summary" id="gradeSummary2">
+        <span id="gradeSummary2Main"></span>
+        <span class="sub">채점은 객관식(선택·체크박스·빈칸) 문항만 자동으로 확인해요. 서술형과 측정값은 선생님이 따로 확인할게요.</span>
+      </div>
       <button class="done-btn" id="submit2Btn">2차 제출하기</button>
       <div class="status" id="submit2Status"></div>
     </div>
-  </div>
-
-  <div class="teacher-link">
-    <button id="teacherToggle" type="button">교사용 보기</button>
-  </div>
-  <div class="tgate" id="tgate">
-    <input type="text" id="tcode" placeholder="교사 확인 코드" autocomplete="off">
-    <button class="go" id="tcodeBtn" type="button">확인</button>
-    <div class="tstatus" id="tcodeStatus"></div>
-  </div>
-
-  <div class="tpanel" id="tpanel">
-    <h2>제출 현황</h2>
-    <div class="tbtns">
-      <select id="classFilter">
-        <option value="all">전체 반</option>
-        <option value="1">1반</option><option value="2">2반</option>
-        <option value="3">3반</option><option value="4">4반</option>
-      </select>
-      <button id="refreshBtn" type="button">새로고침</button>
-      <button id="copyBtn" type="button">TSV로 복사</button>
-      <button id="resetBtn" type="button" data-label="전체 초기화">전체 초기화</button>
-    </div>
-    <div class="ttable-wrap">
-      <table class="ttable">
-        <thead>
-          <tr><th>반</th><th>번호</th><th>1차</th><th>2차</th><th>가설1</th><th>변인1</th><th>통제1</th><th>탐구A(전→후)</th><th>탐구B(전→후)</th><th>차이 비교</th><th>예상</th>
-            <th>가설2</th><th>변인2</th><th>통제2</th><th>앙금 전→후</th><th>분자비교</th><th>원자표</th>
-            <th>4(공통점)</th><th>5(근거)</th><th>6(정의)</th><th>1차 시각</th><th>2차 시각</th></tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-      <div class="tempty" id="tempty" style="display:none">아직 제출된 응답이 없어요.</div>
-    </div>
-    <div class="tstatus" id="copyStatus" style="text-align:center;margin-top:10px"></div>
   </div>
 
 </div>
@@ -707,6 +665,209 @@
   var atomIds = ['atC_l','atC_r','atO_l','atO_r','atNa_l','atNa_r','atCl_l','atCl_r','atCa_l','atCa_r'];
   var blankIds2 = ['lawReason_0','lawReason_1','lawReason_2','lawDef_0','lawDef_1'];
 
+  // ---- 채점 ----
+  var SELECT_KEY1 = { varManip:'seal', varDep:'mass', gBigger:'A', gPredict:'same' };
+  var SELECT_KEY2 = { varManip2:'mix', varDep2:'mass', molSame:'diff', atSame:'same',
+    atC_l:'1', atC_r:'1', atO_l:'3', atO_r:'3', atNa_l:'2', atNa_r:'2',
+    atCl_l:'2', atCl_r:'2', atCa_l:'1', atCa_r:'1',
+    molCount_l:'2', molCount_r:'3' };
+
+  var CHECKBOX_GROUPS = {
+    ctrlG: { ids: ctrlGIds, correct: ['ctrlG_amount','ctrlG_conc','ctrlG_volume','ctrlG_temp','ctrlG_flask'] },
+    ctrlP: { ids: ctrlPIds, correct: ['ctrlP_amount','ctrlP_conc','ctrlP_temp','ctrlP_vial','ctrlP_time'] }
+  };
+
+  var SET_PAIRS = [
+    { ids:['molKind_l1','molKind_l2'], target:['na2co3','cacl2'] },
+    { ids:['molKind_r1','molKind_r2'], target:['nacl','caco3'] }
+  ];
+
+  var BLANK_ANSWERS = {
+    lawReason_0: ['원자'],
+    lawReason_1: ['종류'],
+    lawReason_2: ['개수','수'],
+    lawDef_0: ['질량','총질량','총 질량'],
+    lawDef_1: ['같다','같음','같아진다']
+  };
+
+  var DIFF_PAIRS = [
+    { diffId:'gA_diff', beforeId:'gA_before', afterId:'gA_after' },
+    { diffId:'gB_diff', beforeId:'gB_before', afterId:'gB_after' }
+  ];
+
+  function normBlank(s){ return String(s||'').trim().replace(/\s+/g,''); }
+
+  function clearGradeMark(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('grade-ok','grade-bad');
+    var note = document.getElementById(id+'_gradenote');
+    if(note) note.remove();
+  }
+
+  function clearCheckboxGroupNotes(){
+    Object.keys(CHECKBOX_GROUPS).forEach(function(gname){
+      var note = document.getElementById(gname + '_groupnote');
+      if(note) note.remove();
+    });
+  }
+
+  function markField(id, ok, wrongMsg){
+    var el = document.getElementById(id);
+    if(!el) return;
+    clearGradeMark(id);
+    el.classList.add(ok ? 'grade-ok' : 'grade-bad');
+    if(!ok){
+      var note = document.createElement('div');
+      note.id = id + '_gradenote';
+      note.className = 'grade-correct-note';
+      note.textContent = wrongMsg || '다시 생각해보세요.';
+      el.insertAdjacentElement('afterend', note);
+    }
+  }
+
+  function gradeSelectKey(key, counter){
+    Object.keys(key).forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      counter.total++;
+      var ok = (el.value||'').trim() === key[id];
+      if(ok) counter.correct++;
+      markField(id, ok);
+    });
+  }
+
+  function gradeCheckboxGroups(groupNames, counter){
+    groupNames.forEach(function(gname){
+      var g = CHECKBOX_GROUPS[gname];
+      var firstEl = document.getElementById(g.ids[0]);
+      if(!firstEl) return;
+      counter.total++;
+      var correctSet = {}; g.correct.forEach(function(id){ correctSet[id]=true; });
+      var allOk = true;
+      g.ids.forEach(function(id){
+        var el = document.getElementById(id);
+        if(el.checked !== !!correctSet[id]) allOk = false;
+      });
+      if(allOk) counter.correct++;
+      var lastEl = document.getElementById(g.ids[g.ids.length-1]);
+      var noteId = gname + '_groupnote';
+      var oldNote = document.getElementById(noteId);
+      if(oldNote) oldNote.remove();
+      var note = document.createElement('div');
+      note.id = noteId;
+      note.className = 'grade-group-note ' + (allOk ? 'ok' : 'bad');
+      note.textContent = allOk ? '✓ 정답이에요.' : '✗ 다시 확인해보세요.';
+      var container = lastEl.closest('.ctrl-list') || lastEl.parentElement;
+      container.insertAdjacentElement('afterend', note);
+    });
+  }
+
+  function gradeSetPairs(pairs, counter){
+    pairs.forEach(function(pair){
+      var els = pair.ids.map(function(id){ return document.getElementById(id); });
+      if(!els[0] || !els[1]) return;
+      counter.total++;
+      var vals = els.map(function(el){ return el.value; }).filter(Boolean).slice().sort();
+      var target = pair.target.slice().sort();
+      var ok = vals.length===target.length && vals.every(function(v,i){ return v===target[i]; });
+      if(ok) counter.correct++;
+      els.forEach(function(el){ markField(el.id, ok, ok?undefined:'짝을 다시 확인해보세요.'); });
+    });
+  }
+
+  function gradeBlanks(blankMap, counter){
+    Object.keys(blankMap).forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      counter.total++;
+      var v = normBlank(el.value);
+      var accepted = blankMap[id].map(normBlank);
+      var ok = accepted.indexOf(v) !== -1;
+      if(ok) counter.correct++;
+      markField(id, ok);
+    });
+  }
+
+  function gradeDiffPairs(pairs, counter){
+    pairs.forEach(function(p){
+      var diffEl = document.getElementById(p.diffId);
+      var beforeEl = document.getElementById(p.beforeId);
+      var afterEl = document.getElementById(p.afterId);
+      if(!diffEl || !beforeEl || !afterEl) return;
+      var diffStr = diffEl.value.trim();
+      if(!diffStr) return;
+      var before = parseFloat(beforeEl.value), after = parseFloat(afterEl.value);
+      if(isNaN(before) || isNaN(after)) return;
+      var expected = before - after;
+      var given = parseFloat(diffStr.replace(/[^0-9.\-]/g,''));
+      counter.total++;
+      var ok = !isNaN(given) && Math.abs(given - expected) < 0.05;
+      if(ok) counter.correct++;
+      markField(p.diffId, ok, '측정한 값(전−후)과 다시 비교해보세요.');
+    });
+  }
+
+  function markReview(ids){
+    ids.forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      var noteId = id + '_gradenote';
+      if(document.getElementById(noteId)) return;
+      var note = document.createElement('div');
+      note.id = noteId;
+      note.className = 'grade-review-note';
+      note.textContent = '✏️ 서술형·측정값이라 선생님이 직접 확인할게요.';
+      el.insertAdjacentElement('afterend', note);
+    });
+  }
+
+  function showGradeSummary(id, mainId, counter){
+    var summary = document.getElementById(id);
+    document.getElementById(mainId).textContent =
+      '채점 결과: 객관식 ' + counter.total + '문제 중 ' + counter.correct + '개 정답이에요.';
+    summary.classList.add('show');
+    summary.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+
+  function runGrading1(){
+    var counter = { total:0, correct:0 };
+    gradeSelectKey(SELECT_KEY1, counter);
+    gradeCheckboxGroups(['ctrlG'], counter);
+    gradeDiffPairs(DIFF_PAIRS, counter);
+    markReview(['hypothesis','gA_before','gA_after','gB_before','gB_after','gA_reason','gBigger_reason','gPredict_reason']);
+    showGradeSummary('gradeSummary1','gradeSummary1Main', counter);
+  }
+
+  function runGrading2(){
+    var counter = { total:0, correct:0 };
+    gradeSelectKey(SELECT_KEY2, counter);
+    gradeCheckboxGroups(['ctrlP'], counter);
+    gradeSetPairs(SET_PAIRS, counter);
+    gradeBlanks(BLANK_ANSWERS, counter);
+    markReview(['hypothesis2','pBefore','pAfter','pChange','pReason','lawCommon']);
+    showGradeSummary('gradeSummary2','gradeSummary2Main', counter);
+  }
+
+  // 답을 고치면 채점 표시는 지워짐 (다시 제출해야 새로 채점됨)
+  Object.keys(SELECT_KEY1).concat(Object.keys(SELECT_KEY2)).concat(Object.keys(BLANK_ANSWERS)).concat(['gA_diff','gB_diff'])
+    .forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('input', function(){ clearGradeMark(id); });
+      el.addEventListener('change', function(){ clearGradeMark(id); });
+    });
+  SET_PAIRS.forEach(function(pair){
+    pair.ids.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.addEventListener('change', function(){ clearGradeMark(id); });
+    });
+  });
+  ctrlGIds.concat(ctrlPIds).forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('change', clearCheckboxGroupNotes);
+  });
+
   function makeSubmitHandler(opts){
     var btn = document.getElementById(opts.btnId);
     var statusEl = document.getElementById(opts.statusId);
@@ -744,6 +905,8 @@
 
       if(missing){ showStatus('결과 해석의 빈 칸을 모두 채워주세요.', false); return; }
 
+      if(opts.gradeFn) opts.gradeFn();
+
       btn.disabled = true;
       btn.textContent = '제출 중...';
 
@@ -760,244 +923,15 @@
   makeSubmitHandler({
     btnId: 'submit1Btn', statusId: 'submit1Status', prefix: STORE_PREFIX_1, label: '1차 제출하기', stage: '1',
     optionalIds: g1OptionalIds, ctrlIds: ctrlGIds, ctrlKey: 'ctrlG',
-    requiredTextIds: g1RequiredTextIds, requiredSelectIds: g1RequiredSelectIds
+    requiredTextIds: g1RequiredTextIds, requiredSelectIds: g1RequiredSelectIds,
+    gradeFn: runGrading1
   });
 
   makeSubmitHandler({
     btnId: 'submit2Btn', statusId: 'submit2Status', prefix: STORE_PREFIX_2, label: '2차 제출하기', stage: '2',
     optionalIds: g2OptionalIds, ctrlIds: ctrlPIds, ctrlKey: 'ctrlP',
-    requiredTextIds: g2RequiredTextIds.concat(atomIds).concat(blankIds2), requiredSelectIds: g2RequiredSelectIds
-  });
-
-  var elT = {
-    toggle: document.getElementById('teacherToggle'),
-    gate: document.getElementById('tgate'),
-    tcode: document.getElementById('tcode'),
-    tcodeBtn: document.getElementById('tcodeBtn'),
-    tcodeStatus: document.getElementById('tcodeStatus'),
-    panel: document.getElementById('tpanel'),
-    classFilter: document.getElementById('classFilter'),
-    refresh: document.getElementById('refreshBtn'),
-    copy: document.getElementById('copyBtn'),
-    reset: document.getElementById('resetBtn'),
-    body: document.getElementById('tbody'),
-    empty: document.getElementById('tempty'),
-    copyStatus: document.getElementById('copyStatus')
-  };
-  var teacherOpen = false;
-  var allRows = [], lastRows = [];
-
-  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-  function renderRows(){
-    var filter = elT.classFilter.value;
-    var rows = allRows.filter(function(r){ return filter==='all' || r.classNum===filter; });
-    rows.sort(function(a,b){
-      if(a.classNum!==b.classNum) return a.classNum.localeCompare(b.classNum);
-      return (a.studentId||'').localeCompare(b.studentId||'', undefined, {numeric:true});
-    });
-    lastRows = rows;
-    if(!rows.length){
-      elT.body.innerHTML = '';
-      elT.empty.style.display = 'block';
-      return;
-    }
-    elT.empty.style.display = 'none';
-    elT.body.innerHTML = rows.map(function(r){
-      var s1 = r.stage1 || {};
-      var s2 = r.stage2 || {};
-      var time1 = s1.ts ? new Date(s1.ts).toLocaleString('ko-KR') : '-';
-      var time2 = s2.ts ? new Date(s2.ts).toLocaleString('ko-KR') : '-';
-      var manipTxt = s1.varManip==='seal'?'막음 여부':s1.varManip==='amount'?'탄산칼슘 양':s1.varManip==='conc'?'염산 농도':'';
-      var depTxt = s1.varDep==='mass'?'질량':s1.varDep==='speed'?'반응 속도':s1.varDep==='color'?'색깔':'';
-      var varTxt = manipTxt + ' / ' + depTxt;
-      var manip2Txt = s2.varManip2==='mix'?'섞음 여부':s2.varManip2==='temp'?'온도':s2.varManip2==='conc'?'농도':'';
-      var dep2Txt = s2.varDep2==='mass'?'질량':s2.varDep2==='color'?'색깔':s2.varDep2==='speed'?'속도':'';
-      var var2Txt = manip2Txt + ' / ' + dep2Txt;
-      var aTxt = (s1.gA_before||'') + 'g→' + (s1.gA_after||'') + 'g';
-      var bTxt = (s1.gB_before||'') + 'g→' + (s1.gB_after||'') + 'g';
-      var biggerTxt = (s1.gBigger==='A'?'탐구A':s1.gBigger==='B'?'탐구B':'') + ' / ' + esc(s1.gBigger_reason||'');
-      var predictTxt = s1.gPredict==='same'?'같다':s1.gPredict==='diff'?'다르다':'';
-      var pTxt = (s2.pBefore||'') + 'g→' + (s2.pAfter||'') + 'g';
-      var molLabel = {na2co3:'탄산 나트륨', cacl2:'염화 칼슘', nacl:'염화 나트륨', caco3:'탄산 칼슘'};
-      var molL = (molLabel[s2.molKind_l1]||'') + ', ' + (molLabel[s2.molKind_l2]||'');
-      var molR = (molLabel[s2.molKind_r1]||'') + ', ' + (molLabel[s2.molKind_r2]||'');
-      var molTxt = '종류:'+molL+'→'+molR+' 개수:'+(s2.molCount_l||'')+'→'+(s2.molCount_r||'')+
-        ' ('+(s2.molSame==='same'?'같다':s2.molSame==='diff'?'다르다':'')+')';
-      var atomTxt = 'C:'+(s2.atC_l||'')+'→'+(s2.atC_r||'')+' O:'+(s2.atO_l||'')+'→'+(s2.atO_r||'')+
-        ' Na:'+(s2.atNa_l||'')+'→'+(s2.atNa_r||'')+' Cl:'+(s2.atCl_l||'')+'→'+(s2.atCl_r||'')+
-        ' Ca:'+(s2.atCa_l||'')+'→'+(s2.atCa_r||'')+
-        ' ('+(s2.atSame==='same'?'같다':s2.atSame==='diff'?'다르다':'')+')';
-      var stage1Done = r.stage1 ? '✓' : '-';
-      var stage2Done = r.stage2 ? '✓' : '-';
-      return '<tr><td>'+esc(r.classNum)+'반</td><td>'+esc(r.studentId)+'</td>'+
-        '<td>'+stage1Done+'</td><td>'+stage2Done+'</td>'+
-        '<td>'+esc(s1.hypothesis||'')+'</td><td>'+esc(varTxt)+'</td><td>'+esc(s1.ctrlG||'')+'</td>'+
-        '<td>'+esc(aTxt)+'</td><td>'+esc(bTxt)+'</td><td>'+biggerTxt+'</td><td>'+esc(predictTxt)+'</td>'+
-        '<td>'+esc(s2.hypothesis2||'')+'</td><td>'+esc(var2Txt)+'</td><td>'+esc(s2.ctrlP||'')+'</td>'+
-        '<td>'+esc(pTxt)+'</td><td>'+esc(molTxt)+'</td><td>'+esc(atomTxt)+'</td>'+
-        '<td>'+esc(s2.lawCommon||'')+'</td>'+
-        '<td>'+esc(s2.lawReason_0||'')+' / '+esc(s2.lawReason_1||'')+' / '+esc(s2.lawReason_2||'')+'</td>'+
-        '<td>'+esc(s2.lawDef_0||'')+' / '+esc(s2.lawDef_1||'')+'</td>'+
-        '<td>'+time1+'</td><td>'+time2+'</td></tr>';
-    }).join('');
-  }
-
-  function loadSubmissions(){
-    elT.body.innerHTML = '<tr><td colspan="21" style="color:var(--faint)">불러오는 중...</td></tr>';
-    if(!window.storage || typeof window.storage.list !== 'function'){
-      elT.body.innerHTML = '<tr><td colspan="21" style="color:var(--warn)">저장 기능을 쓸 수 없는 화면이에요.</td></tr>';
-      return;
-    }
-    Promise.all([
-      window.storage.list(STORE_PREFIX_1, true).catch(function(){ return null; }),
-      window.storage.list(STORE_PREFIX_2, true).catch(function(){ return null; })
-    ]).then(function(results){
-      var keys1 = (results[0] && results[0].keys) ? results[0].keys : [];
-      var keys2 = (results[1] && results[1].keys) ? results[1].keys : [];
-      var allKeys = keys1.map(function(k){ return {key:k, stage:1}; })
-        .concat(keys2.map(function(k){ return {key:k, stage:2}; }));
-      if(!allKeys.length){
-        elT.body.innerHTML = '';
-        elT.empty.style.display = 'block';
-        allRows = [];
-        return;
-      }
-      return Promise.all(allKeys.map(function(item){
-        return window.storage.get(item.key, true).then(function(r){
-          return { stage: item.stage, key: item.key, value: r ? r.value : null };
-        }).catch(function(){ return { stage: item.stage, key: item.key, value: null }; });
-      })).then(function(results2){
-        var merged = {};
-        results2.forEach(function(item){
-          if(!item.value) return;
-          var rec; try { rec = JSON.parse(item.value); } catch(e){ return; }
-          var mkey = rec.classNum + '-' + rec.studentId;
-          if(!merged[mkey]) merged[mkey] = { classNum: rec.classNum, studentId: rec.studentId };
-          if(item.stage === 1){ merged[mkey].stage1 = rec; merged[mkey].key1 = item.key; }
-          else { merged[mkey].stage2 = rec; merged[mkey].key2 = item.key; }
-        });
-        allRows = Object.keys(merged).map(function(k){ return merged[k]; });
-        renderRows();
-      });
-    }).catch(function(){
-      elT.body.innerHTML = '<tr><td colspan="21" style="color:var(--warn)">불러오기에 실패했어요.</td></tr>';
-    });
-  }
-
-  elT.toggle.addEventListener('click', function(){
-    if(teacherOpen){
-      teacherOpen = false;
-      elT.panel.classList.remove('show');
-      elT.gate.classList.remove('show');
-      elT.toggle.textContent = '교사용 보기';
-      return;
-    }
-    elT.gate.classList.toggle('show');
-    elT.tcode.value = '';
-    elT.tcodeStatus.className = 'tstatus';
-    elT.tcode.focus();
-  });
-
-  function checkCode(){
-    if(elT.tcode.value.trim() === TEACHER_CODE){
-      teacherOpen = true;
-      elT.gate.classList.remove('show');
-      elT.panel.classList.add('show');
-      elT.toggle.textContent = '교사용 보기 닫기';
-      loadSubmissions();
-    } else {
-      elT.tcodeStatus.textContent = '코드가 일치하지 않아요.';
-      elT.tcodeStatus.className = 'tstatus show err';
-    }
-  }
-  elT.tcodeBtn.addEventListener('click', checkCode);
-  elT.tcode.addEventListener('keydown', function(e){ if(e.key==='Enter') checkCode(); });
-  elT.refresh.addEventListener('click', loadSubmissions);
-  elT.classFilter.addEventListener('change', renderRows);
-
-  function legacyCopy(text){
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.setAttribute('readonly','');
-    ta.style.position='fixed'; ta.style.top='0'; ta.style.left='-9999px';
-    document.body.appendChild(ta); ta.focus(); ta.select();
-    var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
-    document.body.removeChild(ta);
-    return ok;
-  }
-
-  elT.copy.addEventListener('click', function(){
-    if(!lastRows.length){
-      elT.copyStatus.textContent = '복사할 데이터가 없어요.';
-      elT.copyStatus.className = 'tstatus show err';
-      return;
-    }
-    var cols1 = ['hypothesis','varManip','varDep','ctrlG',
-      'gA_before','gA_after','gA_diff',
-      'gB_before','gB_after','gB_diff','gA_reason','gBigger','gBigger_reason','gPredict','gPredict_reason'];
-    var cols2 = ['hypothesis2','varManip2','varDep2','ctrlP',
-      'pBefore','pAfter','pChange',
-      'molKind_l1','molKind_l2','molKind_r1','molKind_r2','molCount_l','molCount_r','molSame',
-      'atC_l','atC_r','atO_l','atO_r','atNa_l','atNa_r','atCl_l','atCl_r','atCa_l','atCa_r',
-      'atSame','pReason',
-      'lawCommon','lawReason_0','lawReason_1','lawReason_2','lawDef_0','lawDef_1'];
-    var header = ['classNum','studentId','stage1_done','stage2_done']
-      .concat(cols1.map(function(c){ return '1차_'+c; }))
-      .concat(cols2.map(function(c){ return '2차_'+c; }))
-      .concat(['1차_시각','2차_시각']).join('\t');
-    var body = lastRows.map(function(r){
-      var s1 = r.stage1 || {};
-      var s2 = r.stage2 || {};
-      var row = [r.classNum+'반', r.studentId, r.stage1?'제출':'미제출', r.stage2?'제출':'미제출'];
-      cols1.forEach(function(c){ row.push((s1[c]===undefined?'':String(s1[c])).replace(/\t/g,' ')); });
-      cols2.forEach(function(c){ row.push((s2[c]===undefined?'':String(s2[c])).replace(/\t/g,' ')); });
-      row.push(s1.ts ? new Date(s1.ts).toLocaleString('ko-KR') : '');
-      row.push(s2.ts ? new Date(s2.ts).toLocaleString('ko-KR') : '');
-      return row.join('\t');
-    }).join('\n');
-    var tsv = header + '\n' + body;
-    if(legacyCopy(tsv)){
-      elT.copyStatus.textContent = '표를 복사했어요. 스프레드시트에 붙여넣기 하세요.';
-      elT.copyStatus.className = 'tstatus show ok';
-    } else if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(tsv).then(function(){
-        elT.copyStatus.textContent = '표를 복사했어요.';
-        elT.copyStatus.className = 'tstatus show ok';
-      });
-    }
-  });
-
-  var resetArmed=false, resetTimer=null;
-  elT.reset.addEventListener('click', function(){
-    if(!lastRows.length){
-      elT.copyStatus.textContent = '삭제할 데이터가 없어요.';
-      elT.copyStatus.className = 'tstatus show err';
-      return;
-    }
-    if(!resetArmed){
-      resetArmed = true;
-      elT.reset.textContent = '정말요? 다시 누르면 삭제';
-      resetTimer = setTimeout(function(){ resetArmed=false; elT.reset.textContent = elT.reset.dataset.label; }, 4000);
-      return;
-    }
-    resetArmed = false; clearTimeout(resetTimer);
-    elT.reset.textContent = elT.reset.dataset.label;
-    var targets = lastRows.slice();
-    var keys = [];
-    targets.forEach(function(r){
-      if(r.key1) keys.push(r.key1);
-      if(r.key2) keys.push(r.key2);
-    });
-    Promise.all(keys.map(function(k){ return window.storage.delete(k, true).catch(function(){return null;}); }))
-      .then(function(){
-        var removedKeys = {}; keys.forEach(function(k){ removedKeys[k]=true; });
-        allRows = allRows.filter(function(r){
-          return !(r.key1 && removedKeys[r.key1]) && !(r.key2 && removedKeys[r.key2]);
-        });
-        renderRows();
-        elT.copyStatus.textContent = targets.length + '명 분 삭제했어요.';
-        elT.copyStatus.className = 'tstatus show ok';
-      });
+    requiredTextIds: g2RequiredTextIds.concat(atomIds).concat(blankIds2), requiredSelectIds: g2RequiredSelectIds,
+    gradeFn: runGrading2
   });
 
 })();
