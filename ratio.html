@@ -165,11 +165,15 @@
   .rt-simplify-row td{border-top:3px solid var(--warn)}
   .rt-simplify-row td:first-child{background:var(--warn-bg);color:var(--warn)}
   .rt-compound{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:10px}
-  .rt-mol{line-height:0}
   .rt-name{font-size:18px;font-weight:800;color:var(--ink)}
-  .rt-ratiolabel{display:inline-block;background:var(--info-bg);color:var(--info);font-weight:800;
-    font-size:17px;padding:6px 14px;border-radius:9px;border:1.5px solid #b9d3f5;letter-spacing:.02em}
-  .rt-cell{display:inline-flex;align-items:center;gap:7px}
+  .rt-pic{display:flex;justify-content:center;align-items:flex-end;gap:6px;flex-wrap:wrap;margin-bottom:10px;min-height:42px}
+  .rt-pic svg{display:block;height:38px;width:auto}
+  .rt-cell{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .rt-ratiorow{display:inline-flex;align-items:center;gap:7px}
+  .rt-ratiotag{font-size:13px;font-weight:800;color:var(--dim);min-width:86px;text-align:right;white-space:nowrap}
+  .rt-formula-big{font-size:28px;font-weight:900;color:var(--ink)}
+  .rt-num-count{border-color:#b9d3f5!important}
+  .rt-num-count:focus{border-color:var(--info)!important;background:var(--info-bg)!important}
   .rt-num{width:56px;padding:9px 6px;border:2px solid var(--warn-line);border-radius:9px;
     background:#fff;color:var(--ink);font-family:inherit;font-size:19px;font-weight:700;text-align:center}
   .rt-num:focus{outline:none;border-color:var(--warn);background:var(--warn-bg)}
@@ -420,13 +424,13 @@
     }
   ];
 
-  function emptyCells(){ return [{a:'',b:''},{a:'',b:''},{a:'',b:''}]; }
+  function emptyCells(){ return [{ca:'',cb:'',a:'',b:''},{ca:'',cb:'',a:'',b:''},{ca:'',cb:'',a:'',b:''}]; }
   var answers = {
     q1:'',
     q2:{left:emptyCells(), right:emptyCells()},
     q3:{left:emptyCells(), right:emptyCells()},
     q4:{left:emptyCells(), right:emptyCells()},
-    q5:'', q6:['',''], q7:['','']
+    q5:['',''], q6:['',''], q7:['','']
   };
   var stock = {};
   var curIdx = 0;
@@ -500,43 +504,87 @@
 
   function elementMass(sym, per, n){ return (per[sym]||0) * ATOM[sym].mass * n; }
 
+  var FORMULA_COLOR = { H:'#94a0b4', O:'#ef4444', C:'#475569', N:'#3b82f6' };
+  function coloredFormula(formula){
+    var out='';
+    for(var i=0;i<formula.length;i++){
+      var ch=formula[i];
+      var col=FORMULA_COLOR[ch];
+      out += col ? '<span style="color:'+col+'">'+ch+'</span>' : ch;
+    }
+    return out;
+  }
+
   function ratioTableHTML(qKey, missionKey){
     var m = missionByKey(missionKey);
-    var ratioLabel = m.a+' : '+m.b+' 질량비';
+    var countLabel = '개수비 '+m.a+':'+m.b+'=';
+    var massLabel = '질량비 '+m.a+':'+m.b+'=';
     function headCell(comp){
-      return '<th><div class="rt-compound"><span class="rt-mol">'+molSVGMass(comp.struct)+'</span>'+
-        '<span class="rt-name">'+comp.name+' ('+comp.formula+')</span></div>'+
-        '<div class="rt-ratiolabel">'+ratioLabel+'</div></th>';
+      return '<th><div class="rt-compound">'+
+        '<span class="rt-formula-big">'+coloredFormula(comp.formula)+'</span>'+
+        '<span class="rt-name">'+comp.name+'</span></div></th>';
     }
+    var EMPTY_CELL={ca:'',cb:'',a:'',b:''};
     var ROW_COUNTS=[1,2];
     var rows=ROW_COUNTS.map(function(n,idx){
-      var lv=answers[qKey].left[idx]||{a:'',b:''}, rv=answers[qKey].right[idx]||{a:'',b:''};
-      return '<tr><td>'+n+'개</td>'+
-        '<td>'+ratioCellHTML(qKey,'left',idx,lv)+'</td>'+
-        '<td>'+ratioCellHTML(qKey,'right',idx,rv)+'</td>'+
+      var lv=answers[qKey].left[idx]||EMPTY_CELL, rv=answers[qKey].right[idx]||EMPTY_CELL;
+      return '<tr><td>'+pictureRowLabel(n)+'</td>'+
+        '<td>'+pictureHTML(m.left.struct,n)+ratioCellHTML(qKey,'left',idx,lv,countLabel,massLabel)+'</td>'+
+        '<td>'+pictureHTML(m.right.struct,n)+ratioCellHTML(qKey,'right',idx,rv,countLabel,massLabel)+'</td>'+
       '</tr>';
     }).join('');
     var simplifyIdx = ROW_COUNTS.length;
-    var lvs=answers[qKey].left[simplifyIdx]||{a:'',b:''}, rvs=answers[qKey].right[simplifyIdx]||{a:'',b:''};
+    var lvs=answers[qKey].left[simplifyIdx]||EMPTY_CELL, rvs=answers[qKey].right[simplifyIdx]||EMPTY_CELL;
     rows += '<tr class="rt-simplify-row"><td>가장 간단한<br>정수비</td>'+
-      '<td>'+ratioCellHTML(qKey,'left',simplifyIdx,lvs)+'</td>'+
-      '<td>'+ratioCellHTML(qKey,'right',simplifyIdx,rvs)+'</td>'+
+      '<td>'+ratioCellHTML(qKey,'left',simplifyIdx,lvs,countLabel,massLabel)+'</td>'+
+      '<td>'+ratioCellHTML(qKey,'right',simplifyIdx,rvs,countLabel,massLabel)+'</td>'+
     '</tr>';
     return '<table class="ratiotable">'+
       '<thead><tr><th>분자 개수</th>'+headCell(m.left)+headCell(m.right)+'</tr></thead>'+
       '<tbody>'+rows+'</tbody></table>';
   }
 
-  function ratioCellHTML(qKey, side, idx, val){
+  function pictureRowLabel(n){ return n+'개'; }
+
+  function pictureHTML(structKey, n){
+    var one = molSVGMass(structKey);
+    var imgs = [];
+    for(var i=0;i<n;i++) imgs.push(one);
+    return '<div class="rt-pic">'+imgs.join('')+'</div>';
+  }
+
+  function ratioCellHTML(qKey, side, idx, val, countLabel, massLabel){
     return '<span class="rt-cell">'+
-      '<input type="text" inputmode="numeric" class="rt-num" data-q="'+qKey+'" data-side="'+side+'" data-idx="'+idx+'" data-part="a" value="'+escHtml(val.a)+'">'+
-      '<span class="rt-colon">:</span>'+
-      '<input type="text" inputmode="numeric" class="rt-num" data-q="'+qKey+'" data-side="'+side+'" data-idx="'+idx+'" data-part="b" value="'+escHtml(val.b)+'">'+
+      '<span class="rt-ratiorow"><span class="rt-ratiotag">'+countLabel+'</span>'+
+        '<input type="text" inputmode="numeric" class="rt-num rt-num-count" data-q="'+qKey+'" data-side="'+side+'" data-idx="'+idx+'" data-part="ca" value="'+escHtml(val.ca)+'">'+
+        '<span class="rt-colon">:</span>'+
+        '<input type="text" inputmode="numeric" class="rt-num rt-num-count" data-q="'+qKey+'" data-side="'+side+'" data-idx="'+idx+'" data-part="cb" value="'+escHtml(val.cb)+'">'+
+      '</span>'+
+      '<span class="rt-ratiorow"><span class="rt-ratiotag">'+massLabel+'</span>'+
+        '<input type="text" inputmode="numeric" class="rt-num" data-q="'+qKey+'" data-side="'+side+'" data-idx="'+idx+'" data-part="a" value="'+escHtml(val.a)+'">'+
+        '<span class="rt-colon">:</span>'+
+        '<input type="text" inputmode="numeric" class="rt-num" data-q="'+qKey+'" data-side="'+side+'" data-idx="'+idx+'" data-part="b" value="'+escHtml(val.b)+'">'+
+      '</span>'+
     '</span>';
   }
 
+  function computeCountRatio(missionKey, side, idx){
+    var m = missionByKey(missionKey);
+    var comp = side==='left' ? m.left : m.right;
+    var rawA, rawB;
+    if(idx===2){
+      rawA = comp.per[m.a]||0; rawB = comp.per[m.b]||0;
+      var g = gcd(rawA, rawB);
+      return { a: String(rawA/g), b: String(rawB/g) };
+    }
+    var n = idx+1;
+    return { a: String((comp.per[m.a]||0)*n), b: String((comp.per[m.b]||0)*n) };
+  }
+
+  var Q5_TARGET = ['개수비','질량비'];
   var Q6_TARGET = ['성분 원소','개수비'];
   var Q7_TARGET = ['성분 원소','질량비'];
+  var BLANK_TARGETS = { q5:Q5_TARGET, q6:Q6_TARGET, q7:Q7_TARGET };
 
   function qNum(n){ return '<span style="color:var(--warn);font-weight:900">'+n+'</span>'; }
 
@@ -562,26 +610,31 @@
 
   function gradeRatioTables(){
     var total=0, correct=0;
+    var countTotal=0, countCorrect=0, massTotal=0, massCorrect=0;
     ['q2','q3','q4'].forEach(function(qKey){
       var missionKey = Q_TO_MISSION[qKey];
       ['left','right'].forEach(function(side){
         answers[qKey][side].forEach(function(cell, idx){
-          var target = computeRatioTarget(missionKey, side, idx);
-          ['a','b'].forEach(function(part){
+          var massTarget = computeRatioTarget(missionKey, side, idx);
+          var countTarget = computeCountRatio(missionKey, side, idx);
+          var FIELD_TARGET = { ca:countTarget.a, cb:countTarget.b, a:massTarget.a, b:massTarget.b };
+          ['ca','cb','a','b'].forEach(function(part){
             var input = el.qArea.querySelector('.rt-num[data-q="'+qKey+'"][data-side="'+side+'"][data-idx="'+idx+'"][data-part="'+part+'"]');
             if(!input) return;
             total++;
-            var ok = String(cell[part]).trim() === target[part];
+            var isCount = (part==='ca'||part==='cb');
+            if(isCount) countTotal++; else massTotal++;
+            var ok = String(cell[part]).trim() === FIELD_TARGET[part];
             input.classList.remove('grade-ok','grade-bad');
             input.classList.add(ok ? 'grade-ok' : 'grade-bad');
-            if(ok) correct++;
+            if(ok){ correct++; if(isCount) countCorrect++; else massCorrect++; }
           });
         });
       });
     });
     var summary = document.getElementById('gradeSummary');
     document.getElementById('gradeSummaryMain').textContent =
-      '채점 결과: 질량비 ' + total + '칸 중 ' + correct + '개 정답이에요.';
+      '채점 결과: 개수비 ' + countTotal + '칸 중 ' + countCorrect + '개, 질량비 ' + massTotal + '칸 중 ' + massCorrect + '개 정답이에요.';
     summary.classList.add('show');
     summary.scrollIntoView({ behavior:'smooth', block:'center' });
   }
@@ -604,6 +657,7 @@
         '<div class="mval">'+mi.mass+'<span class="u">(원자량)</span></div></div>';
     }).join('');
 
+    var q5ok0 = answers.q5[0]===Q5_TARGET[0], q5ok1 = answers.q5[1]===Q5_TARGET[1];
     var q6ok0 = answers.q6[0]===Q6_TARGET[0], q6ok1 = answers.q6[1]===Q6_TARGET[1];
     var q7ok0 = answers.q7[0]===Q7_TARGET[0], q7ok1 = answers.q7[1]===Q7_TARGET[1];
 
@@ -617,19 +671,18 @@
       '</div>'+
       '<textarea data-q="q1" placeholder="여기에 적어보세요">'+escHtml(answers.q1)+'</textarea></div>';
 
-    html += '<div class="q"><label>'+qNum(2)+'. 물과 과산화수소의 수소:산소 질량비를 구해 표를 완성해보세요.</label>'+
-      '<div class="concept" style="font-size:17px;margin-top:0;margin-bottom:14px">예시: 물 1개의 H : O 질량비 = <b>2 : 16</b>, 이를 가장 간단한 정수비로 나타내면 <b>1 : 8</b>'+
-      '<br>(1개·2개 행에는 계산한 실제 질량 값을 그대로 적어요. 예를 들어 물 1개라면 왼쪽 칸에 2, 오른쪽 칸에 16. "가장 간단한 정수비" 행에는 이를 더 이상 약분할 수 없는 형태로 줄인 값을 적어요.)</div>'+
+    html += '<div class="q"><label>'+qNum(2)+'. 아래 그림을 보고, 물과 과산화수소 각각의 수소:산소 <b>개수비</b>와 <b>질량비</b>를 구해보세요.</label>'+
       ratioTableHTML('q2','ho') + '</div>';
 
-    html += '<div class="q"><label>'+qNum(3)+'. 일산화탄소와 이산화탄소의 탄소:산소 질량비를 구해 표를 완성해보세요.</label>'+
+    html += '<div class="q"><label>'+qNum(3)+'. 아래 그림을 보고, 일산화탄소와 이산화탄소 각각의 탄소:산소 개수비와 질량비를 구해보세요.</label>'+
       ratioTableHTML('q3','co') + '</div>';
 
-    html += '<div class="q"><label>'+qNum(4)+'. 일산화질소와 이산화질소의 질소:산소 질량비를 구해 표를 완성해보세요.</label>'+
+    html += '<div class="q"><label>'+qNum(4)+'. 아래 그림을 보고, 일산화질소와 이산화질소 각각의 질소:산소 개수비와 질량비를 구해보세요.</label>'+
       ratioTableHTML('q4','no') + '</div>';
 
-    html += '<div class="q"><label>'+qNum(5)+'. 2~4번 결과에서 공통으로 나타나는 특징은 무엇인가요?</label>'+
-      '<textarea data-q="q5" placeholder="여기에 적어보세요">'+escHtml(answers.q5)+'</textarea></div>';
+    html += '<div class="q"><label>'+qNum(5)+'. 2~4번 결과에서 공통으로 나타나는 특징을 빈칸을 채워 정리해보세요.</label>'+
+      '<div class="blankline">분자가 1개에서 2개로 늘어나도, 세 쌍의 화합물 모두 성분 원소의 '+blankInput('q5_0',answers.q5[0],q5ok0)+
+      '와 '+blankInput('q5_1',answers.q5[1],q5ok1)+'는 변하지 않고 그대로였다.</div></div>';
 
     html += '<div class="q"><label>'+qNum(6)+'. 그 특징이 나타나는 <span class="lawword-reason">근거</span>를 빈칸에 채워 완성하세요.</label>'+
       '<div class="blankline"><span class="emph-red">일정 성분비 법칙</span>이 성립하는 <span class="lawword-reason">근거</span>는, 화합물을 이루는 '+blankInput('q6_0',answers.q6[0],q6ok0)+
@@ -657,14 +710,14 @@
         el.doneStatus.className='tstatus';
       });
     });
-    ['q6_0','q6_1','q7_0','q7_1'].forEach(function(id){
+    ['q5_0','q5_1','q6_0','q6_1','q7_0','q7_1'].forEach(function(id){
       var inp = document.getElementById(id);
       if(!inp) return;
       inp.addEventListener('input', function(){
         var qk = id.slice(0,2), idx = +id.slice(3);
         answers[qk][idx] = inp.value.trim();
         el.doneStatus.className='tstatus';
-        var target = qk==='q6' ? Q6_TARGET : Q7_TARGET;
+        var target = BLANK_TARGETS[qk];
         inp.classList.toggle('correct', inp.value.trim()===target[idx]);
       });
     });
@@ -693,7 +746,7 @@
       el.doneStatus.className='tstatus show err';
       return;
     }
-    var textKeys=['q1','q5'];
+    var textKeys=['q1'];
     for(var i=0;i<textKeys.length;i++){
       if(answers[textKeys[i]].trim().length<5){
         el.doneStatus.textContent='아직 채우지 않았거나 너무 짧은 질문이 있어요. 조금 더 자세히 써주세요.';
@@ -706,10 +759,10 @@
     var tableKeys=['q2','q3','q4'];
     for(var j=0;j<tableKeys.length;j++){
       var t=answers[tableKeys[j]];
-      var cellFilled=function(c){ return c.a.trim().length>0 && c.b.trim().length>0; };
+      var cellFilled=function(c){ return c.ca.trim().length>0 && c.cb.trim().length>0 && c.a.trim().length>0 && c.b.trim().length>0; };
       var allFilled = t.left.every(cellFilled) && t.right.every(cellFilled);
       if(!allFilled){
-        el.doneStatus.textContent='아직 채우지 않은 질량비 칸이 있어요.';
+        el.doneStatus.textContent='아직 채우지 않은 개수비·질량비 칸이 있어요.';
         el.doneStatus.className='tstatus show err';
         return;
       }
@@ -717,10 +770,11 @@
 
     gradeRatioTables();
 
-    var blankOk = answers.q6[0]===Q6_TARGET[0] && answers.q6[1]===Q6_TARGET[1] &&
+    var blankOk = answers.q5[0]===Q5_TARGET[0] && answers.q5[1]===Q5_TARGET[1] &&
+                  answers.q6[0]===Q6_TARGET[0] && answers.q6[1]===Q6_TARGET[1] &&
                   answers.q7[0]===Q7_TARGET[0] && answers.q7[1]===Q7_TARGET[1];
     if(!blankOk){
-      el.doneStatus.textContent='6·7번 빈칸 중 아직 맞지 않은 칸이 있어요.';
+      el.doneStatus.textContent='5~7번 빈칸 중 아직 맞지 않은 칸이 있어요.';
       el.doneStatus.className='tstatus show err';
       return;
     }
@@ -863,5 +917,6 @@
   loadMission();
 })();
 </script>
+<div style="text-align:center;font-size:13px;font-weight:700;color:#6b7280;padding:18px 10px 10px;">제작: 교사 이수진 · 무단 복제·재배포 금지</div>
 </body>
 </html>
