@@ -180,31 +180,6 @@
   .tstatus.err{color:var(--bad)}
   .tstatus.ok{color:var(--accent);font-weight:700}
 
-  /* ---- 교사용 (일정성분비 법칙 형식) ---- */
-  .teacher-link{text-align:center;margin-top:26px}
-  .teacher-link button{background:none;border:none;color:var(--faint);font-size:16px;
-    cursor:pointer;font-family:inherit;padding:6px;text-decoration:underline;text-underline-offset:2px}
-  .teacher-link button:hover{color:var(--dim)}
-  .tgate{display:none;margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-  .tgate.show{display:block}
-  .tgate input{background:#f8fafc;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 13px;font-family:inherit;font-size:16px}
-  .tgate button{padding:11px 17px;border-radius:10px;border:none;background:var(--warn);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;margin-left:8px}
-  .tpanel{display:none;margin-top:16px}
-  .tpanel.show{display:block}
-  .tbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
-  .tbar h2{margin-bottom:0}
-  .tbtns{display:flex;gap:9px;flex-wrap:wrap}
-  .tbtns select,.tbtns button{background:#f8fafc;border:1px solid var(--line);color:var(--ink);
-    font-size:14px;font-weight:700;padding:9px 13px;border-radius:9px;cursor:pointer;
-    font-family:inherit;transition:.14s}
-  .tbtns button:hover{border-color:var(--faint)}
-  .ttable-wrap{overflow-x:auto}
-  table.ttable{width:100%;border-collapse:collapse;font-size:14px}
-  table.ttable th{text-align:left;color:var(--dim);font-weight:700;font-size:12px;
-    letter-spacing:.03em;text-transform:uppercase;padding:10px 9px;border-bottom:1px solid var(--line);background:#f8fafc;white-space:nowrap}
-  table.ttable td{padding:10px 9px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink)}
-  table.ttable tr:last-child td{border-bottom:none}
-  .tempty{font-size:16px;color:var(--faint);padding:18px 4px;text-align:center}
   .qnum{color:var(--warn);font-weight:800}
   .term{color:var(--warn);font-weight:700}
   select option[value=""]{color:#999}
@@ -218,7 +193,6 @@
   table.qtable td.qtable-rowlbl{text-align:left;font-weight:700;color:var(--dim);white-space:nowrap}
   table.qtable input{width:100%;max-width:110px;font-size:17px;padding:8px 4px;border:2px solid var(--line);
     border-radius:8px;text-align:center;font-family:inherit;box-sizing:border-box}
-
   /* ---- 모범 답안 보기 ---- */
   .ansbtn{width:100%;padding:14px;border-radius:12px;border:2px dashed var(--faint);background:transparent;
     color:var(--dim);font-size:19px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px}
@@ -286,26 +260,10 @@
 
     <div class="ctrl" style="margin-top:18px">
       <div class="ctrl-top">
-        <span class="ctrl-name">지구의 위치 (공전)</span>
-        <span class="ctrl-val" id="posVal">1월</span>
-      </div>
-      <input type="range" id="pos" min="0" max="360" value="90" step="1">
-    </div>
-
-    <div class="ctrl">
-      <div class="ctrl-top">
         <span class="ctrl-name">별까지의 거리</span>
         <span class="ctrl-val" id="distVal">10.0 pc</span>
       </div>
-      <input type="range" id="dist" min="1" max="50" value="10" step="0.5">
-    </div>
-
-    <div class="ctrl-top" style="margin-top:2px">
-      <span class="ctrl-name">거리 단위</span>
-      <div class="seg" id="unitSeg">
-        <button class="on" data-u="pc">파섹 (pc)</button>
-        <button data-u="ly">광년 (ly)</button>
-      </div>
+      <input type="range" id="dist" min="0" max="6" step="1" value="4">
     </div>
   </div>
 
@@ -316,29 +274,228 @@
         <div class="k">거리 (pc)</div>
         <div class="v" id="rDistPc">10.0<span class="u">pc</span></div>
       </div>
-      <div class="stat">
-        <div class="k">거리 (광년)</div>
-        <div class="v" id="rDistLy">32.6<span class="u">ly</span></div>
-      </div>
       <div class="stat hl">
         <div class="k">연주시차 (p)</div>
         <div class="v" id="rPar">0.100<span class="u">″</span></div>
       </div>
     </div>
-    <div class="note">
-      연주시차가 뭔지는 다음 탭 "별까지 거리 구하기"에서 자세히 알아볼게요.
-    </div>
-    <div class="note">
-      <b>파섹(pc)</b>은 연주시차를 재서 거리를 구할 때 바로 쓰는 단위예요(거리(pc) = 1 ÷ 연주시차(″)).
-      <b>광년(ly)</b>은 "빛이 그만큼 가는 데 걸리는 시간"이라 일반인이 감을 잡기 쉬워서 많이 써요.
-      <span class="formula">1 pc ≈ 3.26 광년</span>
-    </div>
-    <div class="note" id="lightNote">
-      이 별빛은 <b><span id="starLight">32.6</span>년</b> 전에 별을 출발한 거예요.
-      그만큼 별은 멀리 있어요 — 직접 갈 수 없어도 연주시차로 거리를 알아낼 수 있어요.
-    </div>
-    <div><button class="tab-next" data-goto="2" type="button">다음 탭으로 →</button></div>
   </div>
+
+  <div class="panel" style="margin-top:0">
+    <h2>🌍 지구가 움직이면 별도 움직여 보인다?</h2>
+    <div class="tdiagram" id="parallaxIntroDiagram"></div>
+    <div class="note" style="margin-top:14px">
+      지구가 공전하면서 6개월 전후로 본 별의 방향이 조금 달라져요. 이 방향 차이(사잇각)를
+      <b>시차</b>라고 하며, 각도이므로 도(˚)로 나타내요.
+    </div>
+  </div>
+
+  <div class="note" style="margin:0 0 20px">
+    그런데 별은 워낙 멀리 있어서 시차각이 아주 작게 나와요. 그래서 도(˚)보다 훨씬 작은 단위인 초(″)를 써요.
+  </div>
+
+  <div class="panel" style="margin-top:0">
+    <h2>📐 각도의 단위 — 도(˚), 분(′), 초(″)</h2>
+    <div class="note" style="margin-top:0">
+      1˚를 60등분하면 <b>1′(분)</b>, 1′을 다시 60등분하면 <b>1″(초)</b>예요.
+    </div>
+    <svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;max-width:580px;display:block;margin:0 auto">
+  <rect x="4" y="4" width="632" height="392" rx="20" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- Bar 1: 1 degree = 60 arcmin -->
+  <text x="320.0" y="34" text-anchor="middle" font-size="17" font-weight="800" fill="#16202f">1˚ 를 60등분 → 1′ (1/60˚)</text>
+  <g>
+    <line x1="60.0" y1="54.0" x2="60.0" y2="86.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="68.7" y1="62.0" x2="68.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="77.3" y1="62.0" x2="77.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="86.0" y1="62.0" x2="86.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="94.7" y1="62.0" x2="94.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="103.3" y1="62.0" x2="103.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="112.0" y1="62.0" x2="112.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="120.7" y1="62.0" x2="120.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="129.3" y1="62.0" x2="129.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="138.0" y1="62.0" x2="138.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="146.7" y1="54.0" x2="146.7" y2="86.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="155.3" y1="62.0" x2="155.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="164.0" y1="62.0" x2="164.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="172.7" y1="62.0" x2="172.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="181.3" y1="62.0" x2="181.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="190.0" y1="62.0" x2="190.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="198.7" y1="62.0" x2="198.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="207.3" y1="62.0" x2="207.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="216.0" y1="62.0" x2="216.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="224.7" y1="62.0" x2="224.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="233.3" y1="54.0" x2="233.3" y2="86.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="242.0" y1="62.0" x2="242.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="250.7" y1="62.0" x2="250.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="259.3" y1="62.0" x2="259.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="268.0" y1="62.0" x2="268.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="276.7" y1="62.0" x2="276.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="285.3" y1="62.0" x2="285.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="294.0" y1="62.0" x2="294.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="302.7" y1="62.0" x2="302.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="311.3" y1="62.0" x2="311.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="320.0" y1="54.0" x2="320.0" y2="86.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="328.7" y1="62.0" x2="328.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="337.3" y1="62.0" x2="337.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="346.0" y1="62.0" x2="346.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="354.7" y1="62.0" x2="354.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="363.3" y1="62.0" x2="363.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="372.0" y1="62.0" x2="372.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="380.7" y1="62.0" x2="380.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="389.3" y1="62.0" x2="389.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="398.0" y1="62.0" x2="398.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="406.7" y1="54.0" x2="406.7" y2="86.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="415.3" y1="62.0" x2="415.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="424.0" y1="62.0" x2="424.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="432.7" y1="62.0" x2="432.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="441.3" y1="62.0" x2="441.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="450.0" y1="62.0" x2="450.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="458.7" y1="62.0" x2="458.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="467.3" y1="62.0" x2="467.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="476.0" y1="62.0" x2="476.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="484.7" y1="62.0" x2="484.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="493.3" y1="54.0" x2="493.3" y2="86.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="502.0" y1="62.0" x2="502.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="510.7" y1="62.0" x2="510.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="519.3" y1="62.0" x2="519.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="528.0" y1="62.0" x2="528.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="536.7" y1="62.0" x2="536.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="545.3" y1="62.0" x2="545.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="554.0" y1="62.0" x2="554.0" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="562.7" y1="62.0" x2="562.7" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="571.3" y1="62.0" x2="571.3" y2="78.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="580.0" y1="54.0" x2="580.0" y2="86.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="60" y1="70" x2="580" y2="70" stroke="#c7cfdb" stroke-width="1.3"/>
+    <rect x="60.0" y="54" width="8.7" height="32" fill="#d9670f" opacity="0.85"/>
+    <text x="60" y="108" font-size="13" fill="#94a0b4">0′</text>
+    <text x="580" y="108" text-anchor="end" font-size="13" fill="#94a0b4">60′ (= 1˚)</text>
+  </g>
+  <rect x="490" y="24" width="66" height="30" rx="15" fill="#d9670f"/>
+  <text x="523" y="45" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">1′</text>
+
+  <!-- Zoom connector (magnifying trapezoid) -->
+  <path d="M 60.0 86 L 60 230 L 580 230 L 68.7 86 Z"
+        fill="#d9670f" opacity="0.10"/>
+  <line x1="60.0" y1="86" x2="60" y2="230" stroke="#d9670f" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="68.7" y1="86" x2="580" y2="230" stroke="#d9670f" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="320.0" y="216" text-anchor="middle" font-size="14" fill="#d9670f" font-weight="700">🔍 이 1′ 조각을 확대하면</text>
+
+  <!-- Bar 2: 1 arcmin = 60 arcsec -->
+  <text x="320.0" y="260" text-anchor="middle" font-size="17" font-weight="800" fill="#16202f">1′ 을 60등분 → 1″ (1/60′)</text>
+  <g>
+    <line x1="60.0" y1="284.0" x2="60.0" y2="316.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="68.7" y1="292.0" x2="68.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="77.3" y1="292.0" x2="77.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="86.0" y1="292.0" x2="86.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="94.7" y1="292.0" x2="94.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="103.3" y1="292.0" x2="103.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="112.0" y1="292.0" x2="112.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="120.7" y1="292.0" x2="120.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="129.3" y1="292.0" x2="129.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="138.0" y1="292.0" x2="138.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="146.7" y1="284.0" x2="146.7" y2="316.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="155.3" y1="292.0" x2="155.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="164.0" y1="292.0" x2="164.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="172.7" y1="292.0" x2="172.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="181.3" y1="292.0" x2="181.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="190.0" y1="292.0" x2="190.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="198.7" y1="292.0" x2="198.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="207.3" y1="292.0" x2="207.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="216.0" y1="292.0" x2="216.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="224.7" y1="292.0" x2="224.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="233.3" y1="284.0" x2="233.3" y2="316.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="242.0" y1="292.0" x2="242.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="250.7" y1="292.0" x2="250.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="259.3" y1="292.0" x2="259.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="268.0" y1="292.0" x2="268.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="276.7" y1="292.0" x2="276.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="285.3" y1="292.0" x2="285.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="294.0" y1="292.0" x2="294.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="302.7" y1="292.0" x2="302.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="311.3" y1="292.0" x2="311.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="320.0" y1="284.0" x2="320.0" y2="316.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="328.7" y1="292.0" x2="328.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="337.3" y1="292.0" x2="337.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="346.0" y1="292.0" x2="346.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="354.7" y1="292.0" x2="354.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="363.3" y1="292.0" x2="363.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="372.0" y1="292.0" x2="372.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="380.7" y1="292.0" x2="380.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="389.3" y1="292.0" x2="389.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="398.0" y1="292.0" x2="398.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="406.7" y1="284.0" x2="406.7" y2="316.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="415.3" y1="292.0" x2="415.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="424.0" y1="292.0" x2="424.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="432.7" y1="292.0" x2="432.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="441.3" y1="292.0" x2="441.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="450.0" y1="292.0" x2="450.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="458.7" y1="292.0" x2="458.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="467.3" y1="292.0" x2="467.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="476.0" y1="292.0" x2="476.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="484.7" y1="292.0" x2="484.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="493.3" y1="284.0" x2="493.3" y2="316.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="502.0" y1="292.0" x2="502.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="510.7" y1="292.0" x2="510.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="519.3" y1="292.0" x2="519.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="528.0" y1="292.0" x2="528.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="536.7" y1="292.0" x2="536.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="545.3" y1="292.0" x2="545.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="554.0" y1="292.0" x2="554.0" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="562.7" y1="292.0" x2="562.7" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="571.3" y1="292.0" x2="571.3" y2="308.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="580.0" y1="284.0" x2="580.0" y2="316.0" stroke="#c7cfdb" stroke-width="1.3"/>
+    <line x1="60" y1="300" x2="580" y2="300" stroke="#c7cfdb" stroke-width="1.3"/>
+    <rect x="60.0" y="284" width="8.7" height="32" fill="#d9670f" opacity="0.85"/>
+    <text x="60" y="338" font-size="13" fill="#94a0b4">0″</text>
+    <text x="580" y="338" text-anchor="end" font-size="13" fill="#94a0b4">60″ (= 1′)</text>
+  </g>
+  <rect x="490" y="254" width="66" height="30" rx="15" fill="#d9670f"/>
+  <text x="523" y="275" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">1″</text>
+</svg>
+    <div class="note">
+      1˚ = 60′ = 3600″예요. 예를 들어 <b>약 4 km 떨어진 곳에서 2 cm 크기의 동전을 보는 각도</b>가 1″ 정도로,
+      연주시차는 정밀한 망원경이 있어야 겨우 잴 수 있는 아주 작은 값이에요.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="big">✏️ 확인해봅시다</h2>
+
+    <div class="q">
+      <label><span class="qnum">질문 1.</span> 시뮬레이터에서 별까지의 거리를 0.1 pc, 1 pc, 10 pc, 100 pc로 각각 맞추고, 그때의 연주시차를 위 "측정 결과"에서 찾아 써보세요.</label>
+      <div class="qtable-wrap">
+        <table class="qtable">
+          <thead><tr><th>별까지의 거리</th><th>0.1 pc</th><th>1 pc</th><th>10 pc</th><th>100 pc</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="qtable-rowlbl">연주시차 (″)</td>
+              <td><input type="text" id="t1p01" placeholder="″" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="t1p1" placeholder="″" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="t1p10" placeholder="″" inputmode="decimal" autocomplete="off"></td>
+              <td><input type="text" id="t1p100" placeholder="″" inputmode="decimal" autocomplete="off"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="ansbtn" type="button" id="ansT1btn">💡 모범 답안 보기</button>
+      <div class="ansbox" id="ansT1box">거리(pc)가 커질수록 연주시차(″)는 작아져요 — 거리(pc) = 1 ÷ 연주시차(″) 관계이기 때문이에요.<br>0.1 pc → 10″　·　1 pc → 1″　·　10 pc → 0.1″　·　100 pc → 0.01″</div>
+    </div>
+
+    <div class="q">
+      <label for="t1rel"><span class="qnum">질문 2.</span> 위 표를 보면, 별까지의 거리와 연주시차 사이에는 어떤 관계가 있나요?</label>
+      <select id="t1rel">
+        <option value="">선택하세요</option>
+        <option value="비례">거리가 멀어질수록 연주시차도 커진다 (비례)</option>
+        <option value="반비례">거리가 멀어질수록 연주시차는 작아진다 (반비례)</option>
+        <option value="무관">거리와 연주시차는 서로 관계가 없다</option>
+      </select>
+      <button class="ansbtn" type="button" id="ansT1relbtn">💡 모범 답안 보기</button>
+      <div class="ansbox" id="ansT1relbox">반비례. 거리가 멀어질수록 연주시차는 작아져요 — 거리(pc) = 1 ÷ 연주시차(″)이기 때문이에요.</div>
+    </div>
+  </div>
+
+  <div><button class="tab-next" data-goto="2" type="button">다음 탭으로 →</button></div>
 
   </div><!-- /tab1 -->
 
@@ -367,7 +524,7 @@
     <h2>직각삼각형으로 보면</h2>
     <div class="tdiagram">
       <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="150" cy="225" r="70" fill="none" stroke="#2a3550" stroke-width="1.3" stroke-dasharray="4,5"/>
+        <circle cx="150" cy="225" r="70" fill="none" stroke="rgba(90,143,214,0.65)" stroke-width="2.2" stroke-dasharray="5,4"/>
         <circle cx="80" cy="225" r="7" fill="#4a9eff" opacity="0.3"/>
         <line x1="150" y1="225" x2="220" y2="225" stroke="#4a9eff" stroke-width="2.6"/>
         <line x1="150" y1="225" x2="150" y2="65" stroke="#a9c4e6" stroke-width="2.6"/>
@@ -385,6 +542,26 @@
     </div>
     <div class="note" style="margin-top:14px">
       태양-지구-별이 만드는 직각삼각형(태양에서 직각)에서, 별에서 본 각도가 <b>연주시차(p)</b>예요.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>📖 읽기 자료 — 왜 이런 단위를 쓸까?</h2>
+    <div class="note" style="margin-top:0">
+      <b>각도 단위로 초(″)를 쓰는 이유</b><br><br>
+      프록시마 센타우리의 연주시차를 두 단위로 나타내면 —<br>
+      <span class="formula" style="font-size:19px">1.54″ = 0.000428˚</span><br><br>
+      둘 중 어느 쪽이 다루기 더 간편한가요? 별은 워낙 멀리 있어서 각도가 아주 작게 나오다 보니,
+      도(˚)로 쓰면 0이 잔뜩 붙어 불편해요. 그래서 훨씬 작은 단위인 <b>초(″)</b>를 써요.
+    </div>
+    <div class="note">
+      <b>거리 단위로 파섹과 광년을 함께 쓰는 이유</b><br><br>
+      <b style="color:var(--info)">파섹(pc)</b> — 계산이 간단해서 천문학자들이 즐겨 써요.<br>
+      <b>광년(ly)</b> — "빛이 가는 데 걸리는 시간"이라 일반인이 거리감을 잡기 쉬워요.<br><br>
+      그래서 <b style="color:var(--info)">전문 연구</b>에서는 <b style="color:var(--info)">파섹</b>을,
+      <b style="color:var(--warn)">대중 설명</b>에서는 <b style="color:var(--warn)">광년</b>을
+      <b style="color:var(--ink)">주로 사용해요.</b><br>
+      <span class="formula">1 pc ≈ 3.26 광년</span>
     </div>
   </div>
 
@@ -415,7 +592,22 @@
     </div>
 
     <div class="q">
-      <label for="q3tri"><span class="qnum">질문 3.</span> 아래 세 별의 시차를 보고, 연주시차와 지구로부터의 거리를 각각 구해보세요. (소수 둘째 자리까지 구하시오.)</label>
+      <label for="q4pcdef"><span class="qnum">질문 3.</span> 위 읽기 자료를 참고하여, 1파섹(pc)을 연주시차 값과 관련지어 정의하시오.</label>
+      <div class="note" style="margin-top:0">
+        📖 읽기 자료 — 1pc은 왜 이런 값으로 정해졌을까?<br><br>
+        천문학자들은 연주시차(″)라는 아주 작은 각도로 별까지의 거리를 재요.<br>
+        그래서 "연주시차가 정확히 1″가 되는 거리"에 <b style="color:var(--ink)">parallax(시차)</b>와
+        <b style="color:var(--ink)">second(초각)</b>를 합쳐
+        <b>파섹(parsec)</b>이라는 이름을 붙였어요.<br>
+        덕분에 거리(pc) = 1 ÷ 연주시차(″)로 간단히 계산할 수 있어요.
+      </div>
+      <textarea id="q4pcdef" placeholder="위 읽기 자료를 참고하여 서술해 보세요."></textarea>
+      <button class="ansbtn" type="button" id="ansPcbtn">💡 모범 답안 보기</button>
+      <div class="ansbox" id="ansPcbox">1파섹(pc)은 연주시차가 정확히 1″가 되는 별까지의 거리로 정의한다.</div>
+    </div>
+
+    <div class="q">
+      <label for="q3tri"><span class="qnum">질문 4.</span> 아래 세 별의 시차를 보고, 연주시차와 지구로부터의 거리를 각각 구해보세요. (소수 둘째 자리까지 구하시오.)</label>
       <div class="qtable-wrap" style="margin-top:10px">
         <table class="qtable">
           <thead>
@@ -551,6 +743,7 @@
 (function(){
   "use strict";
   var PC_TO_LY = 3.26;
+  var DIST_STEPS = [0.1, 0.5, 1, 5, 10, 50, 100]; // pc — 슬라이더가 이 값들만 짚도록
 
   var els = {
     stageTop: document.getElementById('stageTop'),
@@ -560,18 +753,13 @@
     cvSky: document.getElementById('cvSky'),
     chipTop: document.getElementById('chipTop'),
     chipSky: document.getElementById('chipSky'),
-    pos: document.getElementById('pos'),
-    posVal: document.getElementById('posVal'),
     dist: document.getElementById('dist'),
     distVal: document.getElementById('distVal'),
-    unitSeg: document.getElementById('unitSeg'),
     playBtn: document.getElementById('playBtn'),
     playIcon: document.getElementById('playIcon'),
     playHint: document.getElementById('playHint'),
     rDistPc: document.getElementById('rDistPc'),
-    rDistLy: document.getElementById('rDistLy'),
-    rPar: document.getElementById('rPar'),
-    starLight: document.getElementById('starLight')
+    rPar: document.getElementById('rPar')
   };
 
   var state = {
@@ -586,8 +774,6 @@
   // 화면에 보여줄 "거리 과장 계수" — 실제 시차는 너무 작아 안 보이므로
   // 교육용으로 시차각을 크게 부풀려 그림. (숫자 표시는 실제값 사용)
   var VISUAL = { earthOrbitPx: 46, exaggerate: 1 };
-
-  var months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
   function fmt(n, d){ return n.toFixed(d); }
 
@@ -616,7 +802,7 @@
     // 별의 화면상 세로 위치: 거리가 멀수록 태양에서 위로 멀어짐.
     var nearY = cy - orbit*1.9;          // 가장 가까울 때(1pc) 별의 y
     var farY  = H*0.07;                  // 가장 멀 때(50pc) 별의 y (화면 꼭대기)
-    var tDist = (state.distPc - 1) / (50 - 1); // 0~1
+    var tDist = (state.distPc - 0.1) / (100 - 0.1); // 0~1
     tDist = Math.max(0, Math.min(1, tDist));
     var tCurve = Math.sqrt(tDist);       // 가까운 쪽 변화 강조
     var starDrawY = nearY + (farY - nearY) * tCurve;
@@ -635,8 +821,8 @@
     ctx.globalAlpha = 1;
 
     // 궤도 (지구)
-    ctx.strokeStyle = '#243049';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(90,143,214,0.55)';
+    ctx.lineWidth = 1.8;
     ctx.setLineDash([4,5]);
     ctx.beginPath(); ctx.arc(cx,cy,orbit,0,7); ctx.stroke();
     ctx.setLineDash([]);
@@ -725,9 +911,13 @@
     ctx.beginPath(); ctx.moveTo(W*0.28,cy); ctx.lineTo(W*0.72,cy); ctx.stroke();
 
     // 가까운 별의 겉보기 위치: 지구 공전에 따라 좌우로 흔들림
-    // 시차각(실제)은 너무 작으니 화면에선 과장. 흔들림 폭 ∝ 1/distPc
-    var swingPx = Math.min(W,H) * 0.16 * (10/state.distPc); // 10pc 기준 정규화
-    swingPx = Math.max(2, Math.min(swingPx, W*0.32));
+    // 시차각(실제)은 너무 작으니 화면에선 과장. 거리(로그 스케일)에 따라 흔들림 폭이 매끄럽게 줄어들도록 매핑
+    // (기존의 "swingPx ∝ 1/거리" 직접 계산은 0.1~5pc 구간에서 전부 최댓값에 걸려 서로 구별이 안 됐음)
+    var LOG_MIN_D = Math.log10(0.1), LOG_MAX_D = Math.log10(100); // 슬라이더 전체 범위
+    var tSwing = (Math.log10(state.distPc) - LOG_MIN_D) / (LOG_MAX_D - LOG_MIN_D); // 0(가까움)~1(멀음)
+    tSwing = Math.max(0, Math.min(1, tSwing));
+    var maxSwing = W*0.34, minSwing = 4;
+    var swingPx = maxSwing - (maxSwing - minSwing) * tSwing;
     var phase = -Math.sin((state.angle)*Math.PI/180); // '위에서 본 모습' 배경 투영과 방향을 맞춤
     var sx = cx + swingPx*phase;
     var sy = cy;
@@ -754,50 +944,16 @@
 
   function updateReadout(){
     var p = parallaxArcsec(state.distPc);
-    var ly = state.distPc * PC_TO_LY;
     els.rDistPc.innerHTML = fmt(state.distPc,1)+'<span class="u">pc</span>';
-    els.rDistLy.innerHTML = fmt(ly,2)+'<span class="u">ly</span>';
     els.rPar.innerHTML  = fmt(p,3)+'<span class="u">″</span>';
-
-    // 별빛이 출발한 시점 = 거리(광년).
-    els.starLight.textContent = ly.toFixed(2);
-
-    // 슬라이더 값 라벨
-    if(state.unit==='pc'){
-      els.distVal.textContent = fmt(state.distPc,1)+' pc';
-    } else {
-      els.distVal.textContent = fmt(state.distPc*PC_TO_LY,2)+' ly';
-    }
-    var mi = Math.round(state.angle/30)%12;
-    els.posVal.textContent = months[mi];
+    els.distVal.textContent = fmt(state.distPc,1)+' pc';
   }
 
   // ---- 이벤트 ----
-  els.pos.addEventListener('input',function(){
-    state.angle = +this.value; updateReadout(); render();
-  });
   els.dist.addEventListener('input',function(){
-    // 슬라이더는 항상 현재 단위 기준 값 → 내부 pc로 환산
-    var v = +this.value;
-    state.distPc = (state.unit==='pc') ? v : v/PC_TO_LY;
+    var idx = +this.value;
+    state.distPc = DIST_STEPS[idx];
     updateReadout(); render();
-  });
-
-  // 단위 전환
-  els.unitSeg.addEventListener('click',function(e){
-    var b = e.target.closest('button'); if(!b) return;
-    var u = b.dataset.u; if(u===state.unit) return;
-    state.unit = u;
-    [].forEach.call(els.unitSeg.children,function(x){x.classList.toggle('on',x===b)});
-    // 슬라이더 범위를 단위에 맞게 재설정 (값은 거리 유지)
-    if(u==='pc'){
-      els.dist.min=1; els.dist.max=50; els.dist.step=0.5;
-      els.dist.value=state.distPc;
-    } else {
-      els.dist.min=3; els.dist.max=163; els.dist.step=1;
-      els.dist.value=Math.round(state.distPc*PC_TO_LY);
-    }
-    updateReadout();
   });
 
   // 뷰 토글
@@ -828,7 +984,6 @@
     if(!last) last=t;
     var dt=t-last; last=t;
     state.angle=(state.angle + dt*0.03)%360;
-    els.pos.value=state.angle;
     updateReadout(); render();
     raf=requestAnimationFrame(loop);
   }
@@ -882,6 +1037,10 @@
     var half = preset.halfAngle;
     var dyStar = 42/Math.tan(half*Math.PI/180);
     var starY = Math.max(45, sun.y - dyStar);
+    // 별 라벨 위 여백을 일정하게 유지하도록, 별의 높이에 맞춰 위쪽 여백을 잘라내어
+    // 각도가 큰(별이 가까운) 경우에도 위쪽에 빈 공간이 남지 않도록 함
+    var viewTop = Math.max(0, starY - 30);
+    var viewH = (sun.y + 42 + 20) - viewTop;
 
     function arcPts(r,a1,a2,n){
       var pts=[];
@@ -893,10 +1052,10 @@
     }
     var fullArc = arcPts(30, -half, half, 12);
 
-    return '<svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">'+
+    return '<svg viewBox="0 '+viewTop.toFixed(1)+' 400 '+viewH.toFixed(1)+'" xmlns="http://www.w3.org/2000/svg">'+
       '<line x1="'+e1.x+'" y1="'+e1.y+'" x2="'+e2.x+'" y2="'+e2.y+'" stroke="#5a6a86" stroke-width="1" stroke-dasharray="3,4"/>'+
       '<line x1="'+sun.x+'" y1="'+sun.y+'" x2="'+sun.x+'" y2="'+starY+'" stroke="#5a6a86" stroke-width="1" stroke-dasharray="3,4"/>'+
-      '<circle cx="'+sun.x+'" cy="'+sun.y+'" r="42" fill="none" stroke="#3a4a68" stroke-width="1.8"/>'+
+      '<circle cx="'+sun.x+'" cy="'+sun.y+'" r="42" fill="none" stroke="rgba(90,143,214,0.65)" stroke-width="2.2" stroke-dasharray="5,4"/>'+
       '<line x1="'+e1.x+'" y1="'+e1.y+'" x2="'+sun.x+'" y2="'+starY+'" stroke="#ff7a5c" stroke-width="1"/>'+
       '<line x1="'+e2.x+'" y1="'+e2.y+'" x2="'+sun.x+'" y2="'+starY+'" stroke="#5ce0c4" stroke-width="1"/>'+
       '<polyline points="'+fullArc+'" fill="none" stroke="#ffd24a" stroke-width="1.6"/>'+
@@ -910,6 +1069,11 @@
       '<text x="'+sun.x+'" y="'+(starY-16)+'" text-anchor="middle" font-size="17" fill="#ffb3a2" font-weight="700">'+preset.name+'</text>'+
       '<text x="'+(sun.x+16)+'" y="'+(starY+dyStar*0.30+8)+'" text-anchor="start" font-size="15" fill="#ffd24a" font-weight="700">시차</text>'+
       '</svg>';
+  }
+
+  var parallaxIntroDiagram = document.getElementById('parallaxIntroDiagram');
+  if(parallaxIntroDiagram){
+    parallaxIntroDiagram.innerHTML = buildAngleSVG({ name:'별', halfAngle:22, sightAngle:'', color:'#ffb3a2' });
   }
 
   var angleDiagram = document.getElementById('angleDiagram');
@@ -928,12 +1092,10 @@
   showStar('near');
 
   // ================= 형성평가: 모범 답안 보기 =================
-  var elS = {
-    q3hintBtn: document.getElementById('q3hintBtn'),
-    q3hint: document.getElementById('q3hint')
-  };
+  var q3hintBtn = document.getElementById('q3hintBtn');
+  var q3hint = document.getElementById('q3hint');
 
-  [1,2,3].forEach(function(n){
+  ['T1','T1rel','1','2','Pc','3'].forEach(function(n){
     var btn = document.getElementById('ans'+n+'btn');
     var box = document.getElementById('ans'+n+'box');
     if(!btn || !box) return;
@@ -950,20 +1112,21 @@
     '거리(광년) = 거리(pc) × 3.26 이에요.'
   ];
   var q3HintStage = 0;
-  elS.q3hintBtn.addEventListener('click', function(){
+  q3hintBtn.addEventListener('click', function(){
     if(q3HintStage >= Q3_HINTS.length) return;
     q3HintStage++;
     var shown='';
     for(var i=0;i<q3HintStage;i++){
       shown += '<div'+(i>0?' style="margin-top:8px;padding-top:8px;border-top:1px solid var(--warn-line)"':'')+'><b>힌트 '+(i+1)+'.</b> '+Q3_HINTS[i]+'</div>';
     }
-    elS.q3hint.innerHTML=shown;
-    elS.q3hint.classList.add('show');
-    if(q3HintStage>=Q3_HINTS.length){ elS.q3hintBtn.textContent='힌트를 모두 봤어요'; }
-    else { elS.q3hintBtn.textContent='💡 힌트 더 보기 ('+q3HintStage+'/'+Q3_HINTS.length+')'; }
+    q3hint.innerHTML=shown;
+    q3hint.classList.add('show');
+    if(q3HintStage>=Q3_HINTS.length){ q3hintBtn.textContent='힌트를 모두 봤어요'; }
+    else { q3hintBtn.textContent='💡 힌트 더 보기 ('+q3HintStage+'/'+Q3_HINTS.length+')'; }
   });
 
 })();
 </script>
+<div style="text-align:center;font-size:13px;font-weight:700;color:#6b7280;padding:18px 10px 10px;">제작: 교사 이수진 · 무단 복제·재배포 금지</div>
 </body>
 </html>
