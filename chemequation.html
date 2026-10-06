@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>화학 반응식 — 아레스 4 프로젝트</title>
+<title>화학 반응식과 질량 보존 법칙 — 아레스 4 프로젝트</title>
 <style>
   :root{
     --bg:#f1f5f9; --panel:#ffffff; --line:#d3dbe6; --line2:#e2e8f0;
@@ -27,13 +27,17 @@
     text-transform:uppercase;font-weight:800;margin-bottom:10px}
   h1{font-size:46px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
 
-  .missions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-  .mtab{flex:1;min-width:180px;padding:20px 18px;background:var(--panel);
+  .missions{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:20px}
+  .mtab{grid-column:span 3;min-width:0;padding:20px 18px;background:var(--panel);
     border:2px solid var(--line);border-radius:16px;cursor:pointer;transition:.14s;text-align:left;
     box-shadow:0 1px 2px rgba(20,30,50,.04)}
   .mtab:hover{border-color:var(--faint)}
   .mtab.on{border-color:var(--accent);background:var(--accent-bg)}
-  .mtab.advanced{border-left:4px solid var(--warn)}
+  .mtab.advanced{grid-column:span 4;border-left:4px solid var(--warn)}
+  @media (max-width:760px){
+    .mtab, .mtab.advanced{grid-column:span 6}
+    .mtab.advanced:last-child{grid-column:span 12}
+  }
   .mtab.advanced.on{border-color:var(--warn);background:var(--warn-bg)}
   .mtab .mt-n{font-size:14px;letter-spacing:.08em;color:var(--faint);font-weight:700;text-transform:uppercase}
   .mtab.on .mt-n{color:var(--accent)}
@@ -75,7 +79,7 @@
   .formgrp{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
   .formula-input{width:150px;height:56px;border:2px solid var(--warn-line);background:#fff;
     color:var(--ink);font-size:22px;font-weight:700;text-align:center;border-radius:12px;
-    font-family:inherit;transition:.14s;text-transform:uppercase;}
+    font-family:inherit;transition:.14s;}
   .formula-input:focus{outline:none;border-color:var(--warn);background:var(--warn-bg)}
   .formula-input::placeholder{color:#c3cad6;font-size:15px;font-weight:400;text-transform:none}
   .formpreview{min-width:56px;min-height:22px;font-size:20px;font-weight:800;color:var(--warn);
@@ -199,13 +203,13 @@
 <div class="wrap">
   <header>
     <div class="eyebrow">아레스 4 프로젝트</div>
-    <h1>화학 반응식</h1>
+    <h1>화학 반응식과 질량 보존 법칙</h1>
   </header>
 
   <div class="story" style="margin-bottom:14px">
-    영화 〈마션〉에서 워트니는 화성에서 살아남기 위해 <b>화학 반응</b>으로 물과 산소를 직접 만들었다.
+    영화 〈마션〉에서 워트니는 화성에서 살아남기 위해 <b>화학 반응</b>으로 물과 산소를 직접 만들었다.<br>
     화성까지는 빛의 속력으로, 새 보금자리 후보까지는 연주시차로 거리를 쟀던 아레스 4 대원인 여러분도,
-    이제 <b>화학 반응</b>으로 생존에 필요한 것들을 직접 만들어야 한다.
+    이제 <b>화학 반응</b>으로 생존에 필요한 것들을 직접 만들어야 한다.<br>
     <b style="color:var(--bad)">원자 개수를 정확히 맞추지 못하면 필요한 만큼 얻을 수 없다.</b>
   </div>
 
@@ -323,7 +327,7 @@
   var MISSIONS = [
     {
       type:'basic', n:'기본 1', t:'수소 확보', d:'하이드라진 분해 반응',
-      story:'수소는 어디서 얻지? 워트니는 로켓 연료인 <b>하이드라진(N₂H₄)</b>을 분해해 수소를 얻었다. 하이드라진 한 분자가 <b>질소(N₂)</b> 분자와 <b>수소(H₂)</b> 분자로 분해된다.',
+      story:'수소는 어디서 얻지?<br>워트니는 로켓 연료인 <b>하이드라진(N₂H₄)</b>을 분해해 수소를 얻었다.<br>하이드라진 한 분자가 <b>질소(N₂)</b> 분자와 <b>수소(H₂)</b> 분자로 분해된다.',
       left:[{f:'N',sub:'2',mid:'H',sub2:'4',atoms:{N:2,H:4}}],
       right:[{f:'N',sub:'2',atoms:{N:2}},{f:'H',sub:'2',atoms:{H:2}}],
       leftSlots:1, rightSlots:2,
@@ -331,11 +335,11 @@
       threeStep:true,
       korAns:['하이드라진','질소','수소'],
       answer:[1,1,2],
-      hint:'하이드라진 1개에는 수소가 4개 있어요. 수소 분자(H₂)는 2개씩 묶여 있으니, H₂가 몇 개 나와야 할까요?'
+      hint:'하이드라진 1개에는 수소가 4개 있어요.<br>수소 분자(H₂)는 2개씩 묶여 있으니, H₂가 몇 개 나와야 할까요?'
     },
     {
       type:'basic', n:'기본 2', t:'산소 생산', d:'이산화탄소 분해 반응',
-      story:'화성 대기의 95%는 <b>이산화탄소(CO₂)</b>다. 이 기체를 분해하면 <b>일산화탄소(CO)</b>와 숨 쉴 수 있는 <b>산소(O₂)</b>로 바뀐다.',
+      story:'화성 대기의 95%는 <b>이산화탄소(CO₂)</b>다.<br>이 기체를 분해하면 <b>일산화탄소(CO)</b>와 숨 쉴 수 있는 <b>산소(O₂)</b>로 바뀐다.',
       left:[{f:'C',mid:'O',sub2:'2',atoms:{C:1,O:2}}],
       right:[{f:'C',mid:'O',atoms:{C:1,O:1}},{f:'O',sub:'2',atoms:{O:2}}],
       leftSlots:1, rightSlots:2,
@@ -343,11 +347,11 @@
       threeStep:true,
       korAns:['이산화탄소','일산화탄소','산소'],
       answer:[2,2,1],
-      hint:'오른쪽에 산소 분자(O₂)가 있어요. 산소 원자가 짝수여야 맞아떨어져요. 이산화탄소(CO₂)를 2개부터 시작해보면 어떨까요?'
+      hint:'오른쪽에 산소 분자(O₂)가 있어요.<br>산소 원자가 짝수여야 맞아떨어져요.<br>이산화탄소(CO₂)를 2개부터 시작해보면 어떨까요?'
     },
     {
       type:'basic', n:'기본 3', t:'물 만들기', d:'수소 + 산소 화합 반응',
-      story:'워트니는 물이 필요했다. 기체 상태의 수소(H₂)와 산소(O₂)가 반응하면 액체인 물(H₂O)로 바뀐다.',
+      story:'워트니는 물이 필요했다.<br>기체 상태의 수소(H₂)와 산소(O₂)가 반응하면 액체인 물(H₂O)로 바뀐다.',
       left:[{f:'H',sub:'2',atoms:{H:2}},{f:'O',sub:'2',atoms:{O:2}}],
       right:[{f:'H',sub:'2',mid:'O',atoms:{H:2,O:1}}],
       leftSlots:2, rightSlots:1,
@@ -355,11 +359,11 @@
       threeStep:true,
       korAns:['수소','산소','물'],
       answer:[2,1,2],
-      hint:'물(H₂O)은 산소 1개당 수소 2개예요. 산소 분자(O₂)에는 산소가 2개 들어 있으니, 오른쪽 물을 몇 개 만들어야 산소 개수가 맞을까요?'
+      hint:'물(H₂O)은 산소 1개당 수소 2개예요.<br>산소 분자(O₂)에는 산소가 2개 들어 있으니, 오른쪽 물을 몇 개 만들어야 산소 개수가 맞을까요?'
     },
     {
       type:'basic', n:'기본 4', t:'감자밭 광합성', d:'광합성 (화합 반응)',
-      story:'식물은 이산화탄소(CO₂)와 물(H₂O)로 광합성을 해서 포도당(C₆H₁₂O₆)이라는 영양분과 산소(O₂)를 만든다. 화성에서 감자를 키우려면 이 반응이 반드시 필요하다 — 포도당이 곧 식량이기 때문이다. 지금까지 중 가장 복잡한 반응이니, 3단계를 침착하게 거쳐라.',
+      story:'식물은 이산화탄소(CO₂)와 물(H₂O)로 광합성을 해서 포도당(C₆H₁₂O₆)이라는 영양분과 산소(O₂)를 만든다.<br>화성에서 감자를 키우려면 이 반응이 반드시 필요하다.<br>포도당이 곧 식량이기 때문이다.<br>지금까지 중 가장 복잡한 반응이니, 3단계를 침착하게 거쳐라.',
       left:[{f:'C',mid:'O',sub2:'2',atoms:{C:1,O:2}},{f:'H',sub:'2',mid:'O',atoms:{H:2,O:1}}],
       right:[{f:'C',sub:'6',mid:'H',sub2:'12',mid2:'O',sub3:'6',atoms:{C:6,H:12,O:6}},{f:'O',sub:'2',atoms:{O:2}}],
       leftSlots:2, rightSlots:2,
@@ -367,37 +371,37 @@
       threeStep:true,
       korAns:['이산화탄소','물','포도당','산소'],
       answer:[6,6,1,6],
-      hint:'포도당(C₆H₁₂O₆)에는 탄소가 6개예요. 그럼 왼쪽 CO₂도 6개 필요하겠죠? 수소 12개를 맞추려면 물은 몇 개일까요?'
+      hint:'포도당(C₆H₁₂O₆)에는 탄소가 6개예요.<br>그럼 왼쪽 CO₂도 6개 필요하겠죠?<br>수소 12개를 맞추려면 물은 몇 개일까요?'
     },
     {
       type:'advanced', n:'심화 1', t:'메테인 연소', d:'연소 반응',
-      story:'[심화] 화성 기지의 온도를 유지하기 위해 메테인 가스를 태우려 한다. 메테인이 산소와 반응해 연소하면 이산화탄소와 물로 바뀌면서 <b style="color:var(--bad)">열이 발생한다</b> — 이 열로 기지를 데울 수 있다.',
+      story:'[심화] 화성 기지의 온도를 유지하기 위해 메테인 가스를 태우려 한다.<br>메테인이 산소와 반응해 연소하면 이산화탄소와 물로 바뀌면서 <b style="color:var(--bad)">열이 발생한다</b> — 이 열로 기지를 데울 수 있다.',
       leftSlots: 2, rightSlots: 2,
       leftAns: ['CH4', 'O2'], rightAns: ['CO2', 'H2O'],
       threeStep: true,
       korAns: ['메테인','산소','이산화탄소','물'],
       answer: [1,2,1,2], 
-      hint:'메테인의 화학식은 CH4, 산소 기체는 O2입니다. 생성물인 이산화탄소와 물의 화학식을 떠올려 먼저 입력하세요.'
+      hint:'메테인의 화학식은 CH₄, 산소 기체는 O₂입니다.<br>생성물인 이산화탄소와 물의 화학식을 떠올려 먼저 입력하세요.'
     },
     {
       type:'advanced', n:'심화 2', t:'암모니아 합성', d:'합성 반응',
-      story:'[심화] 감자밭에 줄 비료를 만들어야 한다. 그 비료의 정체가 바로 암모니아다. 질소 기체와 수소 기체가 반응하여 암모니아가 생성된다.',
+      story:'[심화] 감자밭에 줄 비료를 만들어야 한다.<br>그 비료의 정체가 바로 암모니아다.<br>질소 기체와 수소 기체가 반응하여 암모니아가 생성된다.',
       leftSlots: 2, rightSlots: 1,
       leftAns: ['N2', 'H2'], rightAns: ['NH3'],
       threeStep: true,
       korAns: ['질소','수소','암모니아'],
       answer: [1,3,2], 
-      hint:'질소와 수소는 자연 상태에서 이원자 분자(원자 2개가 결합한 형태)로 존재합니다. 암모니아는 질소 원자 1개와 수소 원자 3개로 이루어진 분자입니다.'
+      hint:'질소와 수소는 자연 상태에서 이원자 분자(원자 2개가 결합한 형태)로 존재합니다.<br>암모니아는 질소 원자 1개와 수소 원자 3개로 이루어진 분자입니다.'
     },
     {
       type:'advanced', n:'심화 3', t:'과산화수소 분해', d:'분해 반응',
-      story:'[심화] 물을 만들다가 사고로 화상을 입은 워트니는 상처를 소독해야 했다. 소독약으로 쓴 과산화수소수는 시간이 지나면 저절로 물과 산소 기체로 분해된다.',
+      story:'[심화] 물을 만들다가 사고로 화상을 입은 워트니는 상처를 소독해야 했다.<br>소독약으로 쓴 과산화수소는 시간이 지나면 저절로 물과 산소 기체로 분해된다.',
       leftSlots: 1, rightSlots: 2,
       leftAns: ['H2O2'], rightAns: ['H2O', 'O2'],
       threeStep: true,
       korAns: ['과산화수소','물','산소'],
       answer: [2,2,1], 
-      hint:'과산화수소는 물 분자에 산소 원자가 하나 더 붙어있는 형태입니다. 분해되어 나오는 산소 기체 역시 이원자 분자 형태임을 기억하세요.'
+      hint:'과산화수소는 물 분자에 산소 원자가 하나 더 붙어있는 형태입니다.<br>분해되어 나오는 산소 기체 역시 이원자 분자 형태임을 기억하세요.'
     }
   ];
 
@@ -594,17 +598,109 @@
   function liveSubscriptify(raw){
     return String(raw||'').replace(/[0-9]/g, function(ch){ return DIGIT_TO_SUB[ch]; });
   }
+
+  // ---- 화학식 자동 교정: 대·소문자를 원소 기호에 맞게 + 숫자는 아래첨자 ----
+  // 한 글자 원소(H·C·N·O 등)를 우선으로 읽고, 한 글자로 나눌 수 없을 때만 두 글자 원소(Cl, Na, Mg …)로 읽음.
+  // 예) co2·Co2·CO2 → CO₂ / ch4 → CH₄ / nh3·Nh3 → NH₃ / h2o2 → H₂O₂ / nacl → NaCl
+  var SINGLE_EL = {H:1,B:1,C:1,N:1,O:1,F:1,P:1,S:1,K:1,V:1,Y:1,I:1,W:1,U:1};
+  var DOUBLE_EL = {He:1,Li:1,Be:1,Ne:1,Na:1,Mg:1,Al:1,Si:1,Cl:1,Ar:1,Ca:1,Mn:1,Fe:1,Co:1,Ni:1,Cu:1,Zn:1,
+    Br:1,Ag:1,Sn:1,Au:1,Hg:1,Pb:1,Ba:1,Sr:1,Cr:1,Ti:1,Pt:1,Rb:1,Cs:1};
+  function smartFormula(raw){
+    var s = String(raw||'').replace(/[₀-₉]/g, function(ch){ return SUBSCRIPT_MAP[ch] || ch; })
+                            .replace(/[^A-Za-z0-9]/g, '');
+    var out = '', i = 0;
+    while(i < s.length){
+      var ch = s[i];
+      if(/[0-9]/.test(ch)){ out += DIGIT_TO_SUB[ch]; i++; continue; }
+      var A = ch.toUpperCase();
+      var nx = s[i+1];
+      var nxIsLetter = nx && /[A-Za-z]/.test(nx);
+      if(SINGLE_EL[A] && (!nxIsLetter || SINGLE_EL[nx.toUpperCase()])){ out += A; i++; continue; }
+      if(nxIsLetter && DOUBLE_EL[A + nx.toLowerCase()]){ out += A + nx.toLowerCase(); i += 2; continue; }
+      out += A; i++;
+    }
+    return out;
+  }
+  // 입력칸 값에 즉시 적용 (커서 위치 유지, 한글/예측 입력 조합 중에는 건드리지 않음)
+  function applySmartFormula(inp){
+    var raw = inp.value;
+    var fixed = smartFormula(raw);
+    if(fixed === raw) return fixed;
+    var pos = (inp.selectionStart == null) ? raw.length : inp.selectionStart;
+    var newPos = smartFormula(raw.slice(0, pos)).length;
+    inp.value = fixed;
+    try{ inp.setSelectionRange(newPos, newPos); }catch(e){}
+    return fixed;
+  }
+  function bindSmartFormula(inp, onChange){
+    inp.setAttribute('autocapitalize','off');
+    inp.setAttribute('autocorrect','off');
+    inp.setAttribute('autocomplete','off');
+    inp.setAttribute('spellcheck','false');
+    var composing = false;
+    inp.addEventListener('compositionstart', function(){ composing = true; });
+    inp.addEventListener('compositionend', function(){ composing = false; onChange(applySmartFormula(inp)); });
+    inp.addEventListener('input', function(e){
+      if(composing || e.isComposing){ onChange(inp.value); return; }
+      onChange(applySmartFormula(inp));
+    });
+    inp.addEventListener('blur', function(){ onChange(applySmartFormula(inp)); });
+  }
   function normFormLocal(raw){
     var s = String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
     s = s.replace(/[₀-₉]/g, function(ch){ return SUBSCRIPT_MAP[ch] || ch; });
     return s;
   }
 
+  // ---- 반응물끼리, 생성물끼리는 순서와 관계없이 정답 처리 ----
+  function sideSetMatch(inputs, answers, norm){
+    var a = answers.map(norm), b = inputs.map(norm);
+    if(a.length !== b.length) return false;
+    for(var i=0;i<a.length;i++){
+      var k = b.indexOf(a[i]);
+      if(k === -1) return false;
+      b.splice(k,1);
+    }
+    return true;
+  }
+  function korNorm(v){ return String(v||'').trim().replace(/\s+/g,''); }
+  function korSidesOk(m, ps){
+    var nL = m.leftAns.length;
+    return sideSetMatch(ps.kor.slice(0,nL), m.korAns.slice(0,nL), korNorm) &&
+           sideSetMatch(ps.kor.slice(nL), m.korAns.slice(nL), korNorm);
+  }
+  function formSidesOk(m, ps){
+    var nL = m.leftAns.length;
+    return sideSetMatch(ps.formula.slice(0,nL), m.leftAns, normFormLocal) &&
+           sideSetMatch(ps.formula.slice(nL), m.rightAns, normFormLocal);
+  }
+  // 2단계를 통과하면, 학생이 쓴 순서대로 3단계 반응식을 보여주도록 미션 데이터 순서를 맞춤
+  function alignToStudentOrder(m, ps){
+    var nL = m.leftAns.length;
+    function permFor(inputs, answers){
+      var used = {}, perm = [];
+      inputs.forEach(function(v){
+        for(var k=0;k<answers.length;k++){
+          if(!used[k] && normFormLocal(answers[k]) === normFormLocal(v)){ used[k]=1; perm.push(k); return; }
+        }
+      });
+      return perm;
+    }
+    function apply(arr, perm){ return arr ? perm.map(function(k){ return arr[k]; }) : arr; }
+    var pL = permFor(ps.formula.slice(0,nL), m.leftAns);
+    var pR = permFor(ps.formula.slice(nL), m.rightAns);
+    if(pL.length !== m.leftAns.length || pR.length !== m.rightAns.length) return;
+    m.leftAns = apply(m.leftAns, pL);  m.rightAns = apply(m.rightAns, pR);
+    if(m.left)  m.left  = apply(m.left, pL);
+    if(m.right) m.right = apply(m.right, pR);
+    if(m.answer) m.answer = apply(m.answer.slice(0,nL), pL).concat(apply(m.answer.slice(nL), pR));
+  }
+
   function renderPreStep(m){
     var ps = getPreStep(m);
     var total = m.leftAns.length + m.rightAns.length;
-    var korOk = ps.kor.every(function(v,i){ return String(v||'').trim() === m.korAns[i]; });
-    var formOk = korOk && ps.formula.every(function(v,i){ return normFormLocal(v) === normFormLocal(targetAt(m,i)); });
+    var korOk = korSidesOk(m, ps);
+    var formOk = korOk && formSidesOk(m, ps);
 
     function wordLine(getVal, phSuffix, cls){
       var html = '<div class="stepline">';
@@ -663,22 +759,16 @@
       for(var j=0;j<total;j++){
         (function(j){
           var pf = document.getElementById('pf_'+j);
-          if(pf) pf.addEventListener('input', function(){
-            var raw = pf.value;
-            var sub = liveSubscriptify(raw);
-            if(sub !== raw){
-              var pos = pf.selectionStart;
-              pf.value = sub;
-              pf.setSelectionRange(pos, pos);
-            }
-            ps.formula[j] = pf.value;
-          });
+          if(pf){
+            pf.value = smartFormula(pf.value);
+            bindSmartFormula(pf, function(v){ ps.formula[j] = v; });
+          }
         })(j);
       }
       var checkFormBtn = document.getElementById('checkForm');
       if(checkFormBtn) checkFormBtn.addEventListener('click', function(){
         // 다시 계산해서 정답이면 버튼 클릭 한 번으로 바로 3단계까지 자연스럽게 이어지도록 함
-        var nowOk = ps.formula.every(function(v,i){ return normFormLocal(v) === normFormLocal(targetAt(m,i)); });
+        var nowOk = formSidesOk(m, ps);
         if(nowOk){ switchToMainStage(m); } else { renderPreStep(m); }
       });
     }
@@ -686,6 +776,7 @@
 
   function switchToMainStage(m){
     var ps = getPreStep(m);
+    alignToStudentOrder(m, ps);
     ps.phase = 3;
     var total = m.leftAns.length + m.rightAns.length;
     state.coefs = [];
@@ -728,7 +819,7 @@
         finp.type='text'; finp.className='formula-input'; 
         finp.placeholder='화학식';
         finp.value=state.formulas[idx]; finp.setAttribute('data-f',idx);
-        finp.addEventListener('input',onFormula);
+        bindSmartFormula(finp, function(){ onFormula({target:finp}); });
         fgrp.appendChild(finp);
         var fprev=document.createElement('span'); fprev.className='formpreview'; fprev.id='fprev_'+idx;
         var pv0 = formulaSubHTML(state.formulas[idx]);
@@ -773,7 +864,7 @@
 
   function onFormula(e){
     var i=+e.target.getAttribute('data-f');
-    state.formulas[i]=e.target.value.trim().toUpperCase();
+    state.formulas[i]=smartFormula(e.target.value).replace(/[₀-₉]/g, function(ch){ return SUBSCRIPT_MAP[ch]; });
     var prev = document.getElementById('fprev_'+i);
     if(prev){
       var pv = formulaSubHTML(state.formulas[i]);
@@ -1184,5 +1275,6 @@
   renderAssessChecklist();
 })();
 </script>
+<div style="text-align:center;font-size:13px;font-weight:700;color:#6b7280;padding:18px 10px 10px;">제작: 교사 이수진 · 무단 복제·재배포 금지</div>
 </body>
 </html>
