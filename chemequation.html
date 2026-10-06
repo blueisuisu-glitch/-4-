@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>화학 반응식과 질량 보존 법칙 — 아레스 4 프로젝트</title>
+<title>화학 반응식 — 아레스 4 프로젝트</title>
 <style>
   :root{
     --bg:#f1f5f9; --panel:#ffffff; --line:#d3dbe6; --line2:#e2e8f0;
@@ -197,13 +197,17 @@
   .assess-chip.done{border-color:var(--accent);background:var(--accent-bg);color:#0f5c30}
   .assess-chip .n{display:block;font-size:14px;color:var(--faint);margin-bottom:4px;letter-spacing:.05em}
   .assess-chip.done .n{color:var(--accent)}
+  .assess-chip{cursor:pointer;transition:.12s}
+  .assess-chip:hover{border-color:var(--faint)}
+  .assess-chip.done:hover{border-color:var(--accent)}
+  .assess-chip:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div class="eyebrow">아레스 4 프로젝트</div>
-    <h1>화학 반응식과 질량 보존 법칙</h1>
+    <h1>화학 반응식</h1>
   </header>
 
   <div class="story" style="margin-bottom:14px">
@@ -1154,8 +1158,24 @@
     if(!box) return;
     box.innerHTML = ASSESS_MISSION_KEYS.map(function(k){
       var done = !!progress.completed[k];
-      return '<div class="assess-chip'+(done?' done':'')+'"><span class="n">'+k+'</span>'+(done?'완료 ✓':'미완료')+'</div>';
+      return '<div class="assess-chip'+(done?' done':'')+'" data-k="'+k+'" role="button" tabindex="0" title="눌러서 이 탭으로 이동"><span class="n">'+k+'</span>'+(done?'완료 ✓':'미완료')+'</div>';
     }).join('');
+    // 칸을 누르면 해당 미션 탭으로 이동
+    [].forEach.call(box.querySelectorAll('.assess-chip'), function(chip){
+      function go(){
+        var k = chip.getAttribute('data-k');
+        for(var i=0;i<MISSIONS.length;i++){
+          if(MISSIONS[i].n === k){
+            state.mi = i;
+            loadMission();
+            if(el.missions && el.missions.scrollIntoView) el.missions.scrollIntoView({behavior:'smooth', block:'start'});
+            break;
+          }
+        }
+      }
+      chip.addEventListener('click', go);
+      chip.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
+    });
   }
 
   function markComplete(){
