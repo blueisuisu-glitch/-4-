@@ -90,6 +90,8 @@
 
   .boxrow{display:flex;gap:6px;justify-content:center;flex-wrap:nowrap}
   .vbox{flex:1;min-width:0;max-width:138px;aspect-ratio:144/156}
+  .boxrow.two{flex-wrap:wrap}
+  .boxrow.two .vbox{flex:0 0 calc((100% - 12px)/3)}
   .vbox-fixed{flex:0 0 76px;width:76px;aspect-ratio:144/156}
   .vbox-fixed svg{display:block;width:100%;height:100%}
   .vbox svg{display:block;width:100%;height:100%}
@@ -128,6 +130,16 @@
   .idbar input[type=text]{width:110px}
   .privacy-note{font-size:17px;color:var(--faint);margin-bottom:20px;line-height:1.5}
 
+  .pstepbar{display:flex;gap:8px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+  .pstep{padding:6px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--faint);font-size:14px;font-weight:700}
+  .pstep.now{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
+  .pstep.done{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+  .pprompt{text-align:center;font-size:17px;line-height:1.6;color:var(--ink);margin:4px 0 18px}
+  .givenTag{display:inline-block;margin-bottom:20px;padding:8px 14px;border-radius:10px;background:#eef4ff;border:1.5px solid #b9d3f5;color:var(--info);font-size:15px;font-weight:800}
+  .nextbtn{margin-top:14px;padding:12px 28px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-size:17px;font-weight:800;cursor:pointer;font-family:inherit}
+  .concl{margin-top:16px;padding:18px 18px;background:#fff;border:2px solid var(--accent);border-radius:14px;text-align:center;font-size:17px;line-height:1.8;color:var(--ink)}
+  .concl-tag{display:inline-block;margin-bottom:6px;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;font-size:13px;font-weight:800}
+  .concl-eq{display:inline-block;margin-top:6px;font-size:24px;font-weight:800;color:var(--accent)}
 </style>
 </head>
 <body>
@@ -138,7 +150,7 @@
   </header>
 
   <div class="story">
-    워트니는 화학 반응으로 물과 산소, 비료를 만들었다. 그런데 기체들 사이엔 숨겨진 규칙이 하나 있다 —
+    워트니는 화학 반응으로 산소와 비료를 만들었고, 수소와 산소를 반응시켜 생긴 <b>수증기를 식혀 액화시켜 물</b>을 얻었다. 그런데 기체들 사이엔 숨겨진 규칙이 하나 있다 —
     <b>같은 온도, 같은 압력</b>이라면 <b>같은 부피 안에는 항상 같은 개수의 분자</b>가 들어있다는 것이다.
     그래서 기체가 반응할 때 부피를 재보면 언제나 딱 떨어지는 <b>정수비</b>로 나타난다. 단계를 거치며 그 비율을 직접 찾아보자.
   </div>
@@ -157,10 +169,11 @@
   var STAGES = [
     { key:'practice', label:'연습', sub:'수소 + 염소', kind:'counter',
       eq:'H₂ + Cl₂ → 2HCl',
+      steps:[{g:0,n:1},{g:1,n:2},{g:2,n:6}],
       subs:[
         {name:'수소', atoms:['H','H'], target:1},
         {name:'염소', atoms:['Cl','Cl'], target:1},
-        {name:'염화수소', atoms:['H','Cl'], target:2}
+        {name:'염화수소', atoms:['H','Cl'], target:2, max:6}
       ]
     },
     { key:'basic', label:'기본', sub:'질소 + 수소', kind:'threestep',
@@ -173,8 +186,8 @@
       finalEq:'N₂ + 3H₂ → 2NH₃'
     },
     { key:'basic2', label:'기본2', sub:'수소 + 산소', kind:'threestep',
-      intro:'수소 기체와 산소 기체가 반응해서 물이 만들어져요.',
-      korTarget:['수소','산소','물'],
+      intro:'수소 기체와 산소 기체가 반응해서 수증기가 만들어져요.',
+      korTarget:['수소','산소','수증기'],
       formTarget:['H₂','O₂','H₂O'],
       coefTarget:[2,1,2],
       atomsTarget:[['H','H'],['O','O'],['O','H','H']],
@@ -193,7 +206,7 @@
   var state = { si: 0 };
   var stageDone = {};
 
-  var practiceState = { counts:[0,0,0] };
+  var practiceState = { step:0, counts:[1,0,0], results:[] };
   var basicState = { counts:[0,0,0] };
   var threeStepStates = {};
   function getThreeStepState(key){
@@ -213,6 +226,107 @@
   };
 
   function esc(s){ var d=document.createElement('div'); d.textContent=String(s==null?'':s); return d.innerHTML; }
+
+  // ---- 화학식 입력칸에서 바로 아래첨자 변환 (화학 반응식 만들기와 같은 방식) ----
+  var G_SUB_MAP = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+  var G_DIGIT_TO_SUB = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+  var G_SINGLE_EL = {H:1,B:1,C:1,N:1,O:1,F:1,P:1,S:1,K:1,V:1,Y:1,I:1,W:1,U:1};
+  var G_DOUBLE_EL = {He:1,Li:1,Be:1,Ne:1,Na:1,Mg:1,Al:1,Si:1,Cl:1,Ar:1,Ca:1,Mn:1,Fe:1,Co:1,Ni:1,Cu:1,Zn:1,
+    Br:1,Ag:1,Sn:1,Au:1,Hg:1,Pb:1,Ba:1,Sr:1,Cr:1,Ti:1,Pt:1,Rb:1,Cs:1};
+  function smartFormula(raw){
+    var s = String(raw||'').replace(/[₀-₉]/g, function(ch){ return G_SUB_MAP[ch] || ch; })
+                            .replace(/[^A-Za-z0-9]/g, '');
+    var out = '', i = 0;
+    while(i < s.length){
+      var ch = s[i];
+      if(/[0-9]/.test(ch)){ out += G_DIGIT_TO_SUB[ch]; i++; continue; }
+      var A = ch.toUpperCase();
+      var nx = s[i+1];
+      var nxIsLetter = nx && /[A-Za-z]/.test(nx);
+      if(G_SINGLE_EL[A] && (!nxIsLetter || G_SINGLE_EL[nx.toUpperCase()])){ out += A; i++; continue; }
+      if(nxIsLetter && G_DOUBLE_EL[A + nx.toLowerCase()]){ out += A + nx.toLowerCase(); i += 2; continue; }
+      out += A; i++;
+    }
+    return out;
+  }
+  function applySmartFormula(inp){
+    var raw = inp.value;
+    var fixed = smartFormula(raw);
+    if(fixed === raw) return fixed;
+    var pos = (inp.selectionStart == null) ? raw.length : inp.selectionStart;
+    var newPos = smartFormula(raw.slice(0, pos)).length;
+    inp.value = fixed;
+    try{ inp.setSelectionRange(newPos, newPos); }catch(e){}
+    return fixed;
+  }
+  // 칸을 벗어날 때(Tab 포함) 화면을 다시 그려도 다음 칸으로 포커스가 이어지게 한다
+  function refreshAfterBlur(e, tabDir){
+    var next = e && e.relatedTarget;
+    var nid = next && next.id;
+    var before = {};
+    [].forEach.call(document.querySelectorAll('input[id]'), function(x){ before[x.id] = 1; });
+    refresh();
+    var target = null;
+    if(tabDir === 'fwd'){      // 방금 맞혀서 새로 열린 단계가 있으면 그 첫 칸으로
+      var all = document.querySelectorAll('input[id]');
+      for(var i=0;i<all.length;i++){ if(!before[all[i].id]){ target = all[i]; break; } }
+    }
+    if(!target && nid) target = document.getElementById(nid);
+    if(target && target.focus){
+      target.focus();
+      try{ var L = (target.value || '').length; target.setSelectionRange(L, L); }catch(err){}
+    }
+  }
+  function trackTab(el){
+    el.addEventListener('keydown', function(ev){
+      el.dataset.tab = (ev.key === 'Tab') ? (ev.shiftKey ? 'back' : 'fwd') : '';
+    });
+  }
+
+  function bindFormulaLive(id, onChange){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.setAttribute('autocapitalize','off'); el.setAttribute('autocorrect','off');
+    el.setAttribute('autocomplete','off'); el.setAttribute('spellcheck','false');
+    var timer = null;
+    function scheduleRefresh(){
+      if(timer) clearTimeout(timer);
+      timer = setTimeout(function(){ timer = null; preserveFocus(refresh); }, 600);
+    }
+    el.addEventListener('compositionstart', function(){
+      el.dataset.composing = '1';
+      if(timer){ clearTimeout(timer); timer = null; }
+    });
+    el.addEventListener('compositionend', function(){
+      el.dataset.composing = '';
+      onChange(applySmartFormula(el));
+      scheduleRefresh();
+    });
+    el.addEventListener('input', function(e){
+      if(el.dataset.composing === '1' || e.isComposing){ onChange(el.value); return; }
+      onChange(applySmartFormula(el));
+      scheduleRefresh();
+    });
+    trackTab(el);
+    el.addEventListener('blur', function(e){
+      if(timer){ clearTimeout(timer); timer = null; }
+      onChange(applySmartFormula(el));
+      var dir = el.dataset.tab; el.dataset.tab = '';
+      refreshAfterBlur(e, dir);
+    });
+  }
+  // 반응물끼리는 순서가 바뀌어도 정답 (생성물은 그대로)
+  function sideSetMatch(inputs, answers, norm){
+    var a = answers.map(norm), b = inputs.map(norm);
+    if(a.length !== b.length) return false;
+    for(var i=0;i<a.length;i++){
+      var k = b.indexOf(a[i]);
+      if(k === -1) return false;
+      b.splice(k,1);
+    }
+    return true;
+  }
+  function korNormG(v){ return String(v||'').trim().replace(/\s+/g,''); }
 
   function normForm(raw){
     var subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
@@ -438,9 +552,11 @@
       onChange(el.value);
       scheduleRefresh();
     });
-    el.addEventListener('blur', function(){
+    trackTab(el);
+    el.addEventListener('blur', function(e){
       if(timer){ clearTimeout(timer); timer = null; }
-      refresh();
+      var dir = el.dataset.tab; el.dataset.tab = '';
+      refreshAfterBlur(e, dir);
     });
   }
 
@@ -458,6 +574,9 @@
     targets = targets || LAW_TARGETS;
     var ok = targets[idx].indexOf(String(val||'').trim()) !== -1 && String(val||'').trim() !== '';
     return '<input type="text" class="forminput lawblank' + (ok?' correct':'') + '" id="' + id + '" placeholder="낱말" value="' + esc(val||'') + '">';
+  }
+  function fgi(id, val){
+    return '<span class="formgrp"><input type="text" class="forminput" id="' + id + '" placeholder="화학식" value="' + esc(val||'') + '"></span>';
   }
   function formGroupHTML(id, val){
     var preview = formulaPreviewHTML(val);
@@ -479,7 +598,7 @@
       el.addEventListener('click', function(){
         state.si = i;
         var kind = STAGES[i].kind;
-        if(kind==='counter') practiceState.counts = [0,0,0];
+        if(kind==='counter') practiceState = { step:0, counts:[1,0,0], results:[] };
         if(kind==='coefgiven') basicState.counts = [0,0,0];
         refresh();
       });
@@ -502,39 +621,68 @@
   var CONDITION_NOTE = '<div style="font-size:14px;color:var(--faint);text-align:center;margin-bottom:14px">※ 모든 실험은 같은 온도, 같은 압력에서 이루어져요.</div>';
 
   function renderCounter(s){
-    var counts = practiceState.counts;
-    var allCorrect = counts.every(function(c,i){ return c === s.subs[i].target; });
+    var P = practiceState;
+    var stepDef = s.steps[P.step];
+    var g = stepDef.g;
+    var counts = P.counts;
+    var tg = s.subs.map(function(x){ return x.target; });
+    var k = stepDef.n / tg[g];
+    var expected = tg.map(function(t){ return t * k; });
+    var allCorrect = counts.every(function(c,i){ return c === expected[i]; });
+    var last = P.step === s.steps.length - 1;
 
-    var html = CONDITION_NOTE + '<div class="eqline">' + s.eq + '</div>';
+    var chips = s.steps.map(function(st, i){
+      var cls = 'pstep' + (i < P.step || (i === P.step && allCorrect) ? ' done' : '') + (i === P.step ? ' now' : '');
+      return '<span class="' + cls + '">문제 ' + (i+1) + ((i < P.step || (i === P.step && allCorrect)) ? ' ✓' : '') + '</span>';
+    }).join('');
+
+    var html = CONDITION_NOTE + '<div class="pstepbar">' + chips + '</div>';
+    html += '<div class="pprompt"><b>' + s.subs[g].name + ' 기체 ' + stepDef.n + '개</b>가 주어졌어요.<br>' +
+            '나머지 기체는 각각 몇 개일 때 남거나 모자라지 않고 정확히 반응할까요?</div>';
+
     html += '<div class="subrow">' + s.subs.map(function(sub, i){
       var boxes = '';
-      for(var b=0;b<3;b++){
+      var max = sub.max || 3;
+      for(var b=0;b<max;b++){
         var filled = b < counts[i];
         boxes += '<div class="vbox">' + cubeSVG(filled, allCorrect && filled, sub.atoms) + '</div>';
       }
-      return '<div class="subcol' + (allCorrect?' correct':'') + '">' +
-        '<div class="snm">' + sub.name + '</div>' +
+      var control = (i === g) ?
+        '<div class="givenTag">주어진 기체 · ' + counts[i] + '개</div>' :
         '<div class="counter">' +
           '<button type="button" class="minus" data-i="' + i + '"' + (counts[i]<=0?' disabled':'') + '>−</button>' +
           '<span class="cval">' + counts[i] + '</span>' +
-          '<button type="button" class="plus" data-i="' + i + '"' + (counts[i]>=3?' disabled':'') + '>+</button>' +
-        '</div>' +
-        '<div class="boxrow">' + boxes + '</div>' +
+          '<button type="button" class="plus" data-i="' + i + '"' + (counts[i]>=max?' disabled':'') + '>+</button>' +
+        '</div>';
+      return '<div class="subcol' + (allCorrect?' correct':'') + (i===g?' given':'') + '">' +
+        '<div class="snm">' + sub.name + '</div>' + control +
+        '<div class="boxrow' + (max > 3 ? ' two' : '') + '">' + boxes + '</div>' +
       '</div>';
     }).join('') + '</div>';
 
-    html += '<div class="gasnote' + (allCorrect?' show-correct':'') + '">' + (allCorrect ?
-      ('<b>정확해요!</b> ' + s.subs.map(function(x){return x.name;}).join(' : ') + ' = ' +
-       s.subs.map(function(x){return x.target;}).join(' : ') + ' — 이 비율일 때만 정확히 반응해요.') :
-      '칸을 채워 반응이 일어나는 정확한 비율을 찾아보세요.') + '</div>';
+    var ratio = expected.join(' : ');
+    if(!allCorrect){
+      html += '<div class="gasnote">칸을 채워 반응이 일어나는 정확한 개수를 찾아보세요.</div>';
+    } else if(!last){
+      html += '<div class="gasnote show-correct"><b>정확해요!</b> 수소 : 염소 : 염화수소 = ' + ratio + '</div>' +
+              '<div style="text-align:center"><button type="button" class="nextbtn" id="practiceNext">다음 문제 →</button></div>';
+    } else {
+      var rows = P.results.slice(0, P.step).concat([ratio]);
+      html += '<div class="gasnote show-correct"><b>정확해요!</b> 수소 : 염소 : 염화수소 = ' + ratio + '</div>' +
+        '<div class="concl"><div class="concl-tag">결론</div>' +
+          '수소 : 염소 : 염화수소 =<br><b>' + rows.join('</b> , <b>') + '</b><br>' +
+          '기체의 개수는 달라도 <b>비는 항상 같아요.</b><br>' +
+          '그래서 화학 반응식은 <b>가장 간단한 정수비</b>(' + tg.join(' : ') + ')로 나타내요<br>' +
+          '<span class="concl-eq">' + s.eq + '</span></div>';
+    }
 
     els.stageArea.innerHTML = html;
-    if(allCorrect) stageDone[s.key] = true;
+    if(allCorrect && last && !stageDone[s.key]){ stageDone[s.key] = true; buildMissions(); }
 
     [].forEach.call(els.stageArea.querySelectorAll('.plus'), function(btn){
       btn.addEventListener('click', function(){
         var i = +btn.dataset.i;
-        if(counts[i] < 3){ counts[i]++; refresh(); }
+        if(counts[i] < (s.subs[i].max || 3)){ counts[i]++; refresh(); }
       });
     });
     [].forEach.call(els.stageArea.querySelectorAll('.minus'), function(btn){
@@ -542,6 +690,14 @@
         var i = +btn.dataset.i;
         if(counts[i] > 0){ counts[i]--; refresh(); }
       });
+    });
+    var nb = document.getElementById('practiceNext');
+    if(nb) nb.addEventListener('click', function(){
+      P.results[P.step] = ratio;
+      P.step++;
+      P.counts = [0,0,0];
+      P.counts[s.steps[P.step].g] = s.steps[P.step].n;
+      refresh();
     });
   }
 
@@ -595,47 +751,58 @@
   function renderThreeStep(s){
     var st = getThreeStepState(s.key);
     var p = s.key + '_'; // input id 접두어 (두 개의 3단계 스테이지가 서로 섞이지 않도록)
-    var korOk = st.kor.every(function(v,i){ return String(v||'').trim() === s.korTarget[i]; });
-    var formOk = korOk && st.formula.every(function(v,i){ return normForm(v) === normForm(s.formTarget[i]); });
-    var coefOk = formOk && st.coef.every(function(v,i){ return (+v) === s.coefTarget[i]; });
+    // 반응물 두 칸은 순서가 바뀌어도 인정, 생성물 칸은 그대로
+    var korOk = sideSetMatch(st.kor.slice(0,2), s.korTarget.slice(0,2), korNormG) && korNormG(st.kor[2]) === s.korTarget[2];
+    var formOk = korOk && sideSetMatch(st.formula.slice(0,2), s.formTarget.slice(0,2), normForm) && normForm(st.formula[2]) === normForm(s.formTarget[2]);
+    // 학생이 쓴 반응물 순서(2단계 기준)에 맞춰 3단계 계수·그림 순서를 정함
+    var perm = [0,1,2];
+    if(formOk){
+      perm = [0,1].map(function(j){
+        return normForm(st.formula[j]) === normForm(s.formTarget[0]) ? 0 : 1;
+      }).concat([2]);
+    }
+    var coefOk = formOk && st.coef.every(function(v,j){ return (+v) === s.coefTarget[perm[j]]; });
+    var finalText = [0,1].map(function(j){ var c = s.coefTarget[perm[j]]; return (c===1?'':c) + s.eqSuffix[perm[j]]; }).join(' + ') +
+                    ' → ' + (s.coefTarget[2]===1?'':s.coefTarget[2]) + s.eqSuffix[2];
 
     var html = CONDITION_NOTE + '<div class="gasnote" style="text-align:left;margin-top:0">' + s.intro + '</div>';
 
     html += '<div class="q" style="margin-top:20px"><label>1단계. 우리말로 화학 반응식을 만들어보세요.</label>' +
       '<div class="eqline">' + wb(p+'t1_0', st.kor[0], '반응물 1') + ' <span class="arrow">+</span> ' +
       wb(p+'t1_1', st.kor[1], '반응물 2') + ' <span class="arrow">→</span> ' + wb(p+'t1_2', st.kor[2], '생성물') + '</div>' +
-      '<div class="gasnote' + (korOk?' show-correct':'') + '" style="margin-top:8px">' +
-      (korOk ? '<b>정확해요!</b>' : '반응물과 생성물을 우리말로 써보세요.') + '</div>' +
+      (korOk ? '<div class="gasnote show-correct" style="margin-top:8px"><b>정확해요!</b></div>' : '') +
     '</div>';
 
     if(korOk){
       html += '<div class="q"><label>2단계. 우리말을 화학식으로 바꿔보세요.</label>' +
-        '<div class="eqline">' + formGroupHTML(p+'t2_0', st.formula[0]) + ' <span class="arrow">+</span> ' +
-        formGroupHTML(p+'t2_1', st.formula[1]) + ' <span class="arrow">→</span> ' + formGroupHTML(p+'t2_2', st.formula[2]) + '</div>';
+        '<div class="eqline">' + fgi(p+'t2_0', st.formula[0]) + ' <span class="arrow">+</span> ' +
+        fgi(p+'t2_1', st.formula[1]) + ' <span class="arrow">→</span> ' + fgi(p+'t2_2', st.formula[2]) + '</div>';
       html += '<div class="subrow">' + [0,1,2].map(function(i){
         var atoms = parseFormula(st.formula[i]);
-        var slotOk = !!atoms && normForm(st.formula[i]) === normForm(s.formTarget[i]);
+        var nf = normForm(st.formula[i]);
+        var slotOk = !!atoms && (i === 2 ? nf === normForm(s.formTarget[2]) :
+          ((nf === normForm(s.formTarget[0]) || nf === normForm(s.formTarget[1])) && (i === 0 || nf !== normForm(st.formula[0]))));
         return '<div class="subcol' + (slotOk?' correct':'') + '" style="max-width:180px">' +
           '<div class="boxrow"><div class="vbox">' + cubeSVG(!!atoms, slotOk, atoms) + '</div></div>' +
         '</div>';
       }).join('') + '</div>';
       html += '<div class="gasnote' + (formOk?' show-correct':'') + '" style="margin-top:8px">' +
-        (formOk ? '<b>정확해요!</b>' : '숫자를 입력하면 위에 화학식 표기(아래첨자)로 바로 보여줘요. 큐브 안 분자 모양도 함께 확인해보세요.') + '</div>';
+        (formOk ? '<b>정확해요!</b>' : '화학식을 쓰면 아래 큐브에 분자 모양이 나타나요.') + '</div>';
     }
 
     if(formOk){
       html += '<div class="q"><label>3단계. 계수를 맞춰 넣어보세요.</label>' +
-        '<div class="eqline">' + cf(p+'t3_0', st.coef[0]) + ' ' + s.eqSuffix[0] + ' + ' + cf(p+'t3_1', st.coef[1]) + ' ' + s.eqSuffix[1] + ' → ' + cf(p+'t3_2', st.coef[2]) + ' ' + s.eqSuffix[2] + '</div>';
+        '<div class="eqline">' + cf(p+'t3_0', st.coef[0]) + ' ' + s.eqSuffix[perm[0]] + ' + ' + cf(p+'t3_1', st.coef[1]) + ' ' + s.eqSuffix[perm[1]] + ' → ' + cf(p+'t3_2', st.coef[2]) + ' ' + s.eqSuffix[2] + '</div>';
       html += '<div class="subrow">' + [0,1,2].map(function(i){
         var n = Math.min(+st.coef[i] || 0, 3);
         var boxes = '';
         for(var b=0;b<3;b++){
-          boxes += '<div class="vbox">' + cubeSVG(b<n, coefOk && b<n, s.atomsTarget[i]) + '</div>';
+          boxes += '<div class="vbox">' + cubeSVG(b<n, coefOk && b<n, s.atomsTarget[perm[i]]) + '</div>';
         }
         return '<div class="subcol' + (coefOk?' correct':'') + '"><div class="boxrow">' + boxes + '</div></div>';
       }).join('') + '</div>';
       html += '<div class="gasnote' + (coefOk?' show-correct':'') + '" style="margin-top:8px">' +
-        (coefOk ? '<b>정확해요!</b> 완성한 반응식: ' + s.finalEq : '계수를 입력해서 정확한 비율을 맞춰보세요.') + '</div>';
+        (coefOk ? '<b>정확해요!</b> 완성한 반응식: ' + finalText : '계수를 입력해서 정확한 비율을 맞춰보세요.') + '</div>';
     }
 
     els.stageArea.innerHTML = html;
@@ -645,7 +812,7 @@
       bindTextLive(p+'t1_'+i, function(v){ st.kor[i]=v; });
     });
     [0,1,2].forEach(function(i){
-      bindTextLive(p+'t2_'+i, function(v){ st.formula[i]=v; });
+      bindFormulaLive(p+'t2_'+i, function(v){ st.formula[i]=v; });
     });
     [0,1,2].forEach(function(i){
       var el = document.getElementById(p+'t3_'+i);
@@ -690,9 +857,9 @@
     var html = '<div class="assess-tag">형성평가</div>';
 
     html += '<div class="gasnote" style="text-align:left;margin-top:0">' +
-      '워트니가 물을 만드는 실험을 두 번 반복했어요. 매번 넣는 기체의 양은 달랐지만, 결과에는 공통점이 있어요. 무엇인지 찾아볼까요?</div>';
+      '워트니가 수증기를 만드는 실험을 두 번 반복했어요. 매번 넣는 기체의 양은 달랐지만, 결과에는 공통점이 있어요. 무엇인지 찾아볼까요?</div>';
 
-    html += '<div class="q" style="margin-top:20px"><label>' + qNum(1) + '. 산소(O₂) 2개로 물을 만들었어요. 수소는 몇 개 필요했고, 물은 몇 개 만들어졌을까요?</label>' +
+    html += '<div class="q" style="margin-top:20px"><label>' + qNum(1) + '. 산소(O₂) 2개로 수증기를 만들었어요. 수소는 몇 개 필요했고, 수증기는 몇 개 만들어졌을까요?</label>' +
       '<div class="eqline">' + cf('s1_h2', st.s1.h2) + ' H₂ + 2 O₂ → ' + cf('s1_h2o', st.s1.h2o) + ' H₂O</div>' +
       scenarioBlock([
         {label:'수소', atoms:['H','H'], value:st.s1.h2, ok:s1h2Ok},
@@ -700,10 +867,10 @@
         {label:'수증기', atoms:['O','H','H'], value:st.s1.h2o, ok:s1h2oOk}
       ], 2) +
       '<div class="gasnote' + (s1Ok?' show-correct':'') + '" style="margin-top:8px">' +
-      (s1Ok ? '<b>정확해요!</b>' : '산소가 2개일 때 필요한 수소·물 분자 개수를 찾아보세요.') + '</div>' +
+      (s1Ok ? '<b>정확해요!</b>' : '산소가 2개일 때 필요한 수소·수증기 분자 개수를 찾아보세요.') + '</div>' +
     '</div>';
 
-    html += '<div class="q"><label>' + qNum(2) + '. 수소(H₂) 6개로 다시 실험했어요. 산소는 몇 개 필요했고, 물은 몇 개 만들어졌을까요?</label>' +
+    html += '<div class="q"><label>' + qNum(2) + '. 수소(H₂) 6개로 다시 실험했어요. 산소는 몇 개 필요했고, 수증기는 몇 개 만들어졌을까요?</label>' +
       '<div class="eqline">6 H₂ + ' + cf('s2_o2', st.s2.o2) + ' O₂ → ' + cf('s2_h2o', st.s2.h2o) + ' H₂O</div>' +
       scenarioBlock([
         {label:'수소', atoms:['H','H'], given:6, ok:true},
@@ -711,7 +878,7 @@
         {label:'수증기', atoms:['O','H','H'], value:st.s2.h2o, ok:s2h2oOk}
       ], 3) +
       '<div class="gasnote' + (s2Ok?' show-correct':'') + '" style="margin-top:8px">' +
-      (s2Ok ? '<b>정확해요!</b>' : '수소가 6개일 때 필요한 산소·물 분자 개수를 찾아보세요.') + '</div>' +
+      (s2Ok ? '<b>정확해요!</b>' : '수소가 6개일 때 필요한 산소·수증기 분자 개수를 찾아보세요.') + '</div>' +
     '</div>';
 
     var ratioOk = s1Ok && s2Ok && (+st.ratio.h2===2 && +st.ratio.o2===1 && +st.ratio.h2o===2);
