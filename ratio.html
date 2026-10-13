@@ -1359,7 +1359,7 @@
       updated:new Date().toISOString()
     };
     var btn=$('doneBtn'); btn.disabled=true; btn.textContent='제출 중...';
-    submitToSheet('ratio2', rec, function(ok, timedOut){
+    submitToSheet('ratio', rec, function(ok, timedOut){
       btn.disabled=false; btn.textContent='제출하기';
       if(ok){
         st.textContent='제출 완료! 다시 제출하면 이전 내용을 덮어써요.'; st.className='tstatus show okk';
