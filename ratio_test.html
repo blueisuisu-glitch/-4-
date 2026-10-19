@@ -255,6 +255,20 @@
   .cmptable th{background:#f8fafc;font-size:22px}
   .cmptable td.rh{background:#f8fafc;color:var(--dim);font-weight:700}
   .given{font-size:22px;font-weight:800}
+  .k-cmp{color:#6d28d9;font-weight:800;background:#f3e8ff;padding:0 3px;border-radius:5px}
+  .k-mix{color:#be185d;font-weight:800;background:#fce7f3;padding:0 3px;border-radius:5px}
+  .mixgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0}
+  @media(max-width:700px){.mixgrid{grid-template-columns:1fr}}
+  .mixcard{border:2px solid var(--line2);border-radius:16px;padding:14px;background:#fff;text-align:center}
+  .mixcard h5{font-size:22px;font-weight:800;margin:0 0 4px}
+  .mixcard .mk{font-size:17px;color:var(--dim);margin-bottom:8px}
+  .mixbox{min-height:150px;border:2px dashed var(--line2);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:4px;
+    align-items:center;justify-content:center;background:#f8fafc}
+  .saltp{display:inline-flex;width:42px;height:42px;border-radius:8px;background:#e2e8f0;border:2px solid #64748b;
+    align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#334155}
+  .mixcount{font-size:19px;margin:10px 0 4px;line-height:1.6}
+  .mixcount b{font-size:22px}
+  .mixq{font-size:19px;line-height:1.9;text-align:left;margin-top:10px}
   .propgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
   @media(max-width:660px){.propgrid{grid-template-columns:1fr}}
   .propcard{border:2px solid var(--line);border-radius:14px;padding:16px 18px}
@@ -528,9 +542,41 @@
       </div>
     </div>
 
+    <div class="step">
+      <div class="step-h"><span class="sn">4</span> 섞기만 한 물질도 일정할까? <span class="step-sub">화합물과 혼합물 비교하기</span></div>
+      <div class="ptext">
+        이산화 탄소는 탄소 원자와 산소 원자가 <b>결합</b>해서 만들어진 <span class="k-cmp">화합물</span>이에요.<br>
+        소금물은 소금과 물을 <b>섞기만</b> 한 <span class="k-mix">혼합물</span>이에요.<br>
+        ＋, − 버튼으로 양을 바꿔 보며 두 물질을 비교해 보세요.
+      </div>
+      <div class="mixgrid">
+        <div class="mixcard">
+          <h5>이산화 탄소</h5><div class="mk">이산화 탄소를 더 만들어 보세요</div>
+          <div class="mixbox" id="mixCO2"></div>
+          <div class="counter" style="margin-top:10px"><div class="cr"><button data-mx="co2" data-d="-1">−</button><span class="cv" id="mxvCO2">분자 2개</span><button data-mx="co2" data-d="1">+</button></div></div>
+          <div class="mixcount" id="mixCO2c"></div>
+        </div>
+        <div class="mixcard">
+          <h5>소금물</h5><div class="mk">물 분자 5개에 소금을 더 넣어 보세요</div>
+          <div class="mixbox" id="mixSalt"></div>
+          <div class="counter" style="margin-top:10px"><div class="cr"><button data-mx="salt" data-d="-1">−</button><span class="cv" id="mxvSalt">소금 1개</span><button data-mx="salt" data-d="1">+</button></div></div>
+          <div class="mixcount" id="mixSaltc"></div>
+        </div>
+      </div>
+      <div class="mixq">
+        (1) 양을 바꿀 때 성분의 비가 어떻게 되나요?<br>
+        &nbsp;&nbsp;이산화 탄소: <select class="sel empty" id="mxA"><option value="">선택</option><option value="keep">항상 일정하다</option><option value="change">넣는 양에 따라 달라진다</option></select><br>
+        &nbsp;&nbsp;소금물: <select class="sel empty" id="mxB"><option value="">선택</option><option value="keep">항상 일정하다</option><option value="change">넣는 양에 따라 달라진다</option></select><br>
+        (2) 일정 성분비 법칙이 성립하는 물질은? <select class="sel empty" id="mxC"><option value="">선택</option><option value="co2">이산화 탄소</option><option value="salt">소금물</option><option value="both">둘 다</option></select>
+      </div>
+      <button class="checkbtn" id="mxCheck">확인하기</button>
+      <div class="fb" id="mxFb"></div>
+    </div>
+
     <div class="conclude hidden" id="modelConclude">
       <b>정리</b> — 원자는 종류마다 질량이 정해져 있고, 한 화합물 안에서 원자들은 <b>일정한 개수비</b>로 결합해요. 그래서 성분 원소의 <b>질량비도 항상 일정</b>해요.
-      그리고 같은 원소로 이루어져도 개수비가 다르면 질량비가 다르고, 성질도 전혀 다른 물질이 돼요.
+      그리고 같은 원소로 이루어져도 개수비가 다르면 질량비가 다르고, 성질도 전혀 다른 물질이 돼요.<br>
+      소금물처럼 섞기만 한 <span class="k-mix">혼합물</span>은 섞는 양에 따라 성분의 비가 달라져요.<br>그래서 <b>일정 성분비 법칙</b>은 <span class="k-cmp">화합물</span>에서만 성립해요.
     </div>
   </div>
 
@@ -589,7 +635,7 @@
   <!-- ===== 6. 점프 과제 ===== -->
   <div class="panel hidden" id="p-adv">
     <div id="advBody">
-      <div class="goal">한 번 더 생각해야 풀리는 <b>점프 과제</b>예요. 정답 여부를 바로 알려 줘요.<br><b>일정 성분비 법칙</b>과 <b>질량 보존 법칙</b>, <b>남는 반응물</b>을 함께 써 봐요!</div>
+      <div class="goal">한 번 더 생각해야 풀리는 <b>점프 과제</b>예요. 정답 여부를 바로 알려 주고, 제출하지 않아도 돼요.<br><b>일정 성분비 법칙</b>과 <b>질량 보존 법칙</b>, <b>남는 반응물</b>을 함께 써 봐요!</div>
 
       <div class="advq" id="adv1">
         <h3>점프 1. 남는 물질까지 따지기</h3>
@@ -1266,9 +1312,9 @@
     });
   });
   fillMolPics();
-  var modelDone={w:false,p:false,c:false};
+  var modelDone={w:false,p:false,c:false,m:false};
   function checkModelDone(){
-    if(modelDone.w && modelDone.p && modelDone.c){ $('modelConclude').classList.remove('hidden'); markDone('model'); }
+    if(modelDone.w && modelDone.p && modelDone.c && modelDone.m){ $('modelConclude').classList.remove('hidden'); markDone('model'); }
   }
   $('wCheck').addEventListener('click', function(){
     var all=true;
@@ -1304,6 +1350,36 @@
       $('cProp').classList.remove('hidden'); checkModelDone();
     } else if(s.indexOf('simplify')>=0) showFb($('cFb'),'info',SIMPLIFY_MSG);
     else showFb($('cFb'),'bad','빨간 칸을 다시 확인해 보세요.');
+  });
+
+  // 4단계: 화합물 vs 혼합물
+  var mixN={co2:2, salt:1};
+  function drawMix(){
+    $('mixCO2').innerHTML=rep(molSVG('co2',0.62), mixN.co2);
+    $('mxvCO2').textContent='분자 '+mixN.co2+'개';
+    $('mixCO2c').innerHTML='탄소 원자 '+mixN.co2+'개 : 산소 원자 '+(2*mixN.co2)+'개<br>= <b>1 : 2</b>';
+    var h=rep(molSVG('water',0.7),5);
+    for(var i=0;i<mixN.salt;i++) h+='<span class="saltp">소금</span>';
+    $('mixSalt').innerHTML=h;
+    $('mxvSalt').textContent='소금 '+mixN.salt+'개';
+    $('mixSaltc').innerHTML='소금 입자 '+mixN.salt+'개 : 물 분자 5개<br>= <b>'+simp(mixN.salt,5)+'</b>';
+  }
+  function simp(a,b){ function g(x,y){return y?g(y,x%y):x;} var k=g(a,b); return (a/k)+' : '+(b/k); }
+  [].forEach.call(document.querySelectorAll('[data-mx]'), function(b){
+    b.addEventListener('click', function(){
+      var k=b.dataset.mx; mixN[k]=Math.max(1, Math.min(k==='co2'?6:6, mixN[k]+(+b.dataset.d))); drawMix();
+    });
+  });
+  drawMix();
+  $('mxCheck').addEventListener('click', function(){
+    var a=$('mxA'), bq=$('mxB'), c=$('mxC');
+    var ok=[a.value==='keep', bq.value==='change', c.value==='co2'];
+    mark(a,ok[0]); mark(bq,ok[1]); mark(c,ok[2]);
+    if(ok.every(Boolean)){
+      modelDone.m=true;
+      showFb($('mxFb'),'ok','맞아요!<br>이산화 탄소는 원자가 <b>정해진 개수비로 결합</b>한 <span class="k-cmp">화합물</span>이에요.<br>그래서 아무리 많이 만들어도 탄소 : 산소 = 1 : 2예요.<br>소금물은 섞기만 한 <span class="k-mix">혼합물</span>이에요.<br>그래서 소금을 넣는 양에 따라 성분의 비가 달라져요.<br>따라서 <b>일정 성분비 법칙</b>은 <span class="k-cmp">화합물</span>에서만 성립해요.');
+      checkModelDone();
+    } else showFb($('mxFb'),'bad','빨간 칸을 다시 확인해 보세요. ＋, − 버튼을 눌러 보며 아래 비가 바뀌는지 살펴보세요.');
   });
 
   // ===== 5. 형성평가 =====
